@@ -7,10 +7,20 @@ This is a template. You must fill in the title,
 author, and this description to match your project!
 
 ******************/
-let mySquare;
-let myCircle;
-let myOtherCircle;
-let myLine;
+
+let player = {
+  posX: 0,
+  posY: 0,
+  maxSize: 50,
+  currentSize: 50,
+  dead: false
+};
+
+let food = {
+  posX: 0,
+  posY: 0,
+  size: 65
+};
 
 function preload() {
 
@@ -18,23 +28,63 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth,windowHeight);
-  let squareX = random(0,width);
-  let squareY = random(0,width);
-  let squareSize = 100;
-  mySquare = new Square(squareX,squareY,squareSize);
-  myCircle = new Circle(random(0,width),random(0,height),200,color(100,100,200));
-  myOtherCircle = new Circle(random(0,width),random(0,height),200,color(200,100,200));
-  myLine = new Line(random(0,width),random(0,height),random(0,width),random(0,height));
-}
-function draw() {
-  background(255);
-  mySquare.update();
-  myCircle.update();
-  myOtherCircle.update();
-  myLine.update();
+  background("#262626");
+  noCursor();
 
-  mySquare.display();
-  myCircle.display();
-  myOtherCircle.display();
-  myLine.display();
+  setupFood();
+}
+
+function setupFood(){
+  food.posX = random(0,windowWidth);
+  food.posY = random(0,windowHeight);
+}
+
+function draw() {
+  background("#262626");
+  if (!player.dead){
+    displayFood();
+    displayPlayer();
+    updatePlayerSize();
+
+    playing();
+  }
+}
+
+function playing(){
+  let d = dist(mouseX,mouseY,food.posX,food.posY);
+  if (d < player.currentSize/2 + food.size/2){
+    player.currentSize += 20;
+    player.currentSize = constrain(player.currentSize,0,player.maxSize);
+    setupFood();
+  }
+  if (player.currentSize <= 0){
+    player.dead = true;
+  }
+}
+
+function displayPlayer(){
+  push();
+  ellipseMode(CENTER);
+  noStroke();
+  fill(255);
+  player.posX = mouseX;
+  player.posY = mouseY;
+  ellipse(player.posX, player.posY, player.currentSize);
+  pop();
+}
+
+function updatePlayerSize(){
+  if (player.currentSize > 0){
+    player.currentSize -= 0.45;
+    player.currentSize = constrain(player.currentSize,0,player.maxSize);
+  }
+}
+
+function displayFood(){
+  push();
+  ellipseMode(CENTER);
+  noStroke();
+  fill(0,255,0);
+  ellipse(food.posX, food.posY, food.size);
+  pop();
 }
