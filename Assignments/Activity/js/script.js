@@ -1,3 +1,4 @@
+"use strict"
 /*****************
 
 Title of Project
@@ -88,7 +89,7 @@ function displayPlayer(){
 
 function updatePlayerSize(){
   if (player.currentSize > 0){
-    player.currentSize -= 0.45;
+    player.currentSize -= 0.65;
     player.currentSize = constrain(player.currentSize,0,player.MAX_SIZE);
   }
 }
@@ -115,6 +116,7 @@ function displayScore(){
 function displayStartMenu(){
   push();
   fill(255);
+  noStroke();
   textSize(64);
   textStyle(BOLD);
   textAlign(CENTER,CENTER);
