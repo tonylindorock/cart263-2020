@@ -1,0 +1,11 @@
+body {
+  background-color: white;
+}
+
+.pixel{
+  background-color: black;
+  width: 24px;
+  height: 24px;
+  float: left;
+  display: inline-block;
+}
