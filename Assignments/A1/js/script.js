@@ -12,6 +12,8 @@ You paint in pixels!
 window.onload = setup; // call setup when the website is loaded
 const PIXEL_SIZE = 24; // the pixel size
 
+let rotation = 0; // global rotation
+
 // setup
 //
 // to be called when first loaded
