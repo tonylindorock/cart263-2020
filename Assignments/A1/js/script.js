@@ -35,6 +35,7 @@ function setup(){
 
   document.addEventListener('mouseover',paint);
   document.addEventListener('click',remove);
+  document.addEventListener('keydown',rotate);
 }
 
 function paint(e){
@@ -45,7 +46,6 @@ function paint(e){
     let colorB = Math.floor((Math.random() * 255) + 1);
     pixel.style.backgroundColor = "rgb("+colorR+","+colorG+","+colorB+")";
     setTimeout(resetPixel,1000,pixel);
-    console.log("rbg("+colorR+","+colorG+","+colorB+")");
   }
 }
 
@@ -57,5 +57,17 @@ function remove(e){
   let pixel = e.target;
   if (pixel.className === "pixel"){
     pixel.style.opacity = '0';
+  }
+}
+
+function rotate(e){
+  if (e.keyCode === 37){
+    rotation -= 1;
+  }else if (e.keyCode === 39){
+    rotation += 1;
+  }
+  let pixels = document.querySelectorAll('.pixel');
+  for(let i = 0; i < pixels.length; i++){
+    pixels[i].style.transform = "rotate("+rotation+"deg)";
   }
 }
