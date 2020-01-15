@@ -13,6 +13,7 @@ window.onload = setup; // call setup when the website is loaded
 const PIXEL_SIZE = 24; // the pixel size
 
 let rotation = 0; // global rotation
+let currentKey = ""; // global key
 
 // setup
 //
@@ -36,6 +37,7 @@ function setup(){
   document.addEventListener('mouseover',paint);
   document.addEventListener('click',remove);
   document.addEventListener('keydown',rotate);
+  document.addEventListener('keydown',typed);
 }
 
 function paint(e){
@@ -70,4 +72,8 @@ function rotate(e){
   for(let i = 0; i < pixels.length; i++){
     pixels[i].style.transform = "rotate("+rotation+"deg)";
   }
+}
+
+function typed(e){
+  currentKey = e.keyCode;
 }
