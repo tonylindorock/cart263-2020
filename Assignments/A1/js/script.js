@@ -15,9 +15,9 @@ const PIXEL_SIZE = 24; // the pixel size
 let rotation = 0; // global rotation
 let currentKey = ""; // global key
 
-let drawing = false;
-let keepingPixel = false;
-let erasing = false;
+let drawing = false; // if the mouse is down
+let keepingPixel = false; // if the user wants to keep their drawing
+let erasing = false; // if the user is erasing
 let currentColor = -1;
 let lastColor = -1;
 
@@ -27,10 +27,11 @@ let lastColor = -1;
 // will set up the pixel canvas and add event listener
 function setup(){
   console.log("Website is loaded! Weeeeee!");
-
+  // the width and height for the pixel canvas
   let pixelAmountX = Math.floor(window.innerWidth/PIXEL_SIZE);
   let pixelAmountY = Math.floor(window.innerHeight/PIXEL_SIZE);
 
+  // fill the window with black pixels
   for(let i = 0; i < pixelAmountY; i++){
     for(let j = 0; j < pixelAmountX; j++){
       let newPixel = document.createElement('div');
@@ -40,12 +41,14 @@ function setup(){
   }
   console.log("The window size is: "+window.innerWidth+" * "+window.innerHeight+"\nThe pixel canvas size is : "+pixelAmountX+" * "+pixelAmountY);
 
+  // add event listeners
   document.addEventListener('mouseover',paint);
   document.addEventListener('click',remove);
   document.addEventListener('keydown',rotate);
   document.addEventListener('keydown',typed);
   document.addEventListener('mouseover',addText);
 
+  // other event listeners
   document.addEventListener('mousedown',e =>{
     drawing = true;
   });
@@ -55,6 +58,7 @@ function setup(){
     }
   });
 
+  // keep pixel button
   let keepPixel = document.getElementById('btn-keep');
   keepPixel.addEventListener('click',e =>{
     keepingPixel = !keepingPixel;
@@ -65,6 +69,7 @@ function setup(){
     }
   })
 
+  // eraser button
   let eraser = document.getElementById('btn-erase');
   eraser.addEventListener('click',e =>{
     erasing = !erasing;
@@ -75,11 +80,13 @@ function setup(){
     }
   })
 
+  // clear all button
   let clear = document.getElementById('btn-clear');
   clear.addEventListener('click',e =>{
     clearAll();
   })
 
+  // color buttons
   let random = document.getElementById('btn-random');
   random.style.backgroundColor = "#262626";
   random.addEventListener('click',e =>{
@@ -87,49 +94,42 @@ function setup(){
     currentColor = -1;
     updateSelection();
   })
-
   let red = document.getElementById('btn-r');
   red.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 0;
     updateSelection();
   })
-
   let orange = document.getElementById('btn-o');
   orange.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 1;
     updateSelection();
   })
-
   let yellow = document.getElementById('btn-y');
   yellow.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 2;
     updateSelection();
   })
-
   let green = document.getElementById('btn-g');
   green.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 3;
     updateSelection();
   })
-
   let cyan = document.getElementById('btn-c');
   cyan.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 4;
     updateSelection();
   })
-
   let blue = document.getElementById('btn-b');
   blue.addEventListener('click',e =>{
     lastColor = currentColor;
     currentColor = 5;
     updateSelection();
   })
-
   let purple = document.getElementById('btn-p');
   purple.addEventListener('click',e =>{
     lastColor = currentColor;
@@ -138,6 +138,10 @@ function setup(){
   })
 }
 
+// paint
+//
+// change the pixel background color to the selected color
+// also will remove the drawing after seconds if the keep pixels is disabled
 function paint(e){
   if (drawing){
     let pixel = e.target;
@@ -180,10 +184,16 @@ function paint(e){
   }
 }
 
+// resetPixel
+//
+// reset pixel to black
 function resetPixel(pixel){
   pixel.style.backgroundColor = 'black';
 }
 
+// remove
+//
+// change the pixel opacity to 0
 function remove(e){
   let pixel = e.target;
   if (pixel.className === "pixel"){
@@ -191,6 +201,9 @@ function remove(e){
   }
 }
 
+// rotate
+//
+// rotate all the pixels to an angle using left and right keys
 function rotate(e){
   if (e.keyCode === 37){
     rotation -= 1;
@@ -203,10 +216,16 @@ function rotate(e){
   }
 }
 
+// typed
+//
+// record the pressed key
 function typed(e){
   currentKey = e.keyCode;
 }
 
+// addText
+//
+// add text of a pressed key to the pixel
 function addText(e){
   let pixel = e.target;
   if (pixel.className === "pixel"){
@@ -214,6 +233,9 @@ function addText(e){
   }
 }
 
+// updateSelection
+//
+// make sure only one color button is selected
 function updateSelection(){
   let random = document.getElementById('btn-random');
   let red = document.getElementById('btn-r');
@@ -275,10 +297,15 @@ function updateSelection(){
   }
 }
 
+// clearAll
+//
+// reset all pixels to solid black and their rotation
 function clearAll(){
   let pixels = document.querySelectorAll('.pixel');
   for(let i = 0; i < pixels.length; i++){
     pixels[i].style.backgroundColor = "black";
     pixels[i].style.opacity = "1";
+    pixels[i].style.transform = "rotate(0deg)";
   }
+  rotation = 0;
 }
