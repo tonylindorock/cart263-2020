@@ -38,6 +38,7 @@ function setup(){
   document.addEventListener('click',remove);
   document.addEventListener('keydown',rotate);
   document.addEventListener('keydown',typed);
+  document.addEventListener('mouseover',addText);
 }
 
 function paint(e){
@@ -76,4 +77,11 @@ function rotate(e){
 
 function typed(e){
   currentKey = e.keyCode;
+}
+
+function addText(e){
+  let pixel = e.target;
+  if (pixel.className === "pixel"){
+    pixel.innerHTML = String.fromCharCode(currentKey);
+  }
 }
