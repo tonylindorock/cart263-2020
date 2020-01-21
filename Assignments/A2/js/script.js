@@ -49,4 +49,5 @@ function spanClicked(){
 function onMouserover(){
   $(this).removeClass("secret").addClass("found");
   $(this).off('mouseover');
+  secretsFound++;
 }
