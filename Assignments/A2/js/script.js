@@ -10,6 +10,7 @@ Hide those secrets!
 *********************************************************************/
 
 let $spans;
+let $secrets;
 let secretsFound;
 let secretsTotal;
 
@@ -17,14 +18,17 @@ $(document).ready(setup);
 
 function setup() {
   $spans = $("span");
+  $secrets = $(".secret");
   console.log("Weeeee!");
 
+  secretsTotal = $secrets.length;
+  $("#secrets-total").text(secretsTotal);
   setInterval(update,500);
   $spans.on('click',spanClicked);
 }
 
 function update(){
-  $spans.not(".secret").each(updateSpan);
+  $spans.not(".secret").not(".ui").each(updateSpan);
   console.log("Updated!");
 }
 
