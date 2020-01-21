@@ -23,6 +23,8 @@ function setup() {
 
   secretsTotal = $secrets.length;
   $("#secrets-total").text(secretsTotal);
+  $secrets.on('mouseover',onMouserover);
+
   setInterval(update,500);
   $spans.on('click',spanClicked);
 }
@@ -44,4 +46,8 @@ function updateSpan(){
 function spanClicked(){
   $(this).removeClass("revealed");
   $(this).addClass("redacted");
+}
+
+function onMouserover(){
+  
 }
