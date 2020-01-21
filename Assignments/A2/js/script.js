@@ -11,7 +11,7 @@ Hide those secrets!
 
 let $spans;
 let $secrets;
-let secretsFound;
+let secretsFound = 0;
 let secretsTotal;
 
 $(document).ready(setup);
@@ -50,4 +50,5 @@ function onMouserover(){
   $(this).removeClass("secret").addClass("found");
   $(this).off('mouseover');
   secretsFound++;
+  $("#secrets-found").text(secretsFound);
 }
