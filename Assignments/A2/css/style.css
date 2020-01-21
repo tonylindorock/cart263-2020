@@ -27,8 +27,15 @@ p{
 .revealed{
   background-color: transparent;
   color: red;
+  cursor: pointer;
 }
 
 .found{
   background-color: yellow;
+}
+
+.ending{
+  font-size: 28px;
+  color: red;
+  font-weight: bold;
 }
