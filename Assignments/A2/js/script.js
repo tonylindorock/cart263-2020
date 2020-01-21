@@ -43,9 +43,10 @@ function updateSpan(){
 }
 
 function spanClicked(){
-  $(this).removeClass("revealed").addClass("redacted");
+  $(this).not(".found").removeClass("revealed").addClass("redacted");
 }
 
 function onMouserover(){
   $(this).removeClass("secret").addClass("found");
+  $(this).off('mouseover');
 }
