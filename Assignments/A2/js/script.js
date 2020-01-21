@@ -30,24 +30,22 @@ function setup() {
 }
 
 function update(){
-  $spans.not(".secret").not(".ui").each(updateSpan);
+  $spans.not(".secret").not(".found").not(".ui").each(updateSpan);
   console.log("Updated!");
 }
 
 function updateSpan(){
   let p = Math.random();
   if (p < 0.1){
-    $(this).removeClass("redacted");
-    $(this).addClass("revealed");
+    $(this).removeClass("redacted").addClass("revealed");
   }
   console.log("Span updated!");
 }
 
 function spanClicked(){
-  $(this).removeClass("revealed");
-  $(this).addClass("redacted");
+  $(this).removeClass("revealed").addClass("redacted");
 }
 
 function onMouserover(){
-  
+  $(this).removeClass("secret").addClass("found");
 }
