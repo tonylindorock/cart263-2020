@@ -1,5 +1,6 @@
 body {
   margin: 64px;
+  font-family: Helvetica, sans-serif;
 
   /* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
   -webkit-user-select: none; /* Safari */
@@ -9,7 +10,13 @@ body {
 }
 
 p{
-font-size: 20px;
+  font-size: 18px;
+}
+
+.stats{
+  margin-top: 64px;
+  font-size: 32px;
+  font-weight: bold;
 }
 
 .redacted{
