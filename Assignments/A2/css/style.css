@@ -1,6 +1,6 @@
 body {
   margin: 64px;
-  
+
   /* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -20,4 +20,8 @@ font-size: 20px;
 .revealed{
   background-color: transparent;
   color: red;
+}
+
+.secret{
+  background-color: yellow;
 }

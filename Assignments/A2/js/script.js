@@ -22,7 +22,7 @@ function setup() {
 }
 
 function update(){
-  $spans.each(updateSpan);
+  $spans.not(".secret").each(updateSpan);
   console.log("Updated!");
 }
 
