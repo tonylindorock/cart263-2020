@@ -10,6 +10,8 @@ Hide those secrets!
 *********************************************************************/
 
 let $spans;
+let secretsFound;
+let secretsTotal;
 
 $(document).ready(setup);
 
