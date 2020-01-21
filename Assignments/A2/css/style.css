@@ -1,40 +1,43 @@
 body {
   margin: 64px;
   font-family: Helvetica, sans-serif;
-
   /* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
 }
 
-p{
+p {
   font-size: 18px;
 }
 
-.stats{
+.stats {
   margin-top: 64px;
   font-size: 32px;
   font-weight: bold;
 }
 
-.redacted{
+.redacted {
   background-color: black;
   color: transparent;
 }
 
-.revealed{
+.revealed {
   background-color: transparent;
   color: red;
   cursor: pointer;
 }
 
-.found{
+.found {
   background-color: yellow;
 }
 
-.ending{
+.ending {
   font-size: 28px;
   color: red;
   font-weight: bold;
