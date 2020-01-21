@@ -1,5 +1,6 @@
 body {
   margin: 64px;
+  background-color: #f0e6c5;
   font-family: Helvetica, sans-serif;
   /* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
   -webkit-user-select: none;
