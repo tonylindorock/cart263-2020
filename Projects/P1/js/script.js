@@ -10,14 +10,14 @@ to match your project! Write JavaScript to do amazing things below!
 
 *********************************************************************/
 
-$(document).ready(setup);
-let $square;
-let $area;
-let $boundary;
-let $text;
+let $square; // variable for the draggable square
+let $area; // variable for the dropping area
+let $boundary; // varibale for the boundary
+let $text; // variable for the ui hint
 
 let isDragging = false;
-let preText;
+
+$(document).ready(setup);
 
 function setup(){
   console.log("Weeee!");
@@ -27,6 +27,8 @@ function setup(){
   $boundary = $(".boundary");
   $text = $("#help");
 
+  textAnimation();
+
   $square.draggable({
     containment: "window",
     revert: true,
@@ -34,13 +36,10 @@ function setup(){
   });
 
   $area.on('mouseover',function(){
-    if (preText === null){
-      preText = $text.innerHTML;
-    }
-    $text.text("This is the area where you put the square");
+    changeHelpTo("This is the area where you drop the square");
   });
   $area.on('mouseout',function(){
-    $text.text(preText);
+    changeHelpTo("Drag the grey square to the outlined area");
   });
 
   $square.on('mousedown',dragging);
@@ -52,9 +51,21 @@ function setup(){
   $("body").mouseleave(function(){
     if (isDragging){
       revert();
-      $text.text("You can't leave the window!");
+      changeHelpTo("You can't leave the window!");
     }
   });
+}
+
+function textAnimation(){
+  $text.animate({
+    color: 'white'
+  },100);
+}
+
+function changeHelpTo(text){
+  $text.css({color:'gold'});
+  $text.text(text);
+  textAnimation();
 }
 
 function dragging(){
@@ -62,7 +73,7 @@ function dragging(){
     cursor: 'grabbing'
   });
   isDragging = true;
-  $text.text("Just drag it to there...");
+  changeHelpTo("Just drag it to there...");
 }
 
 function reset(){
@@ -91,7 +102,7 @@ function spawnWalls(){
     $(document).trigger("mouseup");
     console.log("Square lost!");
 
-    $text.text("A wall appeared! Click to get rid of it!");
+    changeHelpTo("A wall appeared! Click to get rid of it!");
   }
   $(".wall").on("mouseover",revert);
 }
@@ -106,5 +117,5 @@ function deleteWalls(e){
   let wall = e.target;
   wall.remove();
 
-  $text.text("Great! You get rid of the wall!");
+  changeHelpTo("Great! You get rid of the wall!");
 }

@@ -67,6 +67,10 @@ body {
   line-height: 128px;
 }
 
+#help{
+  color: gold;
+}
+
 .wall{
   z-index: 2;
   display: block;
