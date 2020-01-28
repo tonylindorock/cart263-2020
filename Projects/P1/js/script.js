@@ -15,10 +15,15 @@ let $area; // variable for the dropping area
 let $boundary; // varibale for the boundary
 let $text; // variable for the ui hint
 
-let isDragging = false;
+let isDragging = false; // if the square is being dragged
 
 $(document).ready(setup);
 
+// setup()
+//
+// initiate pointers for the elements
+// make square draggable
+// set up listeners
 function setup(){
   console.log("Weeee!");
 
@@ -83,7 +88,7 @@ function reset(){
   isDragging = false;
 }
 
-// spawnWalls
+// spawnWalls()
 //
 // spawn a wall if the mouse is too close to the right
 function spawnWalls(){

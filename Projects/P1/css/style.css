@@ -43,6 +43,7 @@ body {
 
 /* The draggable square */
 .square{
+  z-index: 1;
   display: inline-block;
   position: absolute;
   margin: auto;
@@ -53,7 +54,8 @@ body {
   min-width: 128px;
   border-radius: 16px;
 
-  background-color: DimGrey;
+  color: white;
+  background-color: SteelBlue;
 
   text-align: center;
   cursor: grab;
@@ -82,18 +84,18 @@ body {
 
   margin: -64px 0 0 -25px;
 
-  background-color: white;
+  background-color: SlateGrey;
 
   cursor: pointer;
 }
 
 .boundary{
-  z-index: 1;
+  z-index: 2;
   display: block;
   height: 100%;
-  width: 50px;
+  width: 128px;
   position: absolute;
-  right: 30%;
+  right: 23%;
 
   margin: 0;
 
