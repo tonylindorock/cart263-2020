@@ -24,6 +24,7 @@ body {
 
 /* The area where players put the square */
 .des-loc{
+  z-index: 1;
   display: inline-block;
   position: absolute;
   margin: auto;
@@ -99,5 +100,20 @@ body {
 
   margin: 0;
 
+  background-color: transparent;
+}
+
+.rect{
+  display: block;
+  height: 256px;
+  width: 1024px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  margin: -128px 0 0 -512px;
+
+  border-radius: 16px;
+  border: 4px dashed DimGrey;
   background-color: transparent;
 }

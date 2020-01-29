@@ -66,7 +66,7 @@ function setup(){
 function textAnimation(){
   $text.animate({
     color: 'white'
-  },100);
+  },150);
 }
 
 function changeHelpTo(text){
@@ -123,5 +123,5 @@ function revert(){
 function deleteWalls(){
   $(this).remove();
 
-  changeHelpTo("Great! You get rid of the wall!");
+  changeHelpTo("Great! You got rid of the wall!");
 }
