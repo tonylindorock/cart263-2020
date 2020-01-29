@@ -12,7 +12,11 @@ You get to drag a square to a destinated area. Can you do it? I don't
 know.
 *********************************************************************/
 
+let $scene0;
+let $scene1;
+
 let $square; // variable for the draggable square
+let $startArea;
 let $area; // variable for the dropping area
 let $boundary; // varibale for the boundary
 let $text; // variable for the ui hint
@@ -28,14 +32,17 @@ $(document).ready(setup);
 // set up listeners
 function setup(){
   console.log("Weeee!");
+  $scene0 = $("#scene-0");
+  $scene1 = $("#scene-1").hide();
 
   // initiate variables
   $square = $(".draggable");
+  $startArea = $(".smaller-des-loc");
   $area = $(".des-loc");
   $boundary = $(".boundary");
   $text = $("#help");
 
-  textAnimation();
+  //showScene(0);
 
   // make the square draggable only within the window
   // it can return to its original place if the user gives up
@@ -53,6 +60,10 @@ function setup(){
   $area.on('click',function(){
     changeHelpTo("This is the area where you drop the square");
   });
+  $startArea.droppable({
+    accept: ".draggable",
+    drop: startGame
+  })
 
   // handling event for boundary
   $boundary.on('mouseover',spawnWalls);
@@ -65,6 +76,21 @@ function setup(){
       changeHelpTo("You can't leave the window!");
     }
   });
+}
+
+function showScene(id){
+  if (id===0){
+    $scene0.show();
+    $scene1.hide();
+  }else{
+    $scene0.hide();
+    $scene1.show();
+    changeHelpTo("Drag the blue square to the outlined area");
+  }
+}
+
+function startGame(){
+  showScene(1);
 }
 
 function textAnimation(){
@@ -126,6 +152,5 @@ function revert(){
 
 function deleteWalls(){
   $(this).remove();
-
   changeHelpTo("Great! You got rid of the wall!");
 }

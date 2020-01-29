@@ -19,20 +19,29 @@
   </head>
   <!-- Content -->
   <body>
-    <div class = "square draggable"> <div class = "text"> DRAG ME </div></div>
-    <div class = "des-loc"> <div class = "text"> HERE </div></div>
-    <div class = "rect"> </div>
-    <div class = "boundary"> </div>
-    <div class = "menu">
-      <div class = "btns-wrapper">
-      <button class = "btn"> btn 1 </button>
-      <button class = "btn"> btn 2 </button>
-      <button class = "btn"> btn 3 </button>
-      <button class = "btn"> btn 4 </button>
-      </div>
+    <div class = "scene" id = "scene-0">
+      <div class = "text" id = "title"> DRAG ME HERE </div>
+      <div class = "smaller-square draggable"> <div class = "text" id = "smaller-text"> DRAG ME </div></div>
+      <div class = "smaller-des-loc"> <div class = "text" id = "smaller-text"> START </div></div>
+      <div class = "line"></div>
     </div>
-    <div class = "text" id = "help"> Drag the grey square to the outlined area </div>
-    <div class = "text" id = "counter"> 0 </div>
+    <div class = "scene" id = "scene-1">
+      <div class = "square draggable"> <div class = "text"> DRAG ME </div></div>
+      <div class = "des-loc"> <div class = "text"> HERE </div></div>
+      <div class = "rect"> </div>
+      <div class = "boundary"> </div>
+      <div class = "text" id = "pop-up-text"> +1 </div>
+      <div class = "menu">
+        <div class = "btns-wrapper">
+        <button class = "btn"> btn 1 </button>
+        <button class = "btn"> btn 2 </button>
+        <button class = "btn"> btn 3 </button>
+        <button class = "btn"> btn 4 </button>
+        </div>
+      </div>
+      <div class = "text" id = "help"> Drag the blue square to the outlined area </div>
+      <div class = "text" id = "counter"> 0 </div>
+    </div>
   </body>
 
 </html>
