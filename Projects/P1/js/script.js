@@ -5,9 +5,11 @@
 Drag Me Here
 Yichen Wang
 
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below!
+Is Drag Me Here a game? It could be... or it could be an experience
+that makes you reconsider your life choices.
 
+You get to drag a square to a destinated area. Can you do it? I don't
+know.
 *********************************************************************/
 
 let $square; // variable for the draggable square
@@ -27,6 +29,7 @@ $(document).ready(setup);
 function setup(){
   console.log("Weeee!");
 
+  // initiate variables
   $square = $(".draggable");
   $area = $(".des-loc");
   $boundary = $(".boundary");
@@ -34,27 +37,26 @@ function setup(){
 
   textAnimation();
 
+  // make the square draggable only within the window
+  // it can return to its original place if the user gives up
   $square.draggable({
     containment: "window",
     revert: true,
     revertDuration: 200
   });
 
-  $area.on('mouseover',function(){
-    changeHelpTo("This is the area where you drop the square");
-  });
-  $area.on('mouseout',function(){
-    changeHelpTo("Drag the grey square to the outlined area");
-  });
-
+  // square handling events
   $square.on('mousedown',dragging);
   $square.on('mouseup',reset);
   $square.on('dragstop',reset);
 
+  // handling event for boundary
   $boundary.on('mouseover',spawnWalls);
 
+  // handling event for body
   $("body").mouseleave(function(){
     if (isDragging){
+      // if users are dragging square out of the window, let them regret
       revert();
       changeHelpTo("You can't leave the window!");
     }
@@ -118,9 +120,8 @@ function revert(){
   console.log("Square lost!");
 }
 
-function deleteWalls(e){
-  let wall = e.target;
-  wall.remove();
+function deleteWalls(){
+  $(this).remove();
 
   changeHelpTo("Great! You get rid of the wall!");
 }
