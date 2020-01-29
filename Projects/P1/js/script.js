@@ -50,6 +50,10 @@ function setup(){
   $square.on('mouseup',reset);
   $square.on('dragstop',reset);
 
+  $area.on('click',function(){
+    changeHelpTo("This is the area where you drop the square");
+  });
+
   // handling event for boundary
   $boundary.on('mouseover',spawnWalls);
 
