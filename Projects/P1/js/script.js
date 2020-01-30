@@ -22,6 +22,7 @@ let $boundary; // varibale for the boundary
 let $text; // variable for the ui hint
 
 let isDragging = false; // if the square is being dragged
+let timer;
 
 $(document).ready(setup);
 
@@ -82,7 +83,7 @@ function showScene(id){
   if (id===0){
     $scene0.show();
     $scene1.hide();
-  }else{
+  }else if (id===1){
     $scene0.hide();
     $scene1.show();
     changeHelpTo("Drag the blue square to the outlined area");
@@ -90,6 +91,7 @@ function showScene(id){
 }
 
 function startGame(){
+  console.log("Game running...")
   showScene(1);
 }
 
@@ -133,7 +135,7 @@ function spawnWalls(){
     newWall.setAttribute("class","wall");
     newWall.addEventListener("click",deleteWalls);
     newWall.style.top = pos;
-    $('body').append(newWall);
+    $("#scene-1").append(newWall);
 
     reset();
     $(document).trigger("mouseup");
@@ -151,6 +153,22 @@ function revert(){
 }
 
 function deleteWalls(){
+  let animText = document.createElement('div');
+  animText.setAttribute("id","animated-text");
+  animText.innerHTML = "+1";
+  let pos = parseInt($(this).css("top").replace('px',''));
+  console.log($(this).css("top"));
+  pos -= 86;
+  pos = pos.toString() + "px"
+  animText.style.top = pos;
+  animText.style.zIndex = "2";
+  $("#scene-1").append(animText);
+  $("#animated-text").hide().fadeIn(200).delay(100).fadeOut(200);
+
   $(this).remove();
+  clearTimeout(timer);
   changeHelpTo("Great! You got rid of the wall!");
+  timer = setTimeout(changeHelpTo,1000,"Now, drag it again!");
+
+
 }
