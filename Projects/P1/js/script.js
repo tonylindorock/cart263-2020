@@ -21,6 +21,11 @@ let $area; // variable for the dropping area
 let $boundary; // varibale for the boundary
 let $text; // variable for the ui hint
 let $counter;
+let $btn1;
+let $btn2;
+let $btn3;
+let $btn4;
+
 let score = 0;
 
 let isDragging = false; // if the square is being dragged
@@ -49,6 +54,12 @@ function setup(){
   $boundary = $(".boundary");
   $text = $("#help");
   $counter = $("#counter");
+  $btn1 = $("#btn-1").button();
+  $btn2 = $("#btn-2").button();
+  $btn3 = $("#btn-3").button();
+  $btn4 = $("#btn-4").button();
+
+  updateButtons();
 
   SOUND_DRAG.volume = 0.2;
   SOUND_WALL.volume = 0.2;
@@ -77,6 +88,9 @@ function setup(){
   $area.on('click',function(){
     changeHelpTo("This is the area where you drop the square");
   });
+  $area.droppable({
+    accept: ".draggable",
+  })
   $startArea.droppable({
     accept: ".draggable",
     drop: startGame
@@ -92,6 +106,19 @@ function setup(){
       revert();
       changeHelpTo("You can't leave the window!");
     }
+  });
+
+  $btn1.click(function(){
+    buttonPressed(0);
+  });
+  $btn2.click(function(){
+    buttonPressed(1);
+  });
+  $btn3.click(function(){
+    buttonPressed(2);
+  });
+  $btn4.click(function(){
+    buttonPressed(3);
   });
 }
 
@@ -187,8 +214,46 @@ function deleteWalls(){
     $("#animated-text").remove();
     score++;
     $counter.text(score);
+    updateButtons();
   },500);
   timer = setTimeout(changeHelpTo,1000,"Now, drag it again!");
+}
 
+function updateButtons(){
+  if (score >= 20){
+    $btn1.button("enable");
+  }else{
+    $btn1.button("disable");
+  }
+  if (score >= 40){
+    $btn2.button("enable");
+  }else{
+    $btn2.button("disable");
+  }
+  if (score >= 60){
+    $btn3.button("enable");
+  }else{
+    $btn3.button("disable");
+  }
+  if (score >= 80){
+    $btn4.button("enable");
+  }else{
+    $btn4.button("disable");
+  }
+}
 
+function buttonPressed(id){
+  if (id === 0){
+    score -= 20;
+    $counter.text(score);
+  }else if (id === 1){
+    score -= 40;
+    $counter.text(score);
+  }else if (id === 2){
+    score -= 60;
+    $counter.text(score);
+  }else if (id === 3){
+    score -= 80;
+    $counter.text(score);
+  }
 }

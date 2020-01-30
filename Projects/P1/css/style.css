@@ -35,7 +35,7 @@ body {
 
 /* The area where players put the square */
 .des-loc {
-  z-index: 1;
+  z-index: 0;
   display: block;
   position: absolute;
   margin: -64px 0 0 -64px;
