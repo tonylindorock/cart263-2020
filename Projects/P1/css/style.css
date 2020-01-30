@@ -24,23 +24,23 @@ body {
 .line{
   z-index: -1;
   display: inline-block;
-  min-width: 256px;
+  min-width: 30%;
   min-height: 0;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -0 0 0 -150px;
+  margin: -0 0 0 -15%;
   border: 2px dashed DimGrey;
 }
 
 /* The area where players put the square */
 .des-loc {
   z-index: 1;
-  display: inline-block;
+  display: block;
   position: absolute;
-  margin: auto;
-  top: 40%;
-  left: 75%;
+  margin: -64px 0 0 -64px;
+  top: 50%;
+  left: 80%;
   min-height: 128px;
   min-width: 128px;
   border-radius: 16px;
@@ -54,10 +54,10 @@ body {
   display: block;
   position: absolute;
   top: 50%;
-  right: 35%;
-  margin: -42px 0 0 -42px;
+  right: 31%;
   min-height: 84px;
   min-width: 84px;
+  margin: -42px 0 0 -42px;
   border-radius: 8px;
   border: 4px solid white;
   background-color: #262626;
@@ -67,11 +67,11 @@ body {
 /* The draggable square */
 .square {
   z-index: 1;
-  display: inline-block;
+  display: block;
   position: absolute;
-  margin: auto;
-  top: 40%;
-  left: 15%;
+  margin: -64px 0 0 -64px;
+  top: 50%;
+  left: 20%;
   min-height: 128px;
   min-width: 128px;
   border-radius: 16px;
@@ -83,7 +83,7 @@ body {
 
 .smaller-square{
   z-index: 1;
-  display: inline-block;
+  display: block;
   position: absolute;
   top: 50%;
   left: 35%;
@@ -126,7 +126,14 @@ body {
 }
 
 #help {
+  display: block;
+  min-height: 128px;
+  min-width: 512px;
   color: gold;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  margin: -64px 0 0 -256px;
 }
 
 #animated-text{
@@ -135,7 +142,7 @@ body {
   color: gold;
   font-size: 18px;
   line-height: 0;
-  right: 30%;
+  right: 29%;
   position: absolute;
 }
 
@@ -175,12 +182,12 @@ body {
 
 .rect {
   display: block;
-  height: 256px;
-  width: 1024px;
+  min-height: 256px;
+  min-width: 80%;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -128px 0 0 -512px;
+  margin: -128px 0 0 -40%;
   border-radius: 16px;
   border: 4px dashed DimGrey;
   background-color: transparent;
@@ -191,10 +198,10 @@ body {
   display: inline-block;
   position: absolute;
   height: 64px;
-  width: 384px;
+  width: 512px;
   bottom: 0;
   left: 50%;
-  margin: 0 0 0 -192px;
+  margin: 0 0 0 -256px;
   text-align: center;
 }
 
@@ -206,10 +213,10 @@ body {
 
 .btn {
   font-family: Verdana, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   height: 64px;
-  width: 84px;
+  width: 100px;
   border-radius: 8px 8px 0 0;
   margin: 0 2px 0 2px;
   bottom: 0;

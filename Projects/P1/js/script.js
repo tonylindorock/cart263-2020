@@ -20,9 +20,12 @@ let $startArea;
 let $area; // variable for the dropping area
 let $boundary; // varibale for the boundary
 let $text; // variable for the ui hint
+let $counter;
+let score = 0;
 
 let isDragging = false; // if the square is being dragged
 let timer;
+let timerAnimText;
 
 $(document).ready(setup);
 
@@ -42,6 +45,7 @@ function setup(){
   $area = $(".des-loc");
   $boundary = $(".boundary");
   $text = $("#help");
+  $counter = $("#counter");
 
   //showScene(0);
 
@@ -156,18 +160,19 @@ function deleteWalls(){
   let animText = document.createElement('div');
   animText.setAttribute("id","animated-text");
   animText.innerHTML = "+1";
-  let pos = parseInt($(this).css("top").replace('px',''));
-  console.log($(this).css("top"));
-  pos -= 86;
-  pos = pos.toString() + "px"
+  let pos = $(this).css("top");
   animText.style.top = pos;
   animText.style.zIndex = "2";
   $("#scene-1").append(animText);
-  $("#animated-text").hide().fadeIn(200).delay(100).fadeOut(200);
 
   $(this).remove();
   clearTimeout(timer);
   changeHelpTo("Great! You got rid of the wall!");
+  timerAnimText = setTimeout(function(){
+    $("#animated-text").remove();
+    score++;
+    $counter.text(score);
+  },500);
   timer = setTimeout(changeHelpTo,1000,"Now, drag it again!");
 
 
