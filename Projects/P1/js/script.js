@@ -27,6 +27,9 @@ let isDragging = false; // if the square is being dragged
 let timer;
 let timerAnimText;
 
+const SOUND_DRAG = new Audio("assets/sounds/Drag.mp3");
+const SOUND_WALL = new Audio("assets/sounds/Wall.mp3");
+
 $(document).ready(setup);
 
 // setup()
@@ -47,7 +50,16 @@ function setup(){
   $text = $("#help");
   $counter = $("#counter");
 
-  //showScene(0);
+  SOUND_DRAG.volume = 0.2;
+  SOUND_WALL.volume = 0.2;
+
+  setInterval(function(){
+    if ($("#smaller-text-start").text() === "START"){
+      $("#smaller-text-start").text("HERE");
+    }else{
+      $("#smaller-text-start").text("START");
+    }
+  },500);
 
   // make the square draggable only within the window
   // it can return to its original place if the user gives up
@@ -117,6 +129,7 @@ function dragging(){
   });
   isDragging = true;
   changeHelpTo("Just drag it to there...");
+  SOUND_DRAG.play();
 }
 
 function reset(){
@@ -146,6 +159,8 @@ function spawnWalls(){
     console.log("Square lost!");
 
     changeHelpTo("A wall appeared! Click to get rid of it!");
+    SOUND_WALL.currentTime = "0";
+    SOUND_WALL.play();
   }
   $(".wall").on("mouseover",revert);
 }

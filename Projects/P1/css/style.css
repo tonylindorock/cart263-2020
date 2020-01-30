@@ -105,7 +105,7 @@ body {
   line-height: 128px;
 }
 
-#smaller-text{
+#smaller-text, #smaller-text-start{
   font-size: 12px;
   line-height: 84px;
 }
