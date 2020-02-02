@@ -147,7 +147,7 @@ function showScene(id) {
   } else if (id === 1) {
     $scene0.hide();
     $scene1.show();
-    changeHelpTo("Drag the blue square to the outlined area");
+    changeHelpTo("Drag the grey square to the outlined area");
   }
 }
 
@@ -166,7 +166,7 @@ function resetGame(){
   canGoOffWindow = false;
   pointPerWall = 1;
   updateButtons();
-  changeHelpTo("Drag the blue square to the outlined area");
+  changeHelpTo("Drag the grey square to the outlined area");
 }
 
 function textAnimation() {
