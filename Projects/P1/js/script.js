@@ -26,8 +26,8 @@ let $btn2;
 let $btn3;
 let $btn4;
 
-let score = 0;
-let pointPerWall = 5;
+let score = 100;
+let pointPerWall = 1;
 let canGoOffWindow = false;
 
 let isDragging = false; // if the square is being dragged
@@ -134,7 +134,7 @@ function setup() {
 
 function checkScore(){
   if (score < 20){
-    changeHelpTo("Remove 20 walls to be eligible to buy these items");
+    changeHelpTo("Get 20 points to be eligible to buy these items");
   }else{
     changeHelpTo("Buying an item will cost 20 of your score");
   }
@@ -157,7 +157,7 @@ function startGame() {
 }
 
 function resetGame(){
-  alert("Oops...Connection lost!");
+  alert("Oops... Connection lost!");
   revert();
   $(".wall").remove();
   $(".ladder").remove();
@@ -273,10 +273,13 @@ function updateButtons() {
 function buttonPressed(id) {
   if (id === 0) {
     spawnALadder();
+    changeHelpTo("Great! You bought a wall!");
   } else if (id === 1) {
     canGoOffWindow = true;
+    changeHelpTo("You now can leave the window!");
   } else if (id === 2) {
     pointPerWall += 2;
+    changeHelpTo("You now gain 2 more points when removing a wall!");
   }
   score -= 20;
   $counter.text(score);
