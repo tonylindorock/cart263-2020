@@ -27,6 +27,8 @@ let $btn3;
 let $btn4;
 
 let score = 0;
+let pointPerWall = 1;
+let canGoOffWindow = false;
 
 let isDragging = false; // if the square is being dragged
 let timer;
@@ -42,7 +44,7 @@ $(document).ready(setup);
 // initiate pointers for the elements
 // make square draggable
 // set up listeners
-function setup(){
+function setup() {
   console.log("Weeee!");
   $scene0 = $("#scene-0");
   $scene1 = $("#scene-1").hide();
@@ -54,23 +56,31 @@ function setup(){
   $boundary = $(".boundary");
   $text = $("#help");
   $counter = $("#counter");
-  $btn1 = $("#btn-1").button();
-  $btn2 = $("#btn-2").button();
-  $btn3 = $("#btn-3").button();
-  $btn4 = $("#btn-4").button();
+  $btn1 = $("#btn-1").button({
+    classes: "ui-button"
+  });
+  $btn2 = $("#btn-2").button({
+    classes: "ui-button"
+  });
+  $btn3 = $("#btn-3").button({
+    classes: "ui-button"
+  });
+  $btn4 = $("#btn-4").button({
+    classes: "ui-button"
+  });
 
   updateButtons();
 
   SOUND_DRAG.volume = 0.2;
   SOUND_WALL.volume = 0.2;
 
-  setInterval(function(){
-    if ($("#smaller-text-start").text() === "START"){
+  setInterval(function() {
+    if ($("#smaller-text-start").text() === "START") {
       $("#smaller-text-start").text("HERE");
-    }else{
+    } else {
       $("#smaller-text-start").text("START");
     }
-  },500);
+  }, 500);
 
   // make the square draggable only within the window
   // it can return to its original place if the user gives up
@@ -81,15 +91,16 @@ function setup(){
   });
 
   // square handling events
-  $square.on('mousedown',dragging);
-  $square.on('mouseup',reset);
-  $square.on('dragstop',reset);
+  $square.on('mousedown', dragging);
+  $square.on('mouseup', reset);
+  $square.on('dragstop', reset);
 
-  $area.on('click',function(){
+  $area.on('click', function() {
     changeHelpTo("This is the area where you drop the square");
   });
   $area.droppable({
     accept: ".draggable",
+    drop: function(){location.reload();}
   })
   $startArea.droppable({
     accept: ".draggable",
@@ -97,60 +108,73 @@ function setup(){
   })
 
   // handling event for boundary
-  $boundary.on('mouseover',spawnWalls);
+  $boundary.on('mouseover', spawnWalls);
 
   // handling event for body
-  $("body").mouseleave(function(){
-    if (isDragging){
+  $("body").mouseleave(function() {
+    if (isDragging && !canGoOffWindow) {
       // if users are dragging square out of the window, let them regret
       revert();
       changeHelpTo("You can't leave the window!");
     }
   });
 
-  $btn1.click(function(){
+  $btn1.click(function() {
     buttonPressed(0);
   });
-  $btn2.click(function(){
+  $btn2.click(function() {
     buttonPressed(1);
   });
-  $btn3.click(function(){
+  $btn3.click(function() {
     buttonPressed(2);
   });
-  $btn4.click(function(){
-    buttonPressed(3);
-  });
+  $btn4.click(checkScore);
 }
 
-function showScene(id){
-  if (id===0){
+function checkScore(){
+  canGoOffWindow = true;
+  if (score < 20){
+    changeHelpTo("Remove 20 walls to be eligible to buy these items");
+  }else{
+    changeHelpTo("Buying an item will cost 20 of your score");
+  }
+}
+
+function checkPurchase(){
+
+}
+
+function showScene(id) {
+  if (id === 0) {
     $scene0.show();
     $scene1.hide();
-  }else if (id===1){
+  } else if (id === 1) {
     $scene0.hide();
     $scene1.show();
     changeHelpTo("Drag the blue square to the outlined area");
   }
 }
 
-function startGame(){
+function startGame() {
   console.log("Game running...")
   showScene(1);
 }
 
-function textAnimation(){
+function textAnimation() {
   $text.animate({
     color: 'white'
-  },150);
+  }, 150);
 }
 
-function changeHelpTo(text){
-  $text.css({color:'gold'});
+function changeHelpTo(text) {
+  $text.css({
+    color: 'gold'
+  });
   $text.text(text);
   textAnimation();
 }
 
-function dragging(){
+function dragging() {
   $square.css({
     cursor: 'grabbing'
   });
@@ -159,7 +183,7 @@ function dragging(){
   SOUND_DRAG.play();
 }
 
-function reset(){
+function reset() {
   $square.css({
     cursor: 'grab'
   });
@@ -169,15 +193,15 @@ function reset(){
 // spawnWalls()
 //
 // spawn a wall if the mouse is too close to the right
-function spawnWalls(){
-  if (isDragging){
+function spawnWalls() {
+  if (isDragging) {
     console.log("A wall appeared!");
 
     let pos = (event.clientY / window.innerHeight) * 100;
-    pos = pos.toString()+"%";
+    pos = pos.toString() + "%";
     let newWall = document.createElement('div');
-    newWall.setAttribute("class","wall");
-    newWall.addEventListener("click",deleteWalls);
+    newWall.setAttribute("class", "wall");
+    newWall.addEventListener("click", deleteWalls);
     newWall.style.top = pos;
     $("#scene-1").append(newWall);
 
@@ -189,19 +213,19 @@ function spawnWalls(){
     SOUND_WALL.currentTime = "0";
     SOUND_WALL.play();
   }
-  $(".wall").on("mouseover",revert);
+  $(".wall").on("mouseover", revert);
 }
 
-function revert(){
+function revert() {
   reset();
   $(document).trigger("mouseup");
   console.log("Square lost!");
 }
 
-function deleteWalls(){
+function deleteWalls() {
   let animText = document.createElement('div');
-  animText.setAttribute("id","animated-text");
-  animText.innerHTML = "+1";
+  animText.setAttribute("id", "animated-text");
+  animText.innerHTML = "+" + pointPerWall.toString();
   let pos = $(this).css("top");
   animText.style.top = pos;
   animText.style.zIndex = "2";
@@ -210,50 +234,42 @@ function deleteWalls(){
   $(this).remove();
   clearTimeout(timer);
   changeHelpTo("Great! You got rid of the wall!");
-  timerAnimText = setTimeout(function(){
+  timerAnimText = setTimeout(function() {
     $("#animated-text").remove();
-    score++;
+    score += pointPerWall;
     $counter.text(score);
     updateButtons();
-  },500);
-  timer = setTimeout(changeHelpTo,1000,"Now, drag it again!");
+  }, 500);
+  timer = setTimeout(changeHelpTo, 1000, "Now, drag it again!");
 }
 
-function updateButtons(){
-  if (score >= 20){
+function ranomizeButtons(){
+  let arr = ["LADDER","NO_LIMIT","MORE_POINTS",""];
+  arr.shuffle();
+
+}
+
+function updateButtons() {
+  if (score >= 20) {
     $btn1.button("enable");
-  }else{
-    $btn1.button("disable");
-  }
-  if (score >= 40){
     $btn2.button("enable");
-  }else{
-    $btn2.button("disable");
-  }
-  if (score >= 60){
     $btn3.button("enable");
-  }else{
+  } else {
+    $btn1.button("disable");
+    $btn2.button("disable");
     $btn3.button("disable");
   }
-  if (score >= 80){
-    $btn4.button("enable");
-  }else{
-    $btn4.button("disable");
-  }
 }
 
-function buttonPressed(id){
-  if (id === 0){
-    score -= 20;
-    $counter.text(score);
-  }else if (id === 1){
-    score -= 40;
-    $counter.text(score);
-  }else if (id === 2){
-    score -= 60;
-    $counter.text(score);
-  }else if (id === 3){
-    score -= 80;
-    $counter.text(score);
+function buttonPressed(id) {
+  if (id === 0) {
+
+  } else if (id === 1) {
+
+  } else if (id === 2) {
+
   }
+  score -= 20;
+  $counter.text(score);
+  updateButtons();
 }
