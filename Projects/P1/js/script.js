@@ -27,12 +27,13 @@ let $btn3;
 let $btn4;
 
 let score = 0;
-let pointPerWall = 1;
+let pointPerWall = 5;
 let canGoOffWindow = false;
 
 let isDragging = false; // if the square is being dragged
 let timer;
 let timerAnimText;
+let usingLadder = false;
 
 const SOUND_DRAG = new Audio("assets/sounds/Drag.mp3");
 const SOUND_WALL = new Audio("assets/sounds/Wall.mp3");
@@ -100,7 +101,7 @@ function setup() {
   });
   $area.droppable({
     accept: ".draggable",
-    drop: function(){location.reload();}
+    drop: resetGame
   })
   $startArea.droppable({
     accept: ".draggable",
@@ -132,16 +133,11 @@ function setup() {
 }
 
 function checkScore(){
-  canGoOffWindow = true;
   if (score < 20){
     changeHelpTo("Remove 20 walls to be eligible to buy these items");
   }else{
     changeHelpTo("Buying an item will cost 20 of your score");
   }
-}
-
-function checkPurchase(){
-
 }
 
 function showScene(id) {
@@ -158,6 +154,19 @@ function showScene(id) {
 function startGame() {
   console.log("Game running...")
   showScene(1);
+}
+
+function resetGame(){
+  alert("Oops...Connection lost!");
+  revert();
+  $(".wall").remove();
+  $(".ladder").remove();
+  score = 0;
+  $counter.text(score);
+  canGoOffWindow = false;
+  pointPerWall = 1;
+  updateButtons();
+  changeHelpTo("Drag the blue square to the outlined area");
 }
 
 function textAnimation() {
@@ -185,7 +194,8 @@ function dragging() {
 
 function reset() {
   $square.css({
-    cursor: 'grab'
+    cursor: 'grab',
+    zIndex: '1'
   });
   isDragging = false;
 }
@@ -220,6 +230,7 @@ function revert() {
   reset();
   $(document).trigger("mouseup");
   console.log("Square lost!");
+  isDragging = false;
 }
 
 function deleteWalls() {
@@ -243,33 +254,50 @@ function deleteWalls() {
   timer = setTimeout(changeHelpTo, 1000, "Now, drag it again!");
 }
 
-function ranomizeButtons(){
-  let arr = ["LADDER","NO_LIMIT","MORE_POINTS",""];
-  arr.shuffle();
-
-}
-
 function updateButtons() {
   if (score >= 20) {
     $btn1.button("enable");
-    $btn2.button("enable");
     $btn3.button("enable");
   } else {
     $btn1.button("disable");
-    $btn2.button("disable");
+
     $btn3.button("disable");
+  }
+  if (score >= 20 && !canGoOffWindow){
+    $btn2.button("enable");
+  }else{
+    $btn2.button("disable");
   }
 }
 
 function buttonPressed(id) {
   if (id === 0) {
-
+    spawnALadder();
   } else if (id === 1) {
-
+    canGoOffWindow = true;
   } else if (id === 2) {
-
+    pointPerWall += 2;
   }
   score -= 20;
   $counter.text(score);
   updateButtons();
+}
+
+function spawnALadder(){
+  let ladder = document.createElement('div');
+  ladder.setAttribute("class", "ladder item");
+  ladder.innerHTML = "LADDER";
+  $("#scene-1").append(ladder);
+  $(".ladder").not("ui-draggable").hover(function(){
+    if (isDragging){
+      $square.css({zIndex: '3'});
+    }
+  },function(){
+    if (isDragging){
+      $square.css({zIndex: '1'});
+    }
+  });
+  $(".ladder").not("ui-draggable").draggable({
+    containment: "window"
+  });
 }
