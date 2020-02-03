@@ -227,7 +227,7 @@ body {
   position: absolute;
   height: 64px;
   width: 512px;
-  bottom: 0;
+  bottom: 0%;
   left: 50%;
   margin: 0 0 0 -256px;
   text-align: center;
@@ -249,21 +249,22 @@ body {
   border-radius: 8px 8px 0 0;
   margin: 0 2px 0 2px;
   bottom: 0;
-  background-color: rgba(0, 0, 0, .5);
-  color: grey;
+  background-color: Gainsboro;
+  color: black;
   border: none;
+  vertical-align: bottom;
   text-align: center;
-  text-decoration: none;
   cursor: pointer;
   transition: 0.1s;
 }
 
 .btn:hover {
-  color: white;
+  height: 64px;
+  background-color: white;
 }
 
 .btn:active{
-  background-color: rgba(105, 105, 105, .5);
+  background-color: LightGrey;
 }
 
 .btn-disabled{
@@ -275,8 +276,8 @@ body {
   border-radius: 8px 8px 0 0;
   margin: 0 2px 0 2px;
   bottom: 0;
-  background-color: rgba(0, 0, 0, .5);
-  color: grey;
+  background-color: Grey;
+  color: Black;
   border: none;
   text-align: center;
   text-decoration: none;
