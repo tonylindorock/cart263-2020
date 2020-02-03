@@ -26,8 +26,8 @@ let $btn2;
 let $btn3;
 let $btn4;
 
-let score = 100;
-let pointPerWall = 1;
+let score = 0;
+let pointPerWall = 2;
 let canGoOffWindow = false;
 
 let isDragging = false; // if the square is being dragged
@@ -36,7 +36,10 @@ let timerAnimText;
 let usingLadder = false;
 
 const SOUND_DRAG = new Audio("assets/sounds/Drag.mp3");
+const SOUND_DROP = new Audio("assets/sounds/Drop.mp3");
 const SOUND_WALL = new Audio("assets/sounds/Wall.mp3");
+const SOUND_REMOVE_WALL = new Audio("assets/sounds/RemoveWall.mp3");
+const SOUND_UPGRADE = new Audio("assets/sounds/Upgrade.mp3");
 
 $(document).ready(setup);
 
@@ -73,7 +76,10 @@ function setup() {
   updateButtons();
 
   SOUND_DRAG.volume = 0.2;
+  SOUND_DROP.volume = 0.2;
   SOUND_WALL.volume = 0.2;
+  SOUND_REMOVE_WALL.volume = 0.4;
+  SOUND_UPGRADE.volume = 0.2;
 
   setInterval(function() {
     if ($("#smaller-text-start").text() === "START") {
@@ -97,6 +103,8 @@ function setup() {
   $square.on('dragstop', reset);
 
   $area.on('click', function() {
+    SOUND_DRAG.currentTime = 0;
+    SOUND_DRAG.play();
     changeHelpTo("This is the area where you drop the square");
   });
   $area.droppable({
@@ -133,10 +141,12 @@ function setup() {
 }
 
 function checkScore(){
+  SOUND_DRAG.currentTime = 0;
+  SOUND_DRAG.play();
   if (score < 20){
-    changeHelpTo("Get 20 points to be eligible to buy these items");
+    changeHelpTo("Get 20 points to be eligible to buy these upgrades");
   }else{
-    changeHelpTo("Buying an item will cost 20 of your score");
+    changeHelpTo("Buying an upgrade will cost 20 of your score");
   }
 }
 
@@ -154,10 +164,17 @@ function showScene(id) {
 function startGame() {
   console.log("Game running...")
   showScene(1);
+  SOUND_DROP.play();
 }
 
 function resetGame(){
-  alert("Oops... Connection lost!");
+  $scene0.hide();
+  $scene1.hide();
+  setTimeout(function(){
+    alert("Oops... Connection lost!");
+    $scene1.show();
+    SOUND_DROP.play();
+  },500);
   revert();
   $(".wall").remove();
   $(".ladder").remove();
@@ -200,6 +217,13 @@ function reset() {
   isDragging = false;
 }
 
+function revert() {
+  reset();
+  $(document).trigger("mouseup");
+  console.log("Square lost!");
+  isDragging = false;
+}
+
 // spawnWalls()
 //
 // spawn a wall if the mouse is too close to the right
@@ -226,13 +250,6 @@ function spawnWalls() {
   $(".wall").on("mouseover", revert);
 }
 
-function revert() {
-  reset();
-  $(document).trigger("mouseup");
-  console.log("Square lost!");
-  isDragging = false;
-}
-
 function deleteWalls() {
   let animText = document.createElement('div');
   animText.setAttribute("id", "animated-text");
@@ -241,7 +258,8 @@ function deleteWalls() {
   animText.style.top = pos;
   animText.style.zIndex = "2";
   $("#scene-1").append(animText);
-
+  SOUND_REMOVE_WALL.currentTime = "0";
+  SOUND_REMOVE_WALL.play();
   $(this).remove();
   clearTimeout(timer);
   changeHelpTo("Great! You got rid of the wall!");
@@ -273,7 +291,7 @@ function updateButtons() {
 function buttonPressed(id) {
   if (id === 0) {
     spawnALadder();
-    changeHelpTo("Great! You bought a wall!");
+    changeHelpTo("Great! You bought a ladder!");
   } else if (id === 1) {
     canGoOffWindow = true;
     changeHelpTo("You now can leave the window!");
@@ -284,6 +302,8 @@ function buttonPressed(id) {
   score -= 20;
   $counter.text(score);
   updateButtons();
+  SOUND_UPGRADE.currentTime = "0";
+  SOUND_UPGRADE.play();
 }
 
 function spawnALadder(){
