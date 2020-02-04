@@ -62,8 +62,10 @@ function setup() {
   $startArea = $(".smaller-des-loc");
   $area = $(".des-loc");
   $boundary = $(".boundary");
+  // ui
   $text = $("#help");
   $counter = $("#counter");
+  // buttons
   $btn1 = $("#btn-1").button({
     classes: "ui-button"
   });
@@ -86,7 +88,7 @@ function setup() {
   SOUND_REMOVE_WALL.volume = 0.4;
   SOUND_UPGRADE.volume = 0.2;
 
-  // an animation changing the text repeatedly in start screen
+  // an animation changing the text (HERE <- -> START) repeatedly in start screen
   setInterval(function() {
     if ($("#smaller-text-start").text() === "START") {
       $("#smaller-text-start").text("HERE");
@@ -108,15 +110,19 @@ function setup() {
   $square.on('mouseup', reset);
   $square.on('dragstop', reset);
 
+  // clicking on the dropping area will change the hint
+  // and play a sound
   $area.on('click', function() {
     SOUND_DRAG.currentTime = 0;
     SOUND_DRAG.play();
     changeHelpTo("This is the area where you drop the square");
   });
+  // make the area droppable
   $area.droppable({
     accept: ".draggable",
     drop: resetGame
   })
+  // make the area droppable in the start screen
   $startArea.droppable({
     accept: ".draggable",
     drop: startGame
@@ -381,7 +387,8 @@ function buttonPressed(id) {
   // update the score and the buttons
   score -= 20;
   $counter.text(score);
-  updateButtons(); // play the sound
+  updateButtons();
+  // play the sound
   SOUND_UPGRADE.currentTime = "0";
   SOUND_UPGRADE.play();
 }
