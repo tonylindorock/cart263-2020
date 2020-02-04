@@ -247,37 +247,7 @@ body {
   border-radius: 8px 8px 0 0;
   margin: 0 2px 0 2px;
   bottom: 0;
-  background-color: Gainsboro;
-  color: black;
-  border: none;
   vertical-align: bottom;
   text-align: center;
   cursor: pointer;
-  transition: 0.1s;
-}
-
-.btn:hover {
-  height: 64px;
-  background-color: white;
-}
-
-.btn:active {
-  background-color: LightGrey;
-}
-
-.btn-disabled {
-  font-family: Verdana, sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  height: 64px;
-  width: 110px;
-  border-radius: 8px 8px 0 0;
-  margin: 0 2px 0 2px;
-  bottom: 0;
-  background-color: Grey;
-  color: Black;
-  border: none;
-  text-align: center;
-  text-decoration: none;
-  cursor: not-allowed;
 }

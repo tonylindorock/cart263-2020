@@ -11,7 +11,7 @@ The first upgrade is a ladder that can be used to get over the wall or the detec
 
 What happens if the player drops the element in the area? Well, the scene will act like it loses connection, and an alert will appear saying "Oops! Connection lost..." Once they dismiss the alert, everything will reset and go back to the start.
 
-Dragging and dropping the element to the designated area is like completing a goal. Hitting a wall is like hitting an obstacle during the process. The points come from a destroyed wall is like the mistake learned from failure. These points add up and enable a new way to solve the problem. It is either a way to get over the obstacle directly using the ladder, or a way to get around by going out of the window, or a long-term strategy by investing in points per wall destroyed, which helps to buy upgrades much quicker. Well, in the end, with experience and resources, completion is not a dream anymore, but one slip, everything will be lost as the internet connection gets cut off.
+Dragging and dropping the element to the designated area is like completing a goal. Hitting a wall is like hitting an obstacle during the process. The points come from a destroyed wall is like the mistake learned from failure. These points add up and enable a new way to solve the problem. It is either a way to get over the obstacle directly using the ladder, or a way to get around by going out of the window, or a long-term strategy by investing in points per wall destroyed, which helps to buy upgrades much quicker. Well, in the end, with experience and resources, completion is not a dream anymore, but only one slip, everything will be lost as the internet connection gets cut off.
 
 So this is Drag Me Here.
 

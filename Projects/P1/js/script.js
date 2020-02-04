@@ -346,23 +346,17 @@ function updateButtons() {
   // if >= 20 score, button 1 & 3 are enabled
   if (score >= 20) {
     $btn1.button("enable");
-    $btn1.removeClass("btn-disabled").addClass("btn");
     $btn3.button("enable");
-    $btn3.removeClass("btn-disabled").addClass("btn");
   } else {
     // otherwise disable them
     $btn1.button("disable");
-    $btn1.removeClass("btn").addClass("btn-disabled");
     $btn3.button("disable");
-    $btn3.removeClass("btn").addClass("btn-disabled");
   }
   // if >= 20 score or button 2 has not been pressed, it is enabled
   if (score >= 20 && !canGoOffWindow) {
     $btn2.button("enable");
-    $btn2.removeClass("btn-disabled").addClass("btn");
   } else {
     $btn2.button("disable");
-    $btn2.removeClass("btn").addClass("btn-disabled");
   }
 }
 
