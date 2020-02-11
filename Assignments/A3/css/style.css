@@ -11,10 +11,14 @@ body{
   font-family: Verdana, sans-serif;
   font-weight: bold;
   color: white;
+
+  text-align: center;
 }
 
 .text{
+  position: absolute;
   font-size: 32px;
+
 }
 
 .btn-wrapper{

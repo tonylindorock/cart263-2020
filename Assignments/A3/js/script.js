@@ -9,7 +9,7 @@ Guess the animal in reverse by saying your answer to your own computer!
 
 ******************/
 
-let ANIMALS = ["aardvark",
+const ANIMALS = ["aardvark",
   "alligator",
   "alpaca",
   "antelope",
@@ -144,7 +144,8 @@ let ANIMALS = ["aardvark",
   "yak",
   "zebra"
 ];
-let NUM_OPTIONS = 4;
+const NUM_OPTIONS = 4;
+const COMMAND_GIVEUP = {"I give up":nextRound};
 
 let correctAnimal;
 let answers;
@@ -153,6 +154,8 @@ $(document).ready(setup);
 
 function setup() {
   newRound();
+  annyang.start({ autoRestart: false });
+  annyang.addCommands(COMMAND_GIVEUP);
 }
 
 function addButton(label) {
@@ -171,6 +174,18 @@ function newRound() {
   let rand2 = Math.floor(Math.random() * NUM_OPTIONS);
   correctAnimal = answers[rand2];
   sayBackwards(correctAnimal);
+}
+
+function nextRound(){
+  $(".guess").each(function(){
+    if ($(this).text() === correctAnimal){
+      $(this).toggle( "highlight" ).toggle( "highlight" );
+      setTimeout(function(){
+          $(".guess").remove();
+          newRound();
+      }, 500);
+    }
+  })
 }
 
 function handleGuess() {
