@@ -9,6 +9,7 @@ Guess the animal in reverse by saying your answer to your own computer!
 
 ******************/
 
+// the array of animals
 const ANIMALS = ["aardvark",
   "alligator",
   "alpaca",
@@ -145,7 +146,13 @@ const ANIMALS = ["aardvark",
   "zebra"
 ];
 const NUM_OPTIONS = 4;
-const COMMAND_GIVEUP = {"I give up":nextRound};
+var commands = {
+  "I give up": nextRound,
+  "Say it again": function() {
+    sayBackwards(correctAnimal);
+  },
+  "I think it is *answer": checkAnswer
+};
 
 let correctAnimal;
 let answers;
@@ -154,8 +161,10 @@ $(document).ready(setup);
 
 function setup() {
   newRound();
-  annyang.start({ autoRestart: false });
-  annyang.addCommands(COMMAND_GIVEUP);
+  annyang.start({
+    autoRestart: false
+  });
+  annyang.addCommands(commands);
 }
 
 function addButton(label) {
@@ -176,16 +185,16 @@ function newRound() {
   sayBackwards(correctAnimal);
 }
 
-function nextRound(){
-  $(".guess").each(function(){
-    if ($(this).text() === correctAnimal){
-      $(this).toggle( "highlight" ).toggle( "highlight" );
-      setTimeout(function(){
-          $(".guess").remove();
-          newRound();
+function nextRound() {
+  $(".guess").each(function() {
+    if ($(this).text() === correctAnimal) {
+      $(this).toggle("highlight").toggle("highlight");
+      setTimeout(function() {
+        $(".guess").remove();
+        newRound();
       }, 500);
     }
-  })
+  });
 }
 
 function handleGuess() {
@@ -208,4 +217,16 @@ function sayBackwards(text) {
     rate: options.rate,
     pitch: options.pitch
   });
+}
+
+function checkAnswer(answer){
+  if (answer === correctAnimal){
+    nextRound();
+  }else{
+    $(".guess").each(function() {
+      if ($(this).text() === answer) {
+        $(this).effect('shake');
+      }
+    });
+  }
 }
