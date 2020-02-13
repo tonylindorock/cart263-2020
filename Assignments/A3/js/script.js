@@ -156,13 +156,18 @@ var commands = {
 
 let correctAnimal;
 let answers;
+let score = 0;
+
+let $score;
 
 $(document).ready(setup);
 
 function setup() {
+  $score = $("#score-text");
+
   newRound();
   annyang.start({
-    autoRestart: false
+    autoRestart: true
   });
   annyang.addCommands(commands);
 }
@@ -185,6 +190,10 @@ function newRound() {
   sayBackwards(correctAnimal);
 }
 
+// nextRound()
+//
+// after "i give up" command
+// it starts a new game
 function nextRound() {
   $(".guess").each(function() {
     if ($(this).text() === correctAnimal) {
@@ -192,7 +201,7 @@ function nextRound() {
       setTimeout(function() {
         $(".guess").remove();
         newRound();
-      }, 500);
+      }, 250);
     }
   });
 }
@@ -200,10 +209,14 @@ function nextRound() {
 function handleGuess() {
   if ($(this).text() === correctAnimal) {
     $(".guess").remove();
-    setTimeout(newRound, 500);
+    setTimeout(newRound, 250);
+    score += 1;
+    updateScore();
   } else {
     $(this).effect('shake');
     sayBackwards(correctAnimal);
+    score = 0;
+    updateScore();
   }
 }
 
@@ -219,14 +232,23 @@ function sayBackwards(text) {
   });
 }
 
-function checkAnswer(answer){
-  if (answer === correctAnimal){
+function checkAnswer(answer) {
+  if (answer === correctAnimal) {
     nextRound();
-  }else{
+    score += 1;
+    updateScore();
+  } else {
     $(".guess").each(function() {
       if ($(this).text() === answer) {
         $(this).effect('shake');
+        sayBackwards(correctAnimal);
+        score = 0;
+        updateScore();
       }
     });
   }
+}
+
+function updateScore() {
+  $score.text(score);
 }
