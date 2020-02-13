@@ -155,12 +155,12 @@ const PRAISES=[
   "You are smarter than anyone I know."
 ];
 const INSULTS=[
-  "You're so bad.",
+  "You're just so bad.",
   "Ha! I thought humans are smart.",
   "You're the example why humans are destroying the planet.",
   "Are you even trying?",
   "God Jesus Christ.",
-  "LOL",
+  "LOL. This is not what I expected.",
   "I can't believe you lied about going to Harvard."
 ];
 
@@ -172,6 +172,7 @@ var commands = {
   },
   "I think it is *answer": checkAnswer,
 };
+let timer;
 let mistake = false;
 let correctAnimal;
 let answers;
@@ -215,27 +216,30 @@ function newRound() {
 // it starts a new game
 function nextRound() {
   score = 0;
+  clearTimeout(timer);
+  responsiveVoice.cancel();
   updateScore();
   $(".guess").each(function() {
     if ($(this).text() === correctAnimal) {
       $(this).toggle("highlight").toggle("highlight");
-      setTimeout(function() {
+      timer = setTimeout(function() {
         $(".guess").remove();
         newRound();
-      }, 250);
+      }, saySomething(1,mistake));
     }
   });
 }
 
 function handleGuess() {
+  clearTimeout(timer);
   if ($(this).text() === correctAnimal) {
     $(".guess").remove();
-    setTimeout(newRound,saySomething(0,mistake));
+    timer = setTimeout(newRound,saySomething(0,mistake));
     score += 1;
     updateScore();
   } else {
     $(this).effect('shake').button( "option", "disabled", true );
-    setTimeout(sayBackwards,saySomething(1),correctAnimal);
+    timer = setTimeout(sayBackwards,saySomething(1,mistake),correctAnimal);
     score = 0;
     mistake = true;
     updateScore();
@@ -244,44 +248,38 @@ function handleGuess() {
 
 function sayBackwards(text) {
   let backwardsText = text.split('').reverse().join('');
-  let options = {
-    rate: Math.random(),
-    pitch: Math.random()
-  };
-  responsiveVoice.speak(backwardsText, "UK English Male", {
-    rate: options.rate,
-    pitch: options.pitch
-  });
+  responsiveVoice.speak(backwardsText, "UK English Male");
 }
 
 function saySomething(id,guess){
   if (id === 0){
     if (!mistake){
       let rand = Math.floor(Math.random() * 7);
-      responsiveVoice.speak(PRAISES[rand], "UK English Male");
-      return PRAISES[rand].length * 100;
+      responsiveVoice.speak(PRAISES[rand]+". Next", "UK English Male");
+      return (PRAISES[rand].length+10) * 100;
     }else{
       return 250;
     }
   }else if (id === 1){
     let rand = Math.floor(Math.random() * 7);
-    responsiveVoice.speak(INSULTS[rand], "UK English Male");
-    return INSULTS[rand].length * 100;
+    responsiveVoice.speak(INSULTS[rand]+". Again", "UK English Male");
+    return (INSULTS[rand].length+5) * 100;
   }else{
     return 250;
   }
 }
 
 function checkAnswer(answer) {
+  clearTimeout(timer);
   if (answer === correctAnimal) {
-    setTimeout(nextRound,saySomething(0,mistake));
+    timer = setTimeout(nextRound,saySomething(0,mistake));
     score += 1;
     updateScore();
   } else {
     $(".guess").each(function() {
       if ($(this).text() === answer) {
         $(this).effect('shake').button( "option", "disabled", true );
-        setTimeout(sayBackwards,saySomething(1),correctAnimal);
+        timer = setTimeout(sayBackwards,saySomething(1,mistake),correctAnimal);
         score = 0;
         mistake = true;
         updateScore();
