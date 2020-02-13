@@ -3,17 +3,13 @@
 This is the style file for this project.
 
 **********************************************/
-
-body{
+body {
   margin: 10% 20%;
   background-color: #262626;
-
   font-family: Verdana, sans-serif;
   font-weight: bold;
   color: white;
-
   text-align: center;
-
   /* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
   -webkit-user-select: none;
   /* Safari */
@@ -25,31 +21,29 @@ body{
   /* Standard */
 }
 
-.text{
+.text {
   position: absolute;
   font-size: 32px;
 }
 
-#score{
+#score {
   text-align: right;
   font-size: 64px;
   line-height: 64px;
   right: 20%;
   bottom: 25%;
-
   color: DeepSkyBlue;
 }
 
-#smaller-text{
+#smaller-text {
   text-align: left;
   font-size: 16px;
   top: 50%;
   line-height: 48px;
-
   color: Silver;
 }
 
-.btn-wrapper{
+.btn-wrapper {
   width: 512px;
   height: 256px;
   position: absolute;
@@ -58,8 +52,10 @@ body{
   margin: -128px 0px 0px -256px;
 }
 
-.guess{
+/* button */
+.guess {
   display: inline-block;
   margin: 8px 16px;
   width: 35%;
+  border-radius: 16px;
 }
