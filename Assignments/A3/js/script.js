@@ -195,6 +195,8 @@ function newRound() {
 // after "i give up" command
 // it starts a new game
 function nextRound() {
+  score = 0;
+  updateScore();
   $(".guess").each(function() {
     if ($(this).text() === correctAnimal) {
       $(this).toggle("highlight").toggle("highlight");
@@ -213,7 +215,7 @@ function handleGuess() {
     score += 1;
     updateScore();
   } else {
-    $(this).effect('shake');
+    $(this).effect('shake').button( "option", "disabled", true );
     sayBackwards(correctAnimal);
     score = 0;
     updateScore();
@@ -240,7 +242,7 @@ function checkAnswer(answer) {
   } else {
     $(".guess").each(function() {
       if ($(this).text() === answer) {
-        $(this).effect('shake');
+        $(this).effect('shake').button( "option", "disabled", true );
         sayBackwards(correctAnimal);
         score = 0;
         updateScore();
