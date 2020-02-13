@@ -148,10 +148,10 @@ const ANIMALS = ["aardvark",
 ];
 // array of praises
 const PRAISES = [
-  "Not bad.",
+  "You're not so bad.",
   "I believe you are smart.",
   "I approve your future.",
-  "Good, at least you tried.",
+  "Good. Excellent. Perfection.",
   "Good lord, finally! A worthy human!",
   "Thank you. Next.",
   "You are smarter than anyone I know."
@@ -311,7 +311,7 @@ function saySomething(id) {
       let rand = Math.floor(Math.random() * 7);
       responsiveVoice.speak(PRAISES[rand] + ". Next", "UK English Male");
       // the delay
-      return (PRAISES[rand].length + 10) * 100;
+      return (PRAISES[rand].length + 5) * 100;
     } else {
       return 250;
     }
