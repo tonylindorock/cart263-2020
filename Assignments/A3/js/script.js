@@ -199,9 +199,14 @@ function addButton(label) {
 function newRound() {
   mistake = false;
   answers = [];
+  let COPY = ANIMALS;
   for (let i = 0; i < NUM_OPTIONS; i++) {
-    let rand = Math.floor(Math.random() * ANIMALS.length);
-    let randAnimalName = ANIMALS[rand];
+    let rand = Math.floor(Math.random() * COPY.length);
+    let randAnimalName = COPY[rand];
+    let temp = COPY[0];
+    COPY[0] = COPY[rand];
+    COPY[rand] = temp;
+    COPY.shift();
     addButton(randAnimalName);
     answers.push(randAnimalName);
   }
