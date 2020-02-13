@@ -214,7 +214,7 @@ function newRound() {
   // reset
   mistake = false;
   answers = [];
-  let COPY = ANIMALS;
+  let COPY = Array.from(ANIMALS); // copy the array
   // randomly choose 4 animals from the array copy
   for (let i = 0; i < NUM_OPTIONS; i++) {
     let rand = Math.floor(Math.random() * COPY.length);
