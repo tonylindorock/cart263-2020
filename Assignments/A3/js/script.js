@@ -158,7 +158,7 @@ const PRAISES = [
 ];
 // arary of insults
 const INSULTS = [
-  "You're just so bad.",
+  "You're so bad at it.",
   "Ha! I thought humans are smart.",
   "You're the example why humans are destroying the planet.",
   "Are you even trying?",
