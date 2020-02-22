@@ -19,16 +19,17 @@ So what are you waiting for? Come and get the R.K.B.V.G. software right now and 
 const RED = "#ff6464";
 const ORANGE = "#ffaf4b";
 const YELLOW = "#ffff4b";
-const GREEN = "#4bffaf";
+const GREEN = "#4bff96"; //  #4bffaf
 const BLUE = "#4bafff";
 
 const INTRO = "If this is your first time using this system, please read the instruction."
 +"\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing"
 +"\nany 5 keywords provided, you can ask the advanced A.I. to generate"
-+"\na professional video based on those random keywords."
++"\na professional video for you based on those random keywords"
++"\nusing unique, commercial-use resources."
 +"\n\n2) Keywords are provided as cards because it is fun. You will"
 +"\nget free 5 keyword cards for each video making session, but any"
-+"\nadditional cards will be charged. You also will get some special"
++"\nadditional cards will be charged. You also will get some free special"
 +"\ncards because we give our royal users a lot of benefits."
 +"\n\n3) You will have to play around the system to fully grasp the"
 +"\ntrick of how it works. So good luck!"
@@ -37,7 +38,8 @@ const INTRO = "If this is your first time using this system, please read the ins
 +"\nworry. We will provide guidance throughout your whole video"
 +"\nproduction adventure."
 +"\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month."
-+"\nMake sure that you have enough money before the next billing cycle.";
++"\nMake sure that you have enough money in your account before"
++"\nthe next billing cycle.";
 const OTHER_INFO = "** About voice control **"
 +"\n\nThis system equiped the latest voice command system";
 let tutorialIndex = 0;
@@ -58,7 +60,9 @@ let card2;
 let card3;
 let card4;
 
-let progressBar;
+let note;
+
+let startProgressBar;
 
 let money = 1000;
 
@@ -89,12 +93,21 @@ function setup() {
   card3 = new Card(3,"Blood",RED);
   card4 = new Card(4,"Die",RED);
 
-  progressBar = new ProgressBar(width / 2, height / 2 + height / 8,RED);
+  note = new Notification(0);
+  note.setTitle("WARNING");
+  note.setDes("Hello world!"+
+"\n\nThis is the part when I say I don't want"
++"\nMade a wrong turn once a twice, dig"
++"\nmy way out. Blood and fire. Bad decisions"
++"\nThat's alright. Welcome to my silly life.");
+
+  startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8,RED);
 }
 
 function draw() {
   if (State === "START"){
     startScreen();
+    note.display();
   }else if (State === "TUTORIAL"){
     displayTutorial();
     displayFocus();
@@ -119,8 +132,8 @@ function startScreen() {
   textSize(16);
   text("Random Keywords Based Video Generator", width / 2, height / 2);
 
-  progressBar.display();
-  if (progressBar.done){
+  startProgressBar.display();
+  if (startProgressBar.done){
     fill(255);
     rect(width / 2, height / 2 + height / 8, width / 4, height / 12);
     fill(0);
@@ -148,9 +161,9 @@ function displayStatusBar(){
   rect(0, 0, width, height / 20);
   fill(0);
   textAlign(LEFT, CENTER);
-  text("GM", 48, height / 48);
+  text("@GM", 48, height / 48);
   textAlign(RIGHT, CENTER);
-  text("JAN 01", width - 48, height / 48);
+  text("MAR W1 D1", width - 48, height / 48);
   pop();
 }
 
@@ -162,7 +175,7 @@ function displayTutorial(){
   rect(width / 2, height / 2, height, height);
   fill(RED);
   textSize(48);
-  text("R.K.B.V.G.",width/2, height/8);
+  text("ABOUT R.K.B.V.G.",width/2, height/8 - 16);
 
   fill(255);
   textSize(16);
@@ -197,7 +210,7 @@ function displayStaticUI() {
   rect(0, height / 20, width, height / 12);
   fill(255);
   textAlign(CENTER, CENTER);
-  text("$"+money, width/2, height / 20 + height / 24);
+  text("USER  - $"+money, width/2, height / 20 + height / 24);
 
   // views, fans, rating, video num
 
@@ -247,8 +260,10 @@ function keyPressed() {
     }
   } else if (keyCode === 32) {
     if (State === "START") {
-      State = "TUTORIAL";
-      changeFocus(width / 2, height - height/12);
+      if (startProgressBar.done){
+        State = "TUTORIAL";
+        changeFocus(width / 2, height - height/12);
+      }
     }else if (State === "TUTORIAL") {
       if (tutorialIndex === 0){
         tutorialIndex = 1;
