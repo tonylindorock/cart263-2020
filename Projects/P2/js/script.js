@@ -52,12 +52,13 @@ let focusHeight = 0;
 let focusXAxis = 0;
 let focusYAxis = 0;
 
-
 let card;
 let card1;
 let card2;
 let card3;
 let card4;
+
+let progressBar;
 
 let money = 1000;
 
@@ -87,21 +88,22 @@ function setup() {
   card2 = new Card(2,"Dead",RED);
   card3 = new Card(3,"Blood",RED);
   card4 = new Card(4,"Die",RED);
+
+  progressBar = new ProgressBar(width / 2, height / 2 + height / 8,RED);
 }
 
 function draw() {
   if (State === "START"){
     startScreen();
-
   }else if (State === "TUTORIAL"){
     displayTutorial();
-
+    displayFocus();
   }else if (State === "PLAY"){
     displayStaticUI();
     displayDynamicUI();
+    displayFocus();
   }
   displayStatusBar();
-  displayFocus();
 }
 
 function startScreen() {
@@ -116,11 +118,17 @@ function startScreen() {
   fill(255);
   textSize(16);
   text("Random Keywords Based Video Generator", width / 2, height / 2);
-  fill(255);
-  rect(width / 2, height / 2 + height / 8, width / 4, height / 12);
-  fill(0);
-  textSize(32);
-  text("RUN", width / 2, height / 2 + height / 8);
+
+  progressBar.display();
+  if (progressBar.done){
+    fill(255);
+    rect(width / 2, height / 2 + height / 8, width / 4, height / 12);
+    fill(0);
+    textSize(32);
+    text("RUN", width / 2, height / 2 + height / 8);
+    displayFocus();
+  }
+
   fill(255);
   textSize(16);
   text("* a keyboard only navigation system *", width / 2, height / 2 + height / 4);
