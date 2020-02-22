@@ -11,6 +11,7 @@ class Card{
     this.yFocused = height - this.height/4;
     this.focused = false;
     this.swaped = false;
+    this.accepted = false;
 
     this.x_0 = width/2 - this.width*2 - 24;
     this.x_1 = width/2 - this.width - 12;
@@ -66,6 +67,8 @@ class Card{
     }else{
       if (this.swaped){
         this.y = lerp(this.y,- this.height ,0.1);
+      }else if (this.accepted){
+        this.y = lerp(this.y,height + this.height,0.1);
       }else{
         this.y = lerp(this.y,this.yNotFocused,0.2);
       }
@@ -82,8 +85,14 @@ class Card{
     }, 300);
   }
 
+  accept(){
+    this.focus = false;
+    this.accepted = true;
+  }
+
   reset(){
     this.y = height + this.height; // bottom of the screen
     this.swaped = false;
+    this.accepted = false;
   }
 }

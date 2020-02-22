@@ -1,0 +1,18 @@
+"adjs":[
+    {"word":"Drunk", "colorId":"1", "value": "15"},
+    
+    {"word":"Dead", "colorId":"2", "value": "20"},
+    {"word":"Bloody", "colorId":"2", "value": "20"},
+    {"word":"Gory", "colorId":"2", "value": "20"},
+    {"word":"Sexual", "colorId":"2", "value": "20"},
+    {"word":"Armed", "colorId":"2", "value": "15"},
+    {"word":"Naked", "colorId":"2", "value": "20"},
+    {"word":"Poisoned", "colorId":"2", "value": "15"},
+    {"word":"Brutal", "colorId":"2", "value": "15"},
+    {"word":"Censored", "colorId":"2", "value": "20"},
+    {"word":"Harassing", "colorId":"2", "value": "15"},
+    {"word":"Horrible", "colorId":"2", "value": "15"},
+    {"word":"Spy", "colorId":"2", "value": "20"},
+    {"word":"Vaping", "colorId":"2", "value": "20"},
+    {"word":"Violent", "colorId":"2", "value": "20"},
+]

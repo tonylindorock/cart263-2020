@@ -336,13 +336,20 @@ function keyPressed() {
       }
     } else if (State === "PLAY") {
       if (focusYAxis === 1){
-
+        if (focusXAxis === 1){
+          acceptAllCards();
+        }else if (focusXAxis === 0){
+          swapAllCards();
+        }
       }else if (focusYAxis === 0){
-        swapCard(cardIndex);
-        let lastIndex = cardIndex;
+        if (!cards[cardIndex].swaped){
+          swapCard(cardIndex);
+        }
+        // solve the issue which the card stays selected after the player change to another card before the previous card resets
+        let lastCard = cardIndex;
         setTimeout(function(){
-          if (cardIndex === lastIndex){
-            selectCard(lastIndex);
+          if (cardIndex === lastCard){
+            selectCard(lastCard);
           }else{
             selectCard(cardIndex);
           }
@@ -405,6 +412,18 @@ function swapCard(id){
     card3.swap();
   }else if (id === 4){
     card4.swap();
+  }
+}
+
+function swapAllCards(){
+  for(let i = 0; i < cards.length; i++){
+    cards[i].swap();
+  }
+}
+
+function acceptAllCards(){
+  for(let i = 0; i < cards.length; i++){
+    cards[i].accept();
   }
 }
 
