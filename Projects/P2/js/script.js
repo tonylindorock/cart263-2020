@@ -45,7 +45,7 @@ const OTHER_INFO = "** About voice control **" +
 let tutorialIndex = 0;
 
 // determine current display content
-let State = "PLAY";
+let State = "START";
 
 let focusPosX = 0;
 let focusPosY = 0;
@@ -59,6 +59,8 @@ let card1;
 let card2;
 let card3;
 let card4;
+let cards = [];
+let cardIndex = 0;
 
 let note;
 let stats;
@@ -88,11 +90,16 @@ function setup() {
   focusWidth = width / 4;
   focusHeight = height / 12;
 
-  card = new Card(0, "Special", RED);
+  card = new Card(0, "*Special*", RED);
   card1 = new Card(1, "Rape", RED);
   card2 = new Card(2, "Dead", RED);
   card3 = new Card(3, "Blood", RED);
   card4 = new Card(4, "Die", RED);
+  cards.push(card);
+  cards.push(card1);
+  cards.push(card2);
+  cards.push(card3);
+  cards.push(card4);
 
   note = new Notification(0, 0);
   stats = new Stats();
@@ -223,21 +230,31 @@ function displayStaticUI() {
 }
 
 function displayDynamicUI() {
-  card.display();
-  card1.display();
-  card2.display();
-  card3.display();
-  card4.display();
+  for(let i = 0; i < cards.length; i ++){
+    cards[i].display();
+  }
 }
 
 function keyPressed() {
   if (keyCode === UP_ARROW) {
     if (State === "PLAY") {
-
+      // if focusing on cards, change to focusing on ACCEPT
+      if (focusYAxis === 0){
+        focusYAxis = 1;
+        focusXAxis = 1;
+        changeFocus(width / 2 + width / 8 + 12, height - height / 4, 0);
+        selectCard(-1);
+      }
     }
   } else if (keyCode === DOWN_ARROW) {
     if (State === "PLAY") {
-
+      // if focusing on buttons, change to focusing on CARD 0
+      if (focusYAxis === 1){
+        focusYAxis = 0;
+        focusXAxis = 0;
+        changeFocus(card.x, card.yFocused, 2);
+        selectCard(focusXAxis);
+      }
     }
   } else if (keyCode === LEFT_ARROW) {
     // if focusing on OKAY in TUTORIAL 1, change to focusing on PREV
@@ -247,7 +264,19 @@ function keyPressed() {
         changeFocus(width / 8, height - height / 12, 1);
       }
     } else if (State === "PLAY") {
-
+      // if focusing on ACCEPT, change to focusing on SWAP ALL
+      if (focusYAxis === 1){
+        if (focusXAxis === 1){
+          focusXAxis = 0;
+          changeFocus(width / 2 - width / 8 - 12, height - height / 4, 0);
+        }
+      // cards
+      }else if (focusYAxis === 0){
+        if (focusXAxis > 0){
+          focusXAxis --;
+          selectCard(focusXAxis);
+        }
+      }
     } else if (State === "NOTE") {
 
     }
@@ -260,7 +289,19 @@ function keyPressed() {
       }
     }
     if (State === "PLAY") {
-
+      // if focusing on SWAP ALL, change to focusing on ACCEPT
+      if (focusYAxis === 1){
+        if (focusXAxis === 0){
+          focusXAxis = 1;
+          changeFocus(width / 2 + width / 8 + 12, height - height / 4, 0);
+        }
+      // cards
+      }else if (focusYAxis === 0){
+        if (focusXAxis < 4){
+          focusXAxis ++;
+          selectCard(focusXAxis);
+        }
+      }
     } else if (State === "NOTE") {
 
     }
@@ -288,12 +329,25 @@ function keyPressed() {
         // if focusing on OKAY, change to focusing on - in PLAY
         } else if (focusXAxis === 1) {
           State = "PLAY";
-          changeFocus(0, 0, 0);
-          card.focus = true;
+          focusYAxis = 0;
+          focusXAxis = 0;
+          selectCard(0);
         }
       }
     } else if (State === "PLAY") {
-      card.swap();
+      if (focusYAxis === 1){
+
+      }else if (focusYAxis === 0){
+        swapCard(cardIndex);
+        let lastIndex = cardIndex;
+        setTimeout(function(){
+          if (cardIndex === lastIndex){
+            selectCard(lastIndex);
+          }else{
+            selectCard(cardIndex);
+          }
+        },300);
+      }
     } else if (State === "NOTE") {
 
     }
@@ -301,13 +355,74 @@ function keyPressed() {
   return false;
 }
 
+function selectCard(id){
+  let lastCard = cardIndex;
+  cardIndex = id;
+  if (lastCard === 0){
+    card.focus = false;
+  }else if (lastCard === 1){
+    card1.focus = false;
+  }else if (lastCard === 2){
+    card2.focus = false;
+  }else if (lastCard === 3){
+    card3.focus = false;
+  }else if (lastCard === 4){
+    card4.focus = false;
+  }
+  if (id === 0){
+    card.focus = true;
+    changeFocus(card.x,card.yFocused,2);
+  }else if (id === 1){
+    card1.focus = true;
+    changeFocus(card1.x,card1.yFocused,2);
+  }else if (id === 2){
+    card2.focus = true;
+    changeFocus(card2.x,card2.yFocused,2);
+  }else if (id === 3){
+    card3.focus = true;
+    changeFocus(card3.x,card3.yFocused,2);
+  }else if (id === 4){
+    card4.focus = true;
+    changeFocus(card4.x,card4.yFocused,2);
+  }
+  if (id === -1){
+    card.focus = false;
+    card1.focus = false;
+    card2.focus = false;
+    card3.focus = false;
+    card4.focus = false;
+  }
+}
+
+function swapCard(id){
+  if (id === 0){
+    card.swap();
+  }else if (id === 1){
+    card1.swap();
+  }else if (id === 2){
+    card2.swap();
+  }else if (id === 3){
+    card3.swap();
+  }else if (id === 4){
+    card4.swap();
+  }
+}
+
 function changeFocus(targetX, targetY, sizeId) {
   focusPosX = targetX;
   focusPosY = targetY;
+  // button
   if (sizeId === 0) {
     focusWidth = width / 4;
+    focusHeight = height / 12;
+  // button text only
   } else if (sizeId === 1) {
     focusWidth = width / 4 - 48;
+    focusHeight = height / 12;
+  // card
+  }else if (sizeId === 2) {
+    focusWidth = width/6;
+    focusHeight = height/4;
   }
 }
 

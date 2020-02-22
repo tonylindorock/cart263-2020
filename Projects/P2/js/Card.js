@@ -30,7 +30,7 @@ class Card{
       this.x = width/2 + this.width*2 + 24;
     }
 
-    if (name==="Special"){
+    if (name==="*Special*"){
       let p = random(0,1);
       if (p >= 0 && p < 0.2){
         this.des = "RED\nIS\nORANGE";
@@ -83,7 +83,6 @@ class Card{
   }
 
   reset(){
-    this.focus = true;
     this.y = height + this.height; // bottom of the screen
     this.swaped = false;
   }
