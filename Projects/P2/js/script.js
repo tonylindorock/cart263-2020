@@ -2,25 +2,51 @@
 
 /*****************
 
-R.V.B.K.G. (Random Video By Keywords Generator)
+R.K.B.V.G. (Random Keywords Based Video Generator)
 Yichen Wang
 
-In the near future (retro), Random Video By Keywords Generator is the new way to produce videos on the Internet.
+In the near future (retro), Random Keywords Based Video Generator is the new way to produce videos on the Internet.
 It is the most advanced AI-HUMAN intergated system. By randomly generating keywords, the system will
 create a prfessional video using unique, commercial-use resources.
 
 It is widely used by all of the amateur and professional video makers around the globe. The pricing for
 this service is also really reasonable for anyone who wants to make videos for a living.
 
-So what are you waiting for? Come and get the R.V.B.K.G. software right now and start making some videos!
+So what are you waiting for? Come and get the R.K.B.V.G. software right now and start making some videos!
 ******************/
 
 // colors
-const RED = "#ff4b4b";
+const RED = "#ff6464";
 const ORANGE = "#ffaf4b";
 const YELLOW = "#ffff4b";
 const GREEN = "#4bffaf";
 const BLUE = "#4bafff";
+
+const TUTORIAL = "** Welcome to R.K.B.V.G. (Random Keywords Based Video Generator) **"
++"\n\nIf this is your first time using this system, please read the instruction."
++"\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing"
++"\nany 5 keywords provided, you can ask the advanced A.I. to generate"
++"\na video based on those random keywords."
++"\n\n2) Keywords are provided as cards because it is fun. You will"
++"\nget free 5 keyword cards for each video making session, but any"
++"\nadditional cards will be charged. You also will get other types of"
++"\ncards because we give our users benefits when making videos."
++"\n\n3) You will have to use the system to fully grasp the trick of"
++"\nhow it works. So good luck!"
++"\n\n4) And be sure not to violate the online content policy, and"
++"\nany of those violations will have consequences. But do not"
++"\nworry. We will provide guidance throughout your whole video"
++"\nproduction adventure.";
+
+// determine current display content
+let State = "START";
+
+let focusPosX = 0;
+let focusPosY = 0;
+let focusWidth = 0;
+let focusHeight = 0;
+let focusXAxis = 0;
+let focusYAxis = 0;
 
 // custom font
 // https://webfonts.ffonts.net/04b03.font.download
@@ -31,41 +57,154 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowHeight, windowHeight);
   background(0);
   noStroke();
   textFont(myFont);
   textSize(32);
-  textAlign(CENTER,CENTER);
+  textAlign(CENTER, CENTER);
+
+  focusPosX = width / 2;
+  focusPosY = height / 2 + height / 8;
+  focusWidth = width / 4;
+  focusHeight = height / 12;
 }
 
 function draw() {
-  startScreen();
-  displayStaticUI();
+  if (State === "START"){
+    startScreen();
+  }else if (State === "TUTORIAL"){
+    displayTutorial();
+  }else if (State === "PLAY"){
+    displayStaticUI();
+    displayDynamicUI();
+  }
+  displayFocus();
 }
 
 function startScreen() {
+  push();
   rectMode(CENTER);
   fill("#262626");
   rect(width / 2, height / 2, height, height);
 
-  fill(YELLOW);
+  fill(RED);
   textSize(64);
-  text("R.V.B.K.G.",width / 2, height / 2 - 48);
+  text("R.K.B.V.G.", width / 2, height / 2 - 48);
   fill(255);
   textSize(16);
-  text("Random Video By Keywords Generator",width / 2, height / 2);
+  text("Random Keywords Based Video Generator", width / 2, height / 2);
   fill(255);
-  rect(width / 2, height / 2 + 128, width/8, height/10);
+  rect(width / 2, height / 2 + height / 8, width / 4, height / 12);
   fill(0);
   textSize(32);
-  text("start",width / 2, height / 2 + 128);
+  text("RUN", width / 2, height / 2 + height / 8);
   fill(255);
   textSize(16);
-  text("a keyboard only navigation system",width / 2, height / 2 + 192);
-  text("version 2.0.2",width / 2, height / 2 - 192);
+  text("* a keyboard only navigation system *", width / 2, height / 2 + height / 4);
+  text("version 2.0.2", width / 2, height / 2 - height / 4);
+  fill(ORANGE);
+  text("DEVELOPED BY GOOD MEDIA INC.", width / 2, height / 2 - height / 4 - 24);
+  fill(GREEN);
+  text("left - up - right - down - space", width / 2, height / 2 + height / 4 + 24);
+  pop();
+
+  push();
+  rectMode(CORNER);
+  textSize(32);
+  fill(255);
+  rect(0, 0, width, height / 24);
+  fill(0);
+  textAlign(LEFT, CENTER);
+  text("GM", 48, height / 48);
+  textAlign(RIGHT, CENTER);
+  text("00:00", width - 48, height / 48);
+  pop();
+}
+
+function displayTutorial(){
+  push();
+  rectMode(CENTER);
+  textAlign(LEFT, CENTER);
+  textSize(16);
+  fill("#262626");
+  rect(width / 2, height / 2, height, height);
+  fill(255);
+  text(TUTORIAL,32, height / 2);
+  pop();
 }
 
 function displayStaticUI() {
+  push();
+  rectMode(CENTER);
+  fill("#262626");
+  rect(width / 2, height / 2, height, height);
+  pop();
+}
 
+function displayDynamicUI() {
+
+}
+
+function keyPressed() {
+  if (keyCode === UP_ARROW) {
+    if (State === "PLAY") {
+
+    } else if (State === "TUTORIAL") {
+
+    } else if (State === "NOTE") {
+
+    }
+  } else if (keyCode === DOWN_ARROW) {
+    if (State === "PLAY") {
+
+    } else if (State === "TUTORIAL") {
+
+    } else if (State === "NOTE") {
+
+    }
+  } else if (keyCode === LEFT_ARROW) {
+    if (State === "PLAY") {
+
+    } else if (State === "TUTORIAL") {
+
+    } else if (State === "NOTE") {
+
+    }
+  } else if (keyCode === RIGHT_ARROW) {
+    if (State === "PLAY") {
+
+    } else if (State === "TUTORIAL") {
+
+    } else if (State === "NOTE") {
+
+    }
+  } else if (keyCode === 32) {
+    if (State === "START") {
+      State = "TUTORIAL";
+      changeFocus(0,0);
+    }else if (State === "TUTORIAL") {
+
+    } else if (State === "PLAY") {
+
+    } else if (State === "NOTE") {
+
+    }
+  }
+  return false;
+}
+
+function changeFocus(targetX,targetY){
+  focusPosX = targetX;
+  focusPosY = targetY;
+}
+
+function displayFocus() {
+  push();
+  rectMode(CENTER);
+  stroke(BLUE);
+  strokeWeight(8);
+  fill(255,0);
+  rect(focusPosX, focusPosY, focusWidth, focusHeight);
+  pop();
 }
