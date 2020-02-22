@@ -8,8 +8,15 @@ class Card{
 
     this.y = height;
     this.yNotFocused = height;
-    this.yFocused = height - this.height/2 ;
+    this.yFocused = height - this.height/2 + 24;
     this.focused = false;
+    this.used = false;
+
+    this.x_0 = width/2 - this.width*2 - 24;
+    this.x_1 = width/2 - this.width - 12;
+    this.x_2 = width/2;
+    this.x_3 = width/2 + this.width + 12;
+    this.x_4 = width/2 + this.width*2 + 24;
 
     if (id === 0){
       this.x = width/2 - this.width*2 - 24;
@@ -30,9 +37,9 @@ class Card{
       }else if (p >= 0.2 && p < 0.4){
         this.des = "RED\nIS\nYELLOW";
       }else if (p >= 0.4 && p < 0.6){
-        this.des = "RED\nIS\n GREEN";
+        this.des = "RED\nIS\nGREEN";
       }else if (p >= 0.6 && p < 0.8){
-        this.des = "ALL \nGREEN";
+        this.des = "ALL\nGREEN";
       }else if (p >= 0.8 && p < 1){
         this.des = "CHANGE\nKEYWORD";
       }
@@ -54,14 +61,19 @@ class Card{
     textSize(16);
     text(this.des,this.x,this.y);
     pop();
-  }
-
-  changeFocus(focus){
-    this.focus = focus;
-    if (focus){
+    if (this.focus){
       this.y = lerp(this.y,this.yFocused,0.2);
     }else{
-      this.y = lerp(this.y,this.yNotFocused,0.2);
+      if (this.used){
+        this.y = lerp(this.y,-this.height ,0.1);
+      }else{
+        this.y = lerp(this.y,this.yNotFocused,0.2);
+      }
     }
+  }
+
+  use(){
+    this.focus = false;
+    this.used = true;
   }
 }

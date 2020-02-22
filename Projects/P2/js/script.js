@@ -28,9 +28,9 @@ const TUTORIAL = "If this is your first time using this system, please read the 
 +"\na professional video based on those random keywords."
 +"\n\n2) Keywords are provided as cards because it is fun. You will"
 +"\nget free 5 keyword cards for each video making session, but any"
-+"\nadditional cards will be charged. You also will get other types of"
-+"\ncards because we give our users benefits when making videos."
-+"\n\n3) You will have to use the system to fully grasp the trick of"
++"\nadditional cards will be charged. You also will get some special"
++"\ncards because we give our royal users a lot of  benefits."
++"\n\n3) You will have to try the system to fully grasp the trick of"
 +"\nhow it works. So good luck!"
 +"\n\n4) And be sure not to violate the online content policy, and"
 +"\nany of those violations will have consequences. But do not"
@@ -54,6 +54,8 @@ let card1;
 let card2;
 let card3;
 let card4;
+
+let money = 1000;
 
 // custom font
 // https://webfonts.ffonts.net/04b03.font.download
@@ -86,14 +88,15 @@ function setup() {
 function draw() {
   if (State === "START"){
     startScreen();
-    displayStatusBar();
+
   }else if (State === "TUTORIAL"){
     displayTutorial();
-    displayStatusBar();
+
   }else if (State === "PLAY"){
     displayStaticUI();
     displayDynamicUI();
   }
+  displayStatusBar();
   displayFocus();
 }
 
@@ -130,12 +133,12 @@ function displayStatusBar(){
   rectMode(CORNER);
   textSize(32);
   fill(255);
-  rect(0, 0, width, height / 24);
+  rect(0, 0, width, height / 20);
   fill(0);
   textAlign(LEFT, CENTER);
   text("GM", 48, height / 48);
   textAlign(RIGHT, CENTER);
-  text("00:00", width - 48, height / 48);
+  text("JAN 01", width - 48, height / 48);
   pop();
 }
 
@@ -162,14 +165,26 @@ function displayTutorial(){
 function displayStaticUI() {
   push();
   rectMode(CENTER);
+  // BG
   fill("#262626");
   rect(width / 2, height / 2, height, height);
+
+  // red money bar
+  rectMode(CORNER);
+  textSize(32);
+  fill(RED);
+  rect(0, height / 20, width, height / 12);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  text("$"+money, width/2, height / 20 + height / 24);
+
+  // views, fans, rating, video num
+
   pop();
 }
 
 function displayDynamicUI() {
   card.display();
-  card.changeFocus(true);
   card1.display();
   card2.display();
   card3.display();
@@ -208,8 +223,9 @@ function keyPressed() {
     }else if (State === "TUTORIAL") {
       State = "PLAY";
       changeFocus(0,0);
+      card.focus = true;
     } else if (State === "PLAY") {
-
+      card.use();
     } else if (State === "NOTE") {
 
     }
