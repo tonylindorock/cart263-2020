@@ -207,8 +207,18 @@ function displayStaticUI() {
   textAlign(CENTER, CENTER);
   text("USER  - $" + money, width / 2, height / 20 + height / 24);
 
-  // views, fans, rating, video num
+  // views, fans, rating, videos
   stats.display();
+
+  // 2 buttons
+  rectMode(CENTER);
+  fill(255);
+  rect(width / 2 - width / 8 - 12, height - height / 4, width / 4, height / 12);
+  rect(width / 2 + width / 8 + 12, height - height / 4, width / 4, height / 12);
+  fill(0);
+  textSize(32);
+  text("SWAP ALL", width / 2  - width / 8 - 12, height - height / 4);
+  text("ACCEPT", width / 2  + width / 8 + 12, height - height / 4);
   pop();
 }
 
