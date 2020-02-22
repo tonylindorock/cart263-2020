@@ -18,8 +18,8 @@ So what are you waiting for? Come and get the R.K.B.V.G. software right now and 
 // colors
 const RED = "#ff6464";
 const ORANGE = "#ffaf4b";
-const YELLOW = "#ffff4b";
-const GREEN = "#4bff96"; //  #4bffaf
+const YELLOW = "#ffe600";
+const GREEN = "#33de7a"; //  #4bffaf
 const BLUE = "#4bafff";
 
 const INTRO = "If this is your first time using this system, please read the instruction." +
@@ -45,7 +45,7 @@ const OTHER_INFO = "** About voice control **" +
 let tutorialIndex = 0;
 
 // determine current display content
-let State = "START";
+let State = "PLAY";
 
 let focusPosX = 0;
 let focusPosY = 0;
@@ -61,6 +61,7 @@ let card3;
 let card4;
 
 let note;
+let stats;
 
 let startProgressBar;
 
@@ -94,6 +95,7 @@ function setup() {
   card4 = new Card(4, "Die", RED);
 
   note = new Notification(0, 0);
+  stats = new Stats();
 
   startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
 }
@@ -206,7 +208,7 @@ function displayStaticUI() {
   text("USER  - $" + money, width / 2, height / 20 + height / 24);
 
   // views, fans, rating, video num
-
+  stats.display();
   pop();
 }
 
@@ -281,7 +283,7 @@ function keyPressed() {
         }
       }
     } else if (State === "PLAY") {
-      card.use();
+      card.swap();
     } else if (State === "NOTE") {
 
     }

@@ -3,14 +3,14 @@ class Card{
     this.name = name;
     this.color = color;
     this.id = id;
-    this.width = width/6 ;
+    this.width = width/6;
     this.height = height/4;
 
     this.y = height;
     this.yNotFocused = height;
     this.yFocused = height - this.height/2 + 24;
     this.focused = false;
-    this.used = false;
+    this.swaped = false;
 
     this.x_0 = width/2 - this.width*2 - 24;
     this.x_1 = width/2 - this.width - 12;
@@ -64,7 +64,7 @@ class Card{
     if (this.focus){
       this.y = lerp(this.y,this.yFocused,0.2);
     }else{
-      if (this.used){
+      if (this.swaped){
         this.y = lerp(this.y,-this.height ,0.1);
       }else{
         this.y = lerp(this.y,this.yNotFocused,0.2);
@@ -72,13 +72,19 @@ class Card{
     }
   }
 
-  use(){
+  swap(){
     this.focus = false;
-    this.used = true;
+    this.swaped = true;
+
+    var thisObject = this;
+    setTimeout(function() {
+      thisObject.reset();
+    }, 300);
   }
 
   reset(){
+    this.focus = true;
     this.y = height + this.height;
-    this.used = false;
+    this.swaped = false;
   }
 }
