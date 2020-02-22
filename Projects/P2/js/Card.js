@@ -76,4 +76,9 @@ class Card{
     this.focus = false;
     this.used = true;
   }
+
+  reset(){
+    this.y = height + this.height;
+    this.used = false;
+  }
 }

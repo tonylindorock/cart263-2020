@@ -22,22 +22,25 @@ const YELLOW = "#ffff4b";
 const GREEN = "#4bffaf";
 const BLUE = "#4bafff";
 
-const TUTORIAL = "If this is your first time using this system, please read the instruction."
+const INTRO = "If this is your first time using this system, please read the instruction."
 +"\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing"
 +"\nany 5 keywords provided, you can ask the advanced A.I. to generate"
 +"\na professional video based on those random keywords."
 +"\n\n2) Keywords are provided as cards because it is fun. You will"
 +"\nget free 5 keyword cards for each video making session, but any"
 +"\nadditional cards will be charged. You also will get some special"
-+"\ncards because we give our royal users a lot of  benefits."
-+"\n\n3) You will have to try the system to fully grasp the trick of"
-+"\nhow it works. So good luck!"
-+"\n\n4) And be sure not to violate the online content policy, and"
++"\ncards because we give our royal users a lot of benefits."
++"\n\n3) You will have to play around the system to fully grasp the"
++"\ntrick of how it works. So good luck!"
++"\n\n4) And be sure not to violate the Online Content Policy, and"
 +"\nany of those violations will have consequences. But do not"
 +"\nworry. We will provide guidance throughout your whole video"
 +"\nproduction adventure."
 +"\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month."
 +"\nMake sure that you have enough money before the next billing cycle.";
+const OTHER_INFO = "** About voice control **"
++"\n\nThis system equiped the latest voice command system";
+let tutorialIndex = 0;
 
 // determine current display content
 let State = "START";
@@ -48,6 +51,7 @@ let focusWidth = 0;
 let focusHeight = 0;
 let focusXAxis = 0;
 let focusYAxis = 0;
+
 
 let card;
 let card1;
@@ -151,14 +155,23 @@ function displayTutorial(){
   fill(RED);
   textSize(48);
   text("R.K.B.V.G.",width/2, height/8);
+
   fill(255);
   textSize(16);
-  text(TUTORIAL,width/2, height / 2);
-
-  rect(width / 2, height - height/12, width / 4, height / 12);
-  fill(0);
-  textSize(32);
-  text("OKAY",width / 2, height - height/12);
+  if (tutorialIndex === 0){
+    text(INTRO,width/2, height / 2);
+    rect(width / 2, height - height/12, width / 4, height / 12);
+    textSize(32);
+    fill(0);
+    text("NEXT",width / 2, height - height/12);
+  }else{
+    rect(width / 2, height - height/12, width / 4, height / 12);
+    text(OTHER_INFO,width/2, height / 2);
+    textSize(32);
+    text("PREV", width / 8, height - height/12);
+    fill(0);
+    text("OKAY",width / 2, height - height/12);
+  }
   pop();
 }
 
@@ -195,23 +208,31 @@ function keyPressed() {
   if (keyCode === UP_ARROW) {
     if (State === "PLAY") {
 
-    }else if (State === "NOTE") {
-
     }
   } else if (keyCode === DOWN_ARROW) {
     if (State === "PLAY") {
 
-    }else if (State === "NOTE") {
-
     }
   } else if (keyCode === LEFT_ARROW) {
-    if (State === "PLAY") {
+    if (State === "TUTORIAL" && tutorialIndex === 1) {
+      if (focusXAxis === 1){
+        focusXAxis = 0;
+        focusWidth = width / 4 - 48;
+        changeFocus(width / 8, height - height/12);
+      }
+    }else if (State === "PLAY") {
 
     } else if (State === "NOTE") {
 
     }
   } else if (keyCode === RIGHT_ARROW) {
-    if (State === "PLAY") {
+    if (State === "TUTORIAL" && tutorialIndex === 1) {
+      if (focusXAxis === 0){
+        focusXAxis = 1;
+        focusWidth = width / 4;
+        changeFocus(width / 2, height - height/12);
+      }
+    }if (State === "PLAY") {
 
     }else if (State === "NOTE") {
 
@@ -221,9 +242,20 @@ function keyPressed() {
       State = "TUTORIAL";
       changeFocus(width / 2, height - height/12);
     }else if (State === "TUTORIAL") {
-      State = "PLAY";
-      changeFocus(0,0);
-      card.focus = true;
+      if (tutorialIndex === 0){
+        tutorialIndex = 1;
+        focusXAxis = 1;
+      }else{
+        if (focusXAxis === 0){
+          tutorialIndex = 0;
+          focusWidth = width / 4;
+          changeFocus(width / 2, height - height/12);
+        }else if (focusXAxis === 1){
+          State = "PLAY";
+          changeFocus(0,0);
+          card.focus = true;
+        }
+      }
     } else if (State === "PLAY") {
       card.use();
     } else if (State === "NOTE") {
