@@ -1,10 +1,13 @@
 class Notification{
-  constructor(id){
+  constructor(id,colorId){
     this.x = width/2;
     this.y = height/2;
     this.height = height/2;
     this.width = width/2;
-    if (id === 0){
+
+    this.id = id;
+    this.colorId = colorId;
+    if (colorId === 0){
       this.color = "#4bff96"; // GREEN
     }else{
       this.color = "#ff6464"; // RED
@@ -14,8 +17,19 @@ class Notification{
 
     this.show = true;
 
-    this.buttonX = this.x;
+    this.buttonOkayX = this.x;
     this.buttonY = this.y + this.width/2 - this.height/8;
+    this.buttonNoX = this.x - this.width/4;
+    this.buttonYesX = this.x + this.width/4;
+  }
+
+  setColor(colorId){
+    this.colorId = colorId;
+    if (colorId === 0){
+      this.color = "#4bff96"; // GREEN
+    }else{
+      this.color = "#ff6464"; // RED
+    }
   }
 
   setTitle(title){
@@ -41,11 +55,15 @@ class Notification{
       textAlign(CENTER,CENTER);
       textSize(32);
       text("-- "+this.title+" --",this.x,this.y - this.width/2 + this.height/16);
-      fill(this.color);
-      rect(this.x,this.y + this.width/2 - this.height/8, width / 4, height / 12);
-      textAlign(CENTER,CENTER);
-      fill(2);
-      text("CLOSE",this.x,this.y + this.width/2 - this.height/8);
+      if (this.id === 0){
+        fill(0);
+        text("CLOSE",this.x,this.y + this.width/2 - this.height/8);
+      }else if (this.id === 1){
+        fill(0);
+        text("NO",this.x - this.width/4,this.y + this.width/2 - this.height/8);
+        text("YES",this.x + this.width/4,this.y + this.width/2 - this.height/8);
+      }
+
       fill(0,200);
       textAlign(CENTER,TOP);
       textSize(16);

@@ -22,26 +22,26 @@ const YELLOW = "#ffff4b";
 const GREEN = "#4bff96"; //  #4bffaf
 const BLUE = "#4bafff";
 
-const INTRO = "If this is your first time using this system, please read the instruction."
-+"\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing"
-+"\nany 5 keywords provided, you can ask the advanced A.I. to generate"
-+"\na professional video for you based on those random keywords"
-+"\nusing unique, commercial-use resources."
-+"\n\n2) Keywords are provided as cards because it is fun. You will"
-+"\nget free 5 keyword cards for each video making session, but any"
-+"\nadditional cards will be charged. You also will get some free special"
-+"\ncards because we give our royal users a lot of benefits."
-+"\n\n3) You will have to play around the system to fully grasp the"
-+"\ntrick of how it works. So good luck!"
-+"\n\n4) And be sure not to violate the Online Content Policy, and"
-+"\nany of those violations will have consequences. But do not"
-+"\nworry. We will provide guidance throughout your whole video"
-+"\nproduction adventure."
-+"\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month."
-+"\nMake sure that you have enough money in your account before"
-+"\nthe next billing cycle.";
-const OTHER_INFO = "** About voice control **"
-+"\n\nThis system equiped the latest voice command system";
+const INTRO = "If this is your first time using this system, please read the instruction." +
+  "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
+  "\nany 5 keywords provided, you can ask the advanced A.I. to generate" +
+  "\na professional video for you based on those random keywords" +
+  "\nusing unique, commercial-use resources." +
+  "\n\n2) Keywords are provided as cards because it is fun. You will" +
+  "\nget free 5 keyword cards for each video making session, but any" +
+  "\nadditional cards will be charged. You also will get some free special" +
+  "\ncards because we give our royal users a lot of benefits." +
+  "\n\n3) You will have to play around the system to fully grasp the" +
+  "\ntrick of how it works. So good luck!" +
+  "\n\n4) And be sure not to violate the Online Content Policy, and" +
+  "\nany of those violations will have consequences. But do not" +
+  "\nworry. We will provide guidance throughout your whole video" +
+  "\nproduction adventure." +
+  "\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month." +
+  "\nMake sure that you have enough money in your account before" +
+  "\nthe next billing cycle.";
+const OTHER_INFO = "** About voice control **" +
+  "\n\nThis system equiped the latest voice command system";
 let tutorialIndex = 0;
 
 // determine current display content
@@ -87,31 +87,24 @@ function setup() {
   focusWidth = width / 4;
   focusHeight = height / 12;
 
-  card = new Card(0,"Special",RED);
-  card1 = new Card(1,"Rape",RED);
-  card2 = new Card(2,"Dead",RED);
-  card3 = new Card(3,"Blood",RED);
-  card4 = new Card(4,"Die",RED);
+  card = new Card(0, "Special", RED);
+  card1 = new Card(1, "Rape", RED);
+  card2 = new Card(2, "Dead", RED);
+  card3 = new Card(3, "Blood", RED);
+  card4 = new Card(4, "Die", RED);
 
-  note = new Notification(0);
-  note.setTitle("WARNING");
-  note.setDes("Hello world!"+
-"\n\nThis is the part when I say I don't want"
-+"\nMade a wrong turn once a twice, dig"
-+"\nmy way out. Blood and fire. Bad decisions"
-+"\nThat's alright. Welcome to my silly life.");
+  note = new Notification(0, 0);
 
-  startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8,RED);
+  startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
 }
 
 function draw() {
-  if (State === "START"){
+  if (State === "START") {
     startScreen();
-    note.display();
-  }else if (State === "TUTORIAL"){
+  } else if (State === "TUTORIAL") {
     displayTutorial();
     displayFocus();
-  }else if (State === "PLAY"){
+  } else if (State === "PLAY") {
     displayStaticUI();
     displayDynamicUI();
     displayFocus();
@@ -133,7 +126,7 @@ function startScreen() {
   text("Random Keywords Based Video Generator", width / 2, height / 2);
 
   startProgressBar.display();
-  if (startProgressBar.done){
+  if (startProgressBar.done) {
     fill(255);
     rect(width / 2, height / 2 + height / 8, width / 4, height / 12);
     fill(0);
@@ -153,7 +146,7 @@ function startScreen() {
   pop();
 }
 
-function displayStatusBar(){
+function displayStatusBar() {
   push();
   rectMode(CORNER);
   textSize(32);
@@ -167,7 +160,7 @@ function displayStatusBar(){
   pop();
 }
 
-function displayTutorial(){
+function displayTutorial() {
   push();
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
@@ -175,23 +168,23 @@ function displayTutorial(){
   rect(width / 2, height / 2, height, height);
   fill(RED);
   textSize(48);
-  text("ABOUT R.K.B.V.G.",width/2, height/8 - 16);
+  text("ABOUT R.K.B.V.G.", width / 2, height / 8 - 16);
 
   fill(255);
   textSize(16);
-  if (tutorialIndex === 0){
-    text(INTRO,width/2, height / 2);
-    rect(width / 2, height - height/12, width / 4, height / 12);
+  if (tutorialIndex === 0) {
+    text(INTRO, width / 2, height / 2);
+    rect(width / 2, height - height / 12, width / 4, height / 12);
     textSize(32);
     fill(0);
-    text("NEXT",width / 2, height - height/12);
-  }else{
-    rect(width / 2, height - height/12, width / 4, height / 12);
-    text(OTHER_INFO,width/2, height / 2);
+    text("NEXT", width / 2, height - height / 12);
+  } else {
+    rect(width / 2, height - height / 12, width / 4, height / 12);
+    text(OTHER_INFO, width / 2, height / 2);
     textSize(32);
-    text("PREV", width / 8, height - height/12);
+    text("PREV", width / 8, height - height / 12);
     fill(0);
-    text("OKAY",width / 2, height - height/12);
+    text("OKAY", width / 2, height - height / 12);
   }
   pop();
 }
@@ -210,7 +203,7 @@ function displayStaticUI() {
   rect(0, height / 20, width, height / 12);
   fill(255);
   textAlign(CENTER, CENTER);
-  text("USER  - $"+money, width/2, height / 20 + height / 24);
+  text("USER  - $" + money, width / 2, height / 20 + height / 24);
 
   // views, fans, rating, video num
 
@@ -235,47 +228,55 @@ function keyPressed() {
 
     }
   } else if (keyCode === LEFT_ARROW) {
+    // if focusing on OKAY in TUTORIAL 1, change to focusing on PREV
     if (State === "TUTORIAL" && tutorialIndex === 1) {
-      if (focusXAxis === 1){
+      if (focusXAxis === 1) {
         focusXAxis = 0;
-        focusWidth = width / 4 - 48;
-        changeFocus(width / 8, height - height/12);
+        changeFocus(width / 8, height - height / 12, 1);
       }
-    }else if (State === "PLAY") {
+    } else if (State === "PLAY") {
 
     } else if (State === "NOTE") {
 
     }
   } else if (keyCode === RIGHT_ARROW) {
+    // if focusing on PREV in TUTORIAL 1, change to focusing on OKAY
     if (State === "TUTORIAL" && tutorialIndex === 1) {
-      if (focusXAxis === 0){
+      if (focusXAxis === 0) {
         focusXAxis = 1;
-        focusWidth = width / 4;
-        changeFocus(width / 2, height - height/12);
+        changeFocus(width / 2, height - height / 12, 0);
       }
-    }if (State === "PLAY") {
+    }
+    if (State === "PLAY") {
 
-    }else if (State === "NOTE") {
+    } else if (State === "NOTE") {
 
     }
+  // Pressing SPACE
   } else if (keyCode === 32) {
+    // if focusing on RUN in START, change to focusing on NEXT
     if (State === "START") {
-      if (startProgressBar.done){
+      if (startProgressBar.done) {
         State = "TUTORIAL";
-        changeFocus(width / 2, height - height/12);
+        changeFocus(width / 2, height - height / 12, 0);
       }
-    }else if (State === "TUTORIAL") {
-      if (tutorialIndex === 0){
+    // if focusing on RUN in TUTORIAL -
+    } else if (State === "TUTORIAL") {
+      // TUTORIAL 0, change to focusing on OKAY
+      if (tutorialIndex === 0) {
         tutorialIndex = 1;
         focusXAxis = 1;
-      }else{
-        if (focusXAxis === 0){
+        changeFocus(width / 2, height - height / 12, 0);
+      // TUTORIAL 1
+      } else if (tutorialIndex === 1) {
+        // if focusing on PREV, change to focusing on OKAY in TUTORIAL 1
+        if (focusXAxis === 0) {
           tutorialIndex = 0;
-          focusWidth = width / 4;
-          changeFocus(width / 2, height - height/12);
-        }else if (focusXAxis === 1){
+          changeFocus(width / 2, height - height / 12, 0);
+        // if focusing on OKAY, change to focusing on - in PLAY
+        } else if (focusXAxis === 1) {
           State = "PLAY";
-          changeFocus(0,0);
+          changeFocus(0, 0, 0);
           card.focus = true;
         }
       }
@@ -288,9 +289,14 @@ function keyPressed() {
   return false;
 }
 
-function changeFocus(targetX,targetY){
+function changeFocus(targetX, targetY, sizeId) {
   focusPosX = targetX;
   focusPosY = targetY;
+  if (sizeId === 0) {
+    focusWidth = width / 4;
+  } else if (sizeId === 1) {
+    focusWidth = width / 4 - 48;
+  }
 }
 
 function displayFocus() {
@@ -298,7 +304,7 @@ function displayFocus() {
   rectMode(CENTER);
   stroke(BLUE);
   strokeWeight(8);
-  fill(255,0);
+  fill(255, 0);
   rect(focusPosX, focusPosY, focusWidth, focusHeight);
   pop();
 }
