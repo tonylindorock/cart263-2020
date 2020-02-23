@@ -87,21 +87,8 @@ function setup() {
   textSize(32);
   textAlign(CENTER, CENTER);
 
-  focusPosX = width / 2;
-  focusPosY = height / 2 + height / 8;
-  focusWidth = width / 4;
-  focusHeight = height / 12;
-
-  card = new Card(0, "*Special*", RED);
-  card1 = new Card(1, "Rape", RED);
-  card2 = new Card(2, "Dead", RED);
-  card3 = new Card(3, "Blood", RED);
-  card4 = new Card(4, "Die", RED);
-  cards.push(card);
-  cards.push(card1);
-  cards.push(card2);
-  cards.push(card3);
-  cards.push(card4);
+  setupFocus();
+  setupCards();
 
   note = new Notification(0, 0);
   stats = new Stats();
@@ -109,6 +96,26 @@ function setup() {
 
   startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
   startProgressBar.start = true;
+}
+
+function setupFocus(){
+  focusPosX = width / 2;
+  focusPosY = height / 2 + height / 8;
+  focusWidth = width / 4;
+  focusHeight = height / 12;
+}
+
+function setupCards(){
+  card = new Card(0);
+  card1 = new Card(1);
+  card2 = new Card(2);
+  card3 = new Card(3);
+  card4 = new Card(4);
+  cards.push(card);
+  cards.push(card1);
+  cards.push(card2);
+  cards.push(card3);
+  cards.push(card4);
 }
 
 function draw() {
@@ -258,7 +265,7 @@ function keyPressed() {
       // if focusing on buttons, change to focusing on CARD 0
       if (focusYAxis === 1 && !noCardsAvailable){
         focusYAxis = 0;
-        focusXAxis = 0;
+        focusXAxis = 2;
         changeFocus(card.x, card.yFocused, 2);
         selectCard(focusXAxis);
       }
@@ -342,13 +349,16 @@ function keyPressed() {
         }
       }
     } else if (State === "PLAY") {
+      // if focusing on buttons
       if (focusYAxis === 1){
+        // if focusing on ACCEPT
         if (focusXAxis === 1){
+          // if uploading is finished
           if (!videoInterface.uploading){
-            acceptAllCards();
-            videoInterface.progressBar.reset();
-            videoInterface.upload();
-            setTimeout(resetCards,2500);
+            acceptAllCards(); // play the animtion
+            videoInterface.progressBar.reset(); // reset progress bar
+            videoInterface.upload(); // play the upload animation
+            setTimeout(resetCards,2500); // reset cards
           }
         }else if (focusXAxis === 0){
           swapAllCards();

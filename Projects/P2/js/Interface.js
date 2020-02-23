@@ -31,7 +31,7 @@ class Interface{
       fill(RED);
       ellipse(this.x,this.y,this.height/4);
       fill(255);
-      triangle(this.x-16,this.y+24,this.x+29,this.y,this.x-16,this.y-24);
+      triangle(this.x-14,this.y+20,this.x+24,this.y,this.x-14,this.y-20);
     }else{
       fill(75);
       rect(this.x,this.y,width/3,this.height/2);

@@ -2,9 +2,9 @@
 //
 // The keyword card for player to choose to generate their videos
 class Card{
-  constructor(id,name,color){
-    this.name = name;
-    this.color = color;
+  constructor(id){
+    this.name = "Name";
+    this.color = GREEN;
     this.id = id;
     this.width = width/6;
     this.height = height/4;
@@ -34,22 +34,7 @@ class Card{
       this.x = width/2 + this.width*2 + 24;
     }
 
-    if (name==="*Special*"){
-      let p = random(0,1);
-      if (p >= 0 && p < 0.2){
-        this.des = "RED\nIS\nORANGE";
-      }else if (p >= 0.2 && p < 0.4){
-        this.des = "RED\nIS\nYELLOW";
-      }else if (p >= 0.4 && p < 0.6){
-        this.des = "RED\nIS\nGREEN";
-      }else if (p >= 0.6 && p < 0.8){
-        this.des = "ALL\nGREEN";
-      }else if (p >= 0.8 && p < 1){
-        this.des = "CHANGE\nKEYWORD";
-      }
-    }else{
-      this.des = "KEYWORD";
-    }
+    this.des = "KEYWORD";
 
   }
 
@@ -57,11 +42,13 @@ class Card{
     push();
     rectMode(CENTER);
     textAlign(CENTER,CENTER);
-    fill(this.color);
-    rect(this.x,this.y,this.width,this.height);
     fill(255);
-    textSize(20);
-    text(this.name,this.x,this.y-this.height/2+24);
+    rect(this.x,this.y,this.width,this.height);
+    fill(this.color);
+    rect(this.x,this.y,this.width*0.9,this.height*0.9);
+    fill(255);
+    textSize(18);
+    text(this.name,this.x,this.y-this.height/2 + 24);
     textSize(16);
     text(this.des,this.x,this.y);
     pop();

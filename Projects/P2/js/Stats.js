@@ -62,10 +62,10 @@ class Stats {
     rect(this.rect3X, this.y, this.width, this.height - this.margin * 2);
     fill(255);
     textSize(16);
-    text("VIEWS", this.rect0X, this.y - this.height / 2 + this.margin * 2.5);
-    text("FANS", this.rect1X, this.y - this.height / 2 + this.margin * 2.5);
-    text("RATING", this.rect2X, this.y - this.height / 2 + this.margin * 2.5);
-    text("VIDEOS", this.rect3X, this.y - this.height / 2 + this.margin * 2.5);
+    text("VIEWS", this.rect0X, this.y - this.height / 2 + this.margin * 2.25);
+    text("FANS", this.rect1X, this.y - this.height / 2 + this.margin * 2.25);
+    text("RATING", this.rect2X, this.y - this.height / 2 + this.margin * 2.25);
+    text("VIDEOS", this.rect3X, this.y - this.height / 2 + this.margin * 2.25);
     textSize(42);
     fill(RED);
     text(this.views, this.rect0X, this.y + this.margin);
