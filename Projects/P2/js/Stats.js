@@ -53,7 +53,7 @@ class Stats {
     push();
     rectMode(CENTER);
     textAlign(CENTER, CENTER);
-    fill(255,50);
+    fill(100);
     rect(this.x, this.y, width, this.height);
     fill(0);
     rect(this.rect0X, this.y, this.width, this.height - this.margin * 2);
@@ -62,10 +62,10 @@ class Stats {
     rect(this.rect3X, this.y, this.width, this.height - this.margin * 2);
     fill(255);
     textSize(16);
-    text("VIEWS", this.rect0X, this.y - this.height / 2 + this.margin * 2);
-    text("FANS", this.rect1X, this.y - this.height / 2 + this.margin * 2);
-    text("RATING", this.rect2X, this.y - this.height / 2 + this.margin * 2);
-    text("VIDEOS", this.rect3X, this.y - this.height / 2 + this.margin * 2);
+    text("VIEWS", this.rect0X, this.y - this.height / 2 + this.margin * 2.5);
+    text("FANS", this.rect1X, this.y - this.height / 2 + this.margin * 2.5);
+    text("RATING", this.rect2X, this.y - this.height / 2 + this.margin * 2.5);
+    text("VIDEOS", this.rect3X, this.y - this.height / 2 + this.margin * 2.5);
     textSize(42);
     fill(RED);
     text(this.views, this.rect0X, this.y + this.margin);

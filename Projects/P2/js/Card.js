@@ -1,3 +1,6 @@
+// Card
+//
+// The keyword card for player to choose to generate their videos
 class Card{
   constructor(id,name,color){
     this.name = name;

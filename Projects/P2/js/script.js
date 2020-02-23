@@ -61,9 +61,11 @@ let card3;
 let card4;
 let cards = [];
 let cardIndex = 0;
+let noCardsAvailable = false;
 
 let note;
 let stats;
+let videoInterface;
 
 let startProgressBar;
 
@@ -103,8 +105,10 @@ function setup() {
 
   note = new Notification(0, 0);
   stats = new Stats();
+  videoInterface = new Interface();
 
   startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
+  startProgressBar.start = true;
 }
 
 function draw() {
@@ -217,6 +221,9 @@ function displayStaticUI() {
   // views, fans, rating, videos
   stats.display();
 
+  // interface
+  videoInterface.display();
+
   // 2 buttons
   rectMode(CENTER);
   fill(255);
@@ -249,7 +256,7 @@ function keyPressed() {
   } else if (keyCode === DOWN_ARROW) {
     if (State === "PLAY") {
       // if focusing on buttons, change to focusing on CARD 0
-      if (focusYAxis === 1){
+      if (focusYAxis === 1 && !noCardsAvailable){
         focusYAxis = 0;
         focusXAxis = 0;
         changeFocus(card.x, card.yFocused, 2);
@@ -337,7 +344,12 @@ function keyPressed() {
     } else if (State === "PLAY") {
       if (focusYAxis === 1){
         if (focusXAxis === 1){
-          acceptAllCards();
+          if (!videoInterface.uploading){
+            acceptAllCards();
+            videoInterface.progressBar.reset();
+            videoInterface.upload();
+            setTimeout(resetCards,2500);
+          }
         }else if (focusXAxis === 0){
           swapAllCards();
         }
@@ -416,8 +428,10 @@ function swapCard(id){
 }
 
 function swapAllCards(){
-  for(let i = 0; i < cards.length; i++){
-    cards[i].swap();
+  if (!cards[0].swaped){
+    for(let i = 0; i < cards.length; i++){
+      cards[i].swap();
+    }
   }
 }
 
@@ -425,6 +439,14 @@ function acceptAllCards(){
   for(let i = 0; i < cards.length; i++){
     cards[i].accept();
   }
+  noCardsAvailable = true;
+}
+
+function resetCards(){
+  for(let i = 0; i < cards.length; i++){
+    cards[i].reset();
+  }
+  noCardsAvailable = false;
 }
 
 function changeFocus(targetX, targetY, sizeId) {
