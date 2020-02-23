@@ -41,8 +41,21 @@ const INTRO = "If this is your first time using this system, please read the ins
   "\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month." +
   "\nMake sure that you have enough money in your account before" +
   "\nthe next billing cycle.";
-const OTHER_INFO = "** About voice control **" +
-  "\n\nThis system equiped the latest voice command system";
+const OTHER_INFO = "** HOW TO MAKE A VIDEO **" +
+  "\n\n1) Each video is composed of 5 keywords. The video's value and"+
+  "\nthe risk of violating the Online Content Policy will be estimated"
+  +"\nbased on these keywords."+
+  "\n\n2) You will have 5 keyword cards each time. Select one and press SPACE"+
+  "\nwill swap the card, which will give you a new card."+
+  "\nHowever, it will cost $10."+
+  "\n\n3) You can also use the SWAP ALL button to swap all the cards,"+
+  "\nwhich will cost $50."+
+  "\n\n4) After you gather your desire keywords, press the ACCEPT button"
+  +"\nto generate and upload the video."+
+  "\n\nVideo's VALUE: decides how many views and fans you will get"+
+  "\n\nVideo's RISK LEVEL: decides your rating and the chance of you"+
+  "\ngetting a violation"+
+  "\n\nHISTORY: where you can see all your uploaded videos";
 let tutorialIndex = 0;
 
 const MESSAGE_TO_USER = [
@@ -423,7 +436,7 @@ function displayDynamicUI() {
   }
   push();
   textAlign(CENTER,CENTER);
-  textSize(28);
+  textSize(24);
   if (videoInterface.risk === 0){
     fill(GREEN);
   }else if (videoInterface.risk === 1){
@@ -431,7 +444,7 @@ function displayDynamicUI() {
   }else if (videoInterface.risk === 2){
     fill(RED);
   }
-  text(keywords,width / 2, height / 2 + height/8 + 12);
+  text("< "+keywords+" >",width / 2, height / 2 + height/8 + 12);
   pop();
 }
 
