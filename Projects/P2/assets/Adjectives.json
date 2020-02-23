@@ -9,6 +9,7 @@
     {"word":"Female", "colorId":0, "value": 5},
     {"word":"Graphic", "colorId":0, "value": 10},
     {"word":"Drunk", "colorId":1, "value": 15},
+    {"word":"Spy", "colorId":1, "value": 20},
     {"word":"Dead", "colorId":2, "value": 20},
     {"word":"Bloody", "colorId":2, "value": 20},
     {"word":"Gory", "colorId":2, "value": 20},
@@ -20,7 +21,6 @@
     {"word":"Censored", "colorId":2, "value": 20},
     {"word":"Harassing", "colorId":2, "value": 15},
     {"word":"Horrible", "colorId":2, "value": 15},
-    {"word":"Spy", "colorId":2, "value": 20},
     {"word":"Violent", "colorId":2, "value": 20},
     {"word":"Hot", "colorId":2, "value": 20}
   ]

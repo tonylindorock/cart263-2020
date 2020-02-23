@@ -53,23 +53,23 @@ const MESSAGE_TO_USER = [
   "\n\nTherefore, you must agree on these terms:"+
   "\n\n1) Your account will be terminated. This includes the erasement"+
   "\nof the record of your views, fans, rating, and videos."+
-  "\n\n2) You shall not sue Good Medic Inc. or we will sue you."+
+  "\n\n2) You shall not sue Good Media Inc. or we will sue you."+
   "\n\n3) Click the \"I AGREE\" button."+
-  "\n\nIt has been a pleasure working with you. We look forward to"+
-  "\nworking with you again in the futrue."+
-  "\n\n\n\nGood Medic Inc.",
-  "your account reached 5 violations. Due to the Online Content Policy,"+
-  "\nwe regrettably have to inform you that your user account has been banned."+
-  "\n\nWe ask our users to create a kid-friendly online environment, and"+
+  "\n\nIt has been a pleasure working with you. We look forward to seeing you"+
+  "\nagain in the futrue."+
+  "\n\n\n\nGood Media Inc.",
+  "your account reached 5 violations, which indicated that some of your"+
+  "\nvideos failed to satisfy the terms of the Online Content Policy. We ask"+
+  "\nour users to create a healthy, kid-friendly online environment, and"+
   "\nit is your responsibility to comply the Online Content Policy."+
   "\n\nTherefore, you must agree on these terms:"+
   "\n\n1) Your account will be terminated. This includes the erasement"+
   "\nof the record of your views, fans, rating, and videos."+
-  "\n\n2) You shall not sue Good Medic Inc. or we will sue you."+
+  "\n\n2) You shall not sue Good Media Inc. or we will sue you."+
   "\n\n3) Click the \"I AGREE\" button."+
-  "\n\nIt has been a pleasure working with you. We look forward to"+
-  "\nworking with you again in the futrue."+
-  "\n\n\n\nGood Medic Inc."
+  "\n\nIt has been a pleasure working with you. We look forward to seeing you"+
+  "\nagain in the futrue."+
+  "\n\n\n\nGood Media Inc."
 ]
 let endingId = 1;
 
@@ -151,7 +151,6 @@ function setupFocus(){
 }
 
 function setupCards(){
-  randomizeFormat();
   card = new Card(0);
   card1 = new Card(1);
   card2 = new Card(2);
@@ -166,7 +165,33 @@ function setupCards(){
   randomizeCards();
 }
 
+function randomizeACard(id){
+  let word;
+  let colorId;
+  let value;
+  if (phraseFormat[id] === "a"){
+    let randomIndex = int(random(0,adjsJSON.adjs.length));
+    word = adjsJSON.adjs[randomIndex].word;
+    colorId = adjsJSON.adjs[randomIndex].colorId;
+    value = adjsJSON.adjs[randomIndex].value;
+    cards[id].setCardAttributes(word,colorId,value);
+  }else if (phraseFormat[id] === "n"){
+    let randomIndex = int(random(0,nounsJSON.nouns.length));
+    word = nounsJSON.nouns[randomIndex].word;
+    colorId = int(nounsJSON.nouns[randomIndex].colorId);
+    value = int(nounsJSON.nouns[randomIndex].value);
+    cards[id].setCardAttributes(word,colorId,value);
+  }else if (phraseFormat[id] === "v"){
+    let randomIndex = int(random(0,verbsJSON.verbs.length));
+    word = verbsJSON.verbs[randomIndex].word;
+    colorId = int(verbsJSON.verbs[randomIndex].colorId);
+    value = int(verbsJSON.verbs[randomIndex].value);
+    cards[id].setCardAttributes(word,colorId,value);
+  }
+}
+
 function randomizeCards(){
+  randomizeFormat();
   for(let i=0;i<cards.length;i++){
     let word;
     let colorId;
@@ -181,7 +206,6 @@ function randomizeCards(){
       word = adjsJSON.adjs[randomIndex].word;
       colorId = adjsJSON.adjs[randomIndex].colorId;
       value = adjsJSON.adjs[randomIndex].value;
-      console.log("adj obtained");
       cards[i].setCardAttributes(word,colorId,value);
     }else if (phraseFormat[i] === "n"){
       let randomIndex = int(random(0,nounsJSON.nouns.length));
@@ -189,7 +213,6 @@ function randomizeCards(){
       word = nounsJSON.nouns[randomIndex].word;
       colorId = int(nounsJSON.nouns[randomIndex].colorId);
       value = int(nounsJSON.nouns[randomIndex].value);
-      console.log("nouns obtained");
       cards[i].setCardAttributes(word,colorId,value);
     }else if (phraseFormat[i] === "v"){
       let randomIndex = int(random(0,verbsJSON.verbs.length));
@@ -197,13 +220,13 @@ function randomizeCards(){
       word = verbsJSON.verbs[randomIndex].word;
       colorId = int(verbsJSON.verbs[randomIndex].colorId);
       value = int(verbsJSON.verbs[randomIndex].value);
-      console.log("nouns obtained");
       cards[i].setCardAttributes(word,colorId,value);
     }
   }
 }
 
 function randomizeFormat(){
+  colorFormat = [];
   let p = random(0,1);
   if (p >= 0 && p < 0.3){
     phraseFormat = ["n","v","a","a","n"];
@@ -370,12 +393,16 @@ function displayStaticUI() {
   // 2 buttons
   rectMode(CENTER);
   fill(255);
-  rect(width / 2 - width / 8 - 12, height - height / 4, width / 4, height / 12);
-  rect(width / 2 + width / 8 + 12, height - height / 4, width / 4, height / 12);
+  rect(width / 2 - width / 4 - width / 24, height - height / 4, width / 4, height / 12);
+  rect(width / 2, height - height / 4, width / 4, height / 12);
+  fill(0);
+  rect(width / 2 + width / 4 + width / 24, height - height / 4, width / 4, height / 12);
   fill(0);
   textSize(32);
-  text("SWAP ALL", width / 2  - width / 8 - 12, height - height / 4);
-  text("ACCEPT", width / 2  + width / 8 + 12, height - height / 4);
+  text("SWAP ALL", width / 2  - width / 4 - width / 24, height - height / 4);
+  text("ACCEPT", width / 2, height - height / 4);
+  fill(255);
+  text("HISTORY", width / 2 + width / 4 + width / 24, height - height / 4);
   pop();
 }
 
@@ -415,9 +442,9 @@ function endScreen(){
   rect(width / 2, height / 2, height, height);
 
   fill(YELLOW);
-  textSize(42);
+  textSize(32);
   textAlign(LEFT,CENTER)
-  text("DEAR OUR ROYAL USER", width / 16, height / 2 - height/3);
+  text("DEAR OUR ROYAL USER: ", width / 16, height / 2 - height/3);
   textSize(16);
   fill(255);
   text("On "+time+",\n\n"+MESSAGE_TO_USER[endingId],width / 16,height/2);
@@ -436,7 +463,7 @@ function keyPressed() {
       if (focusYAxis === 0){
         focusYAxis = 1;
         focusXAxis = 1;
-        changeFocus(width / 2 + width / 8 + 12, height - height / 4, 0);
+        changeFocus(width / 2, height - height / 4, 0);
         selectCard(-1);
       }
     }
@@ -460,9 +487,12 @@ function keyPressed() {
     } else if (State === "PLAY") {
       // if focusing on ACCEPT, change to focusing on SWAP ALL
       if (focusYAxis === 1){
-        if (focusXAxis === 1){
+        if (focusXAxis === 2){
+          focusXAxis = 1;
+          changeFocus(width / 2, height - height / 4, 0);
+        }else if (focusXAxis === 1){
           focusXAxis = 0;
-          changeFocus(width / 2 - width / 8 - 12, height - height / 4, 0);
+          changeFocus(width / 2  - width / 4 - width / 24, height - height / 4, 0);
         }
       // cards
       }else if (focusYAxis === 0){
@@ -487,7 +517,10 @@ function keyPressed() {
       if (focusYAxis === 1){
         if (focusXAxis === 0){
           focusXAxis = 1;
-          changeFocus(width / 2 + width / 8 + 12, height - height / 4, 0);
+          changeFocus(width / 2, height - height / 4, 0);
+        }else if (focusXAxis === 1){
+          focusXAxis = 2;
+          changeFocus(width / 2  + width / 4 + width / 24, height - height / 4, 0);
         }
       // cards
       }else if (focusYAxis === 0){
@@ -559,6 +592,9 @@ function keyPressed() {
       }
     } else if (State === "NOTE") {
 
+    }else if (State === "END"){
+      alert("User account terminated.");
+      location.reload();
     }
   }
   return false;
@@ -615,6 +651,9 @@ function swapCard(id){
   }else if (id === 4){
     card4.swap();
   }
+  setTimeout(function(){
+    randomizeACard(id);
+  },300);
 }
 
 function swapAllCards(){
@@ -642,6 +681,7 @@ function resetCards(){
     cards[i].reset();
   }
   noCardsAvailable = false;
+  randomizeCards();
 }
 
 function changeFocus(targetX, targetY, sizeId) {
