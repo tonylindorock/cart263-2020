@@ -7,10 +7,10 @@ class Interface{
 
     this.margin = 24;
 
-    this.risk = "LOW";
+    this.risk = 0;
     this.value = 0;
     this.violations = 0;
-    this.awards = 0;
+    this.rank = -1;
 
     this.progressBar = new ProgressBar(this.x,this.y,BLUE);
     this.uploading = false;
@@ -44,19 +44,29 @@ class Interface{
         var thisObject = this;
         setTimeout(function(){
           thisObject.uploading = false;
-        },1000);
+        },500);
       }
     }
 
     textAlign(RIGHT,CENTER);
     textSize(32);
     fill(RED);
-    text("VIOLATIONS\n"+this.violations+" / 3 MAX",this.x - width/6 - this.margin,this.y - this.margin*2);
+    text("VIOLATIONS\n"+this.violations+" / 5 MAX",this.x - width/6 - this.margin,this.y - this.margin*2);
     fill(255);
-    text("AWARDS\n@ "+this.awards+" @",this.x - width/6 - this.margin,this.y + this.margin*2);
+    text("GLOBAL RANK\n@ "+this.rank+" @",this.x - width/6 - this.margin,this.y + this.margin*2);
     textAlign(LEFT,CENTER);
-    fill(GREEN);
-    text("RISK LEVEL\n< "+this.risk+" >",this.x + width/6 + this.margin,this.y - this.margin*2);
+    let riskLevel = "LOW";
+    if (this.risk === 0){
+      fill(GREEN);
+      riskLevel = "LOW";
+    }else if (this.risk === 1){
+      fill(ORANGE);
+      riskLevel = "MEDIUM";
+    }else if (this.risk === 2){
+      fill(RED);
+      riskLevel = "HIGH";
+    }
+    text("RISK LEVEL\n< "+riskLevel+" >",this.x + width/6 + this.margin,this.y - this.margin*2);
     fill(YELLOW);
     text("VIDEO VALUE\n- "+this.value+" -",this.x + width/6 + this.margin,this.y + this.margin*2);
     pop();

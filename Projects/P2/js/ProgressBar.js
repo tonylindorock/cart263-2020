@@ -25,9 +25,10 @@ class ProgressBar{
       if (this.start){
         this.progress += 1;
       }
-    }
-    if (this.progress >= 100){
-      this.done = true;
+      if (this.progress >= 100){
+        this.done = true;
+        this.start = false;
+      }
     }
     pop();
   }

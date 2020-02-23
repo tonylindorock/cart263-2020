@@ -21,6 +21,7 @@ const ORANGE = "#ffaf4b";
 const YELLOW = "#ffe600";
 const GREEN = "#33de7a"; //  #4bffaf
 const BLUE = "#4bafff";
+const PURPLE = "#af4bff";
 
 const INTRO = "If this is your first time using this system, please read the instruction." +
   "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
@@ -44,6 +45,39 @@ const OTHER_INFO = "** About voice control **" +
   "\n\nThis system equiped the latest voice command system";
 let tutorialIndex = 0;
 
+const MESSAGE_TO_USER = [
+  "we found that your account did not have sufficient fund for this"+
+  "\nmonth's charge. We believe there must be some reason of why you"+
+  "\ndid not hold sufficient fund in your account. Unfortunately, we"+
+  "\ndo not tolerate such discreditability due to company policy."+
+  "\n\nTherefore, you must agree on these terms:"+
+  "\n\n1) Your account will be terminated. This includes the erasement"+
+  "\nof the record of your views, fans, rating, and videos."+
+  "\n\n2) You shall not sue Good Medic Inc. or we will sue you."+
+  "\n\n3) Click the \"I AGREE\" button."+
+  "\n\nIt has been a pleasure working with you. We look forward to"+
+  "\nworking with you again in the futrue."+
+  "\n\n\n\nGood Medic Inc.",
+  "your account reached 5 violations. Due to the Online Content Policy,"+
+  "\nwe regrettably have to inform you that your user account has been banned."+
+  "\n\nWe ask our users to create a kid-friendly online environment, and"+
+  "\nit is your responsibility to comply the Online Content Policy."+
+  "\n\nTherefore, you must agree on these terms:"+
+  "\n\n1) Your account will be terminated. This includes the erasement"+
+  "\nof the record of your views, fans, rating, and videos."+
+  "\n\n2) You shall not sue Good Medic Inc. or we will sue you."+
+  "\n\n3) Click the \"I AGREE\" button."+
+  "\n\nIt has been a pleasure working with you. We look forward to"+
+  "\nworking with you again in the futrue."+
+  "\n\n\n\nGood Medic Inc."
+]
+let endingId = 1;
+
+let time = "";
+let monthNum = 3;
+let weekNum = 1;
+let dayNum = 1;
+
 // determine current display content
 let State = "START";
 
@@ -63,6 +97,9 @@ let cards = [];
 let cardIndex = 0;
 let noCardsAvailable = false;
 
+let phraseFormat;
+let colorFormat = [];
+
 let note;
 let stats;
 let videoInterface;
@@ -71,12 +108,20 @@ let startProgressBar;
 
 let money = 1000;
 
+var nounsJSON;
+var verbsJSON;
+var adjsJSON;
+
 // custom font
 // https://webfonts.ffonts.net/04b03.font.download
 let myFont;
 
 function preload() {
   myFont = loadFont("assets/webfonts_04b03/04b03.ttf.woff");
+
+  nounsJSON = loadJSON("assets/Nouns.json");
+  verbsJSON = loadJSON("assets/Verbs.json");
+  adjsJSON = loadJSON("assets/Adjectives.json");
 }
 
 function setup() {
@@ -106,6 +151,7 @@ function setupFocus(){
 }
 
 function setupCards(){
+  randomizeFormat();
   card = new Card(0);
   card1 = new Card(1);
   card2 = new Card(2);
@@ -116,6 +162,69 @@ function setupCards(){
   cards.push(card2);
   cards.push(card3);
   cards.push(card4);
+
+  randomizeCards();
+}
+
+function randomizeCards(){
+  for(let i=0;i<cards.length;i++){
+    let word;
+    let colorId;
+    let value;
+    if (phraseFormat[i] === "a"){
+      let randomIndex = int(random(0,adjsJSON.adjs.length));
+      /*
+      while (adjsJSON.adjs["randomIndex"].colorId != colorFormat[i]){
+        randomIndex = int(random(0,adjsJSON.size()));
+      }
+      */
+      word = adjsJSON.adjs[randomIndex].word;
+      colorId = adjsJSON.adjs[randomIndex].colorId;
+      value = adjsJSON.adjs[randomIndex].value;
+      console.log("adj obtained");
+      cards[i].setCardAttributes(word,colorId,value);
+    }else if (phraseFormat[i] === "n"){
+      let randomIndex = int(random(0,nounsJSON.nouns.length));
+
+      word = nounsJSON.nouns[randomIndex].word;
+      colorId = int(nounsJSON.nouns[randomIndex].colorId);
+      value = int(nounsJSON.nouns[randomIndex].value);
+      console.log("nouns obtained");
+      cards[i].setCardAttributes(word,colorId,value);
+    }else if (phraseFormat[i] === "v"){
+      let randomIndex = int(random(0,verbsJSON.verbs.length));
+
+      word = verbsJSON.verbs[randomIndex].word;
+      colorId = int(verbsJSON.verbs[randomIndex].colorId);
+      value = int(verbsJSON.verbs[randomIndex].value);
+      console.log("nouns obtained");
+      cards[i].setCardAttributes(word,colorId,value);
+    }
+  }
+}
+
+function randomizeFormat(){
+  let p = random(0,1);
+  if (p >= 0 && p < 0.3){
+    phraseFormat = ["n","v","a","a","n"];
+  }else if (p >= 0.3 && p < 0.6){
+    phraseFormat = ["a","n","v","a","n"];
+  }else if (p >= 0.6 && p < 1){
+    phraseFormat = ["a","a","n","v","n"];
+  }
+  for(let i = 0;i < phraseFormat.length ;i++){
+    p = random(0,1);
+    if (p <= 0.2){
+      colorFormat.push(2);
+    }else if (p > 0.2 && p < 0.5){
+      colorFormat.push(1);
+    }else if (p >= 0.5 && p <= 0.9){
+      colorFormat.push(0);
+    }else if (p > 0.9){
+      colorFormat.push(3);
+    }
+  }
+  console.log(phraseFormat+"\n"+colorFormat);
 }
 
 function draw() {
@@ -128,6 +237,12 @@ function draw() {
     displayStaticUI();
     displayDynamicUI();
     displayFocus();
+  }else if (State === "NOTE"){
+    displayStaticUI();
+    displayDynamicUI();
+    displayFocus();
+  } else if (State === "END"){
+    endScreen();
   }
   displayStatusBar();
 }
@@ -176,7 +291,34 @@ function displayStatusBar() {
   textAlign(LEFT, CENTER);
   text("@GM", 48, height / 48);
   textAlign(RIGHT, CENTER);
-  text("MAR W1 D1", width - 48, height / 48);
+  time = "";
+  if (monthNum === 1){
+    time += "JAN";
+  }else if (monthNum === 2){
+    time += "FEB";
+  }else if (monthNum === 3){
+    time += "MAR";
+  }else if (monthNum === 4){
+    time += "APR";
+  }else if (monthNum === 5){
+    time += "MAY";
+  }else if (monthNum === 6){
+    time += "JUN";
+  }else if (monthNum === 7){
+    time += "JUL";
+  }else if (monthNum === 8){
+    time += "AUG";
+  }else if (monthNum === 9){
+    time += "SEP";
+  }else if (monthNum === 10){
+    time += "OCT";
+  }else if (monthNum === 11){
+    time += "NOV";
+  }else if (monthNum === 12){
+    time += "DEC";
+  }
+  time += " W"+weekNum+" D"+dayNum;
+  text(time, width - 48, height / 48);
   pop();
 }
 
@@ -223,13 +365,7 @@ function displayStaticUI() {
   rect(0, height / 20, width, height / 12);
   fill(255);
   textAlign(CENTER, CENTER);
-  text("USER  - $" + money, width / 2, height / 20 + height / 24);
-
-  // views, fans, rating, videos
-  stats.display();
-
-  // interface
-  videoInterface.display();
+  text("USER | $" + money+" |", width / 2, height / 20 + height / 24);
 
   // 2 buttons
   rectMode(CENTER);
@@ -244,9 +380,53 @@ function displayStaticUI() {
 }
 
 function displayDynamicUI() {
+  // views, fans, rating, videos
+  stats.display();
+  // interface
+  videoInterface.display();
+  // cards
+  let keywords = "";
   for(let i = 0; i < cards.length; i ++){
     cards[i].display();
+    if (i===cards.length-1){
+      keywords += cards[i].word;
+    }else{
+      keywords += cards[i].word+" ";
+    }
   }
+  push();
+  textAlign(CENTER,CENTER);
+  textSize(28);
+  if (videoInterface.risk === 0){
+    fill(GREEN);
+  }else if (videoInterface.risk === 1){
+    fill(ORANGE);
+  }else if (videoInterface.risk === 2){
+    fill(RED);
+  }
+  text(keywords,width / 2, height / 2 + height/8 + 12);
+  pop();
+}
+
+function endScreen(){
+  push();
+  rectMode(CENTER);
+  fill("#262626");
+  rect(width / 2, height / 2, height, height);
+
+  fill(YELLOW);
+  textSize(42);
+  textAlign(LEFT,CENTER)
+  text("DEAR OUR ROYAL USER", width / 16, height / 2 - height/3);
+  textSize(16);
+  fill(255);
+  text("On "+time+",\n\n"+MESSAGE_TO_USER[endingId],width / 16,height/2);
+  textAlign(CENTER,CENTER)
+  rect(width / 2, height - height / 12, width / 4, height / 12);
+  textSize(32);
+  fill(0);
+  text("I AGREE", width / 2, height - height / 12);
+  pop();
 }
 
 function keyPressed() {
@@ -354,10 +534,10 @@ function keyPressed() {
         // if focusing on ACCEPT
         if (focusXAxis === 1){
           // if uploading is finished
-          if (!videoInterface.uploading){
-            acceptAllCards(); // play the animtion
+          if (!videoInterface.uploading && !noCardsAvailable){
             videoInterface.progressBar.reset(); // reset progress bar
             videoInterface.upload(); // play the upload animation
+            acceptAllCards(); // play the card animtion
             setTimeout(resetCards,2500); // reset cards
           }
         }else if (focusXAxis === 0){
@@ -442,6 +622,11 @@ function swapAllCards(){
     for(let i = 0; i < cards.length; i++){
       cards[i].swap();
     }
+    noCardsAvailable = true;
+    setTimeout(function(){
+      randomizeCards();
+      noCardsAvailable = false;
+    },300);
   }
 }
 

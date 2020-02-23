@@ -21,16 +21,16 @@ class Stats {
     this.views = views;
   }
 
-  addView(views){
-    this.views += views;
+  addView(){
+    this.views += 1;
   }
 
   setFans(fans){
     this.fans = fans;
   }
 
-  addFans(fans){
-    this.fans += fans;
+  addFan(){
+    this.fans += 0.1;
   }
 
   setRating(rating){
@@ -45,8 +45,8 @@ class Stats {
     this.videos = videos;
   }
 
-  addVideos(videos){
-    this.videos += videos;
+  addVideo(){
+    this.videos += 1;
   }
 
   display() {
@@ -70,7 +70,7 @@ class Stats {
     fill(RED);
     text(this.views, this.rect0X, this.y + this.margin);
     fill(ORANGE);
-    text(this.fans, this.rect1X, this.y + this.margin);
+    text(int(this.fans), this.rect1X, this.y + this.margin);
     if (this.rating >= 85){
       fill(GREEN);
     }else if (this.rating < 85 && this.rating >= 70){

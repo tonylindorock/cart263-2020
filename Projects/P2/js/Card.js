@@ -3,8 +3,6 @@
 // The keyword card for player to choose to generate their videos
 class Card{
   constructor(id){
-    this.name = "Name";
-    this.color = GREEN;
     this.id = id;
     this.width = width/6;
     this.height = height/4;
@@ -34,8 +32,16 @@ class Card{
       this.x = width/2 + this.width*2 + 24;
     }
 
+    this.word = "Name";
+    this.colorId = 0;
     this.des = "KEYWORD";
+    this.value = 0;
+  }
 
+  setCardAttributes(word,color,value){
+    this.word =word;
+    this.colorId = color;
+    this.value = value;
   }
 
   display(){
@@ -44,11 +50,17 @@ class Card{
     textAlign(CENTER,CENTER);
     fill(255);
     rect(this.x,this.y,this.width,this.height);
-    fill(this.color);
+    if (this.colorId === 0){
+      fill(GREEN);
+    }else if (this.colorId === 1){
+      fill(ORANGE);
+    }else if (this.colorId === 2){
+      fill(RED);
+    }
     rect(this.x,this.y,this.width*0.9,this.height*0.9);
     fill(255);
     textSize(18);
-    text(this.name,this.x,this.y-this.height/2 + 24);
+    text(this.word,this.x,this.y-this.height/2 + 24);
     textSize(16);
     text(this.des,this.x,this.y);
     pop();
