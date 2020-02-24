@@ -23,6 +23,9 @@ const GREEN = "#33de7a"; //  #4bffaf
 const BLUE = "#4bafff";
 const PURPLE = "#af4bff";
 
+const MOST_VIEWS = 21000000; // 21M
+const ACTIVE_USERS = 9999999; // 9M
+
 const INTRO = "If this is your first time using this system, please read the instruction." +
   "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
   "\nany 5 keywords provided, you can ask the advanced A.I. to generate" +
@@ -120,6 +123,8 @@ let videoInterface;
 let startProgressBar;
 
 let money = 1000;
+let totalValue = 0;
+let rank = -1;
 
 var nounsJSON;
 var verbsJSON;
@@ -422,8 +427,11 @@ function displayStaticUI() {
 function displayDynamicUI() {
   // views, fans, rating, videos
   stats.display();
+  stats.addView();
+  stats.addFan();
   // interface
   videoInterface.display();
+  updateInterface();
   // cards
   let keywords = "";
   for(let i = 0; i < cards.length; i ++){
@@ -683,8 +691,10 @@ function swapAllCards(){
 }
 
 function acceptAllCards(){
+  totalValue = 0;
   for(let i = 0; i < cards.length; i++){
     cards[i].accept();
+    totalValue += cards[i].value;
   }
   noCardsAvailable = true;
 }
@@ -695,6 +705,30 @@ function resetCards(){
   }
   noCardsAvailable = false;
   randomizeCards();
+  stats.addViewsRate(totalValue);
+}
+
+function updateInterface(){
+  let riskLevel = 0;
+  let value = 0;
+  for(let i = 0; i < cards.length; i++){
+    if (cards[i].colorId === 1){
+      riskLevel += 15;
+    }else if (cards[i].colorId === 2){
+      riskLevel += 30;
+    }
+    value += cards[i].value;
+  }
+  if (riskLevel>=0 && riskLevel <33){
+    videoInterface.setRisk(0);
+  }else if (riskLevel>=33 && riskLevel <66){
+    videoInterface.setRisk(1);
+  }else if (riskLevel>=66){
+    videoInterface.setRisk(2);
+  }
+  videoInterface.setValue(value);
+  rank = map(stats.views,0,MOST_VIEWS,1,ACTIVE_USERS,true);
+  videoInterface.setRank(ACTIVE_USERS - rank);
 }
 
 function changeFocus(targetX, targetY, sizeId) {

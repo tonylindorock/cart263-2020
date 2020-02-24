@@ -16,6 +16,41 @@ class Interface{
     this.uploading = false;
   }
 
+  setRisk(id){
+    this.risk = id;
+  }
+
+  setValue(value){
+    this.value = value;
+  }
+
+  addViolation(){
+    this.violations += 1;
+  }
+
+  setRank(rank){
+    if (rank <= 0){
+      this.rank = 1
+    }else if (rank < 1000 && rank > 0){
+      this.rank = rank;
+    }else if (rank >= 1000 && rank <= 9999){
+      let temp = rank.toString()[0];
+      this.rank = temp+"K";
+    }else if (rank >= 10000 && rank <= 99999){
+      let temp = rank.toString().substring(0, 2);
+      this.rank = temp+"K";
+    }else if (rank >= 100000 && rank <= 999999){
+      let temp = rank.toString().substring(0, 3);
+      this.rank = temp+"K";
+    }else if (rank >= 1000000 && rank <= 9999999){
+      let temp = rank.toString()[0];
+      this.rank = temp+"M";
+    }else if (rank >= 10000000){
+      let temp = rank.toString().substring(0, 2);
+      this.rank = temp+"M";
+    }
+  }
+
   upload(){
     this.progressBar.start = true;
     this.uploading = true;
@@ -53,7 +88,7 @@ class Interface{
     fill(RED);
     text("VIOLATIONS\n"+this.violations+" / 5 MAX",this.x - width/6 - this.margin,this.y - this.margin*2);
     fill(255);
-    text("GLOBAL RANK\n@ "+this.rank+" @",this.x - width/6 - this.margin,this.y + this.margin*2);
+    text("USER RANK\n@ "+this.rank+" @",this.x - width/6 - this.margin,this.y + this.margin*2);
     textAlign(LEFT,CENTER);
     let riskLevel = "LOW";
     if (this.risk === 0){

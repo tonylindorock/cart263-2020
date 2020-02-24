@@ -12,9 +12,17 @@ class Stats {
     this.rect3X = this.x + this.width + this.width / 2 + this.margin * 3;
 
     this.views = 0;
+    this.viewsDisplay = "";
     this.fans = 0;
+    this.fansDisplay = "";
     this.rating = 100;
     this.videos = 0;
+
+    this.viewsAddRate = 0;
+  }
+
+  addViewsRate(videoValue){
+    this.viewsAddRate += videoValue;
   }
 
   setViews(views){
@@ -22,7 +30,26 @@ class Stats {
   }
 
   addView(){
-    this.views += 1;
+    this.views += this.viewsAddRate/100;
+
+    if (this.views < 1000){
+      this.viewsDisplay = int(this.views);
+    }else if (this.views >= 1000 && this.views <= 9999){
+      let temp = int(this.views).toString()[0];
+      this.viewsDisplay = temp+"K";
+    }else if (this.views >= 10000 && this.views <= 99999){
+      let temp = int(this.views).toString().substring(0, 2);
+      this.viewsDisplay = temp+"K";
+    }else if (this.views >= 100000 && this.views <= 999999){
+      let temp = int(this.views).toString().substring(0, 3);
+      this.viewsDisplay = temp+"K";
+    }else if (this.views >= 1000000 && this.views <= 9999999){
+      let temp = int(this.views).toString()[0];
+      this.viewsDisplay = temp+"M";
+    }else if (this.views >= 10000000){
+      let temp = int(this.views).toString().substring(0, 2);
+      this.viewsDisplay = temp+"M";
+    }
   }
 
   setFans(fans){
@@ -30,7 +57,22 @@ class Stats {
   }
 
   addFan(){
-    this.fans += 0.1;
+    this.fans = this.views/10;
+    if (this.fans < 1000){
+      this.fansDisplay = int(this.fans);
+    }else if (this.fans >= 1000 && this.fans <= 9999){
+      let temp = int(this.fans).toString()[0];
+      this.fansDisplay = temp+"K";
+    }else if (this.fans >= 10000 && this.fans <= 99999){
+      let temp = int(this.fans).toString().substring(0, 2);
+      this.fansDisplay = temp+"K";
+    }else if (this.fans >= 100000 && this.fans <= 999999){
+      let temp = int(this.fans).toString().substring(0, 3);
+      this.fansDisplay = temp+"K";
+    }else if (this.fans >= 1000000 && this.fans <= 9999999){
+      let temp = int(this.fans).toString()[0];
+      this.fansDisplay = temp+"M";
+    }
   }
 
   setRating(rating){
@@ -68,9 +110,9 @@ class Stats {
     text("VIDEOS", this.rect3X, this.y - this.height / 2 + this.margin * 2.25);
     textSize(42);
     fill(RED);
-    text(this.views, this.rect0X, this.y + this.margin);
+    text(this.viewsDisplay, this.rect0X, this.y + this.margin);
     fill(ORANGE);
-    text(int(this.fans), this.rect1X, this.y + this.margin);
+    text(this.fansDisplay, this.rect1X, this.y + this.margin);
     if (this.rating >= 85){
       fill(GREEN);
     }else if (this.rating < 85 && this.rating >= 70){
