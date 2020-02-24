@@ -16,6 +16,7 @@ class Stats {
     this.fans = 0;
     this.fansDisplay = "";
     this.rating = 100;
+    this.recordForRating = [];
     this.videos = 0;
 
     this.viewsAddRate = 0;
@@ -79,16 +80,27 @@ class Stats {
     this.rating = rating;
   }
 
-  addRating(rating){
-    this.rating += rating;
+  updateRating(){
+    let total = 0;
+    for(let i=0;i<this.videos;i++){
+      total += this.recordForRating[i];
+    }
+    this.rating = int((total/this.videos));
   }
 
   setVideos(videos){
     this.videos = videos;
   }
 
-  addVideo(){
-    this.videos += 1;
+  addVideo(risk){
+    if (risk === 2){
+      this.recordForRating.push(0);
+    }else if (risk === 1){
+      this.recordForRating.push(50);
+    }else if (risk === 0){
+      this.recordForRating.push(100);
+    }
+    this.videos ++;
   }
 
   display() {

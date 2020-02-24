@@ -26,6 +26,10 @@ const PURPLE = "#af4bff";
 const MOST_VIEWS = 21000000; // 21M
 const ACTIVE_USERS = 9999999; // 9M
 
+const COST_CARD = 10;
+const COST_ALL_CARDS = 50;
+const COST_MONTHLY = 500;
+
 const INTRO = "If this is your first time using this system, please read the instruction." +
   "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
   "\nany 5 keywords provided, you can ask the advanced A.I. to generate" +
@@ -41,7 +45,7 @@ const INTRO = "If this is your first time using this system, please read the ins
   "\nany of those violations will have consequences. But do not" +
   "\nworry. We will provide guidance throughout your whole video" +
   "\nproduction adventure." +
-  "\n\n5) R.K.B.V.G. is a subscription service which is charged $100/month." +
+  "\n\n5) R.K.B.V.G. is a subscription service which is charged $500/month." +
   "\nMake sure that you have enough money in your account before" +
   "\nthe next billing cycle.";
 const OTHER_INFO = "** HOW TO MAKE A VIDEO **" +
@@ -114,17 +118,18 @@ let cardIndex = 0;
 let noCardsAvailable = false;
 
 let phraseFormat;
-let colorFormat = [];
 
 let note;
 let stats;
 let videoInterface;
+let history;
 
 let startProgressBar;
 
 let money = 1000;
+let keywords;
 let totalValue = 0;
-let rank = -1;
+let lastMonthViews = 0;
 
 var nounsJSON;
 var verbsJSON;
@@ -156,6 +161,7 @@ function setup() {
   note = new Notification(0, 0);
   stats = new Stats();
   videoInterface = new Interface();
+  history = new History();
 
   startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
   startProgressBar.start = true;
@@ -216,25 +222,18 @@ function randomizeCards(){
     let value;
     if (phraseFormat[i] === "a"){
       let randomIndex = int(random(0,adjsJSON.adjs.length));
-      /*
-      while (adjsJSON.adjs["randomIndex"].colorId != colorFormat[i]){
-        randomIndex = int(random(0,adjsJSON.size()));
-      }
-      */
       word = adjsJSON.adjs[randomIndex].word;
       colorId = adjsJSON.adjs[randomIndex].colorId;
       value = adjsJSON.adjs[randomIndex].value;
       cards[i].setCardAttributes(word,colorId,value);
     }else if (phraseFormat[i] === "n"){
       let randomIndex = int(random(0,nounsJSON.nouns.length));
-
       word = nounsJSON.nouns[randomIndex].word;
       colorId = int(nounsJSON.nouns[randomIndex].colorId);
       value = int(nounsJSON.nouns[randomIndex].value);
       cards[i].setCardAttributes(word,colorId,value);
     }else if (phraseFormat[i] === "v"){
       let randomIndex = int(random(0,verbsJSON.verbs.length));
-
       word = verbsJSON.verbs[randomIndex].word;
       colorId = int(verbsJSON.verbs[randomIndex].colorId);
       value = int(verbsJSON.verbs[randomIndex].value);
@@ -244,7 +243,6 @@ function randomizeCards(){
 }
 
 function randomizeFormat(){
-  colorFormat = [];
   let p = random(0,1);
   if (p >= 0 && p < 0.3){
     phraseFormat = ["n","v","a","a","n"];
@@ -253,19 +251,6 @@ function randomizeFormat(){
   }else if (p >= 0.6 && p < 1){
     phraseFormat = ["a","a","n","v","n"];
   }
-  for(let i = 0;i < phraseFormat.length ;i++){
-    p = random(0,1);
-    if (p <= 0.2){
-      colorFormat.push(2);
-    }else if (p > 0.2 && p < 0.5){
-      colorFormat.push(1);
-    }else if (p >= 0.5 && p <= 0.9){
-      colorFormat.push(0);
-    }else if (p > 0.9){
-      colorFormat.push(3);
-    }
-  }
-  console.log(phraseFormat+"\n"+colorFormat);
 }
 
 function draw() {
@@ -281,6 +266,9 @@ function draw() {
   }else if (State === "NOTE"){
     displayStaticUI();
     displayDynamicUI();
+    displayFocus();
+  }else if (State === "HISTORY"){
+    history.display();
     displayFocus();
   } else if (State === "END"){
     endScreen();
@@ -361,6 +349,32 @@ function displayStatusBar() {
   time += " W"+weekNum+" D"+dayNum;
   text(time, width - 48, height / 48);
   pop();
+
+  if (State === "PLAY"){
+    runTime();
+  }
+}
+
+function runTime(){
+  let time = frameCount;
+  if (time % 120 === 0 && time != 0){
+    dayNum ++;
+  }
+  if (dayNum > 7){
+    weekNum ++;
+    dayNum = 1;
+    let thisMonthViews = stats.views - lastMonthViews;
+    money += int((thisMonthViews/100)*(stats.rating/100));
+    lastMonthViews = stats.views;
+  }
+  if (weekNum > 4){
+    monthNum++;
+    weekNum = 1;
+    money -= COST_MONTHLY;
+  }
+  if (monthNum > 12){
+    monthNum = 1;
+  }
 }
 
 function displayTutorial() {
@@ -433,7 +447,7 @@ function displayDynamicUI() {
   videoInterface.display();
   updateInterface();
   // cards
-  let keywords = "";
+  keywords = "";
   for(let i = 0; i < cards.length; i ++){
     cards[i].display();
     if (i===cards.length-1){
@@ -506,11 +520,13 @@ function keyPressed() {
         changeFocus(width / 8, height - height / 12, 1);
       }
     } else if (State === "PLAY") {
-      // if focusing on ACCEPT, change to focusing on SWAP ALL
+      // if focusing on buttons
       if (focusYAxis === 1){
+        // if focusing on ACCEPT, change to focusing on SWAP ALL
         if (focusXAxis === 2){
           focusXAxis = 1;
           changeFocus(width / 2, height - height / 4, 0);
+        // if focusing on HISTORY, change to focusing on ACCEPT
         }else if (focusXAxis === 1){
           focusXAxis = 0;
           changeFocus(width / 2  - width / 4 - width / 24, height - height / 4, 0);
@@ -524,6 +540,16 @@ function keyPressed() {
       }
     } else if (State === "NOTE") {
 
+    } else if (State === "HISTORY"){
+      // if focusing on NEXT, change to focusing on PREV
+      if (focusXAxis === 2){
+        focusXAxis = 1;
+        changeFocus(width - width / 8 - width / 6 - 16, height - height / 12, 1);
+      // if focusing on PREV, change to focusing on CLOSE
+      }else if (focusXAxis === 1){
+        focusXAxis = 0;
+        changeFocus(width / 6, height - height / 12, 0);
+      }
     }
   } else if (keyCode === RIGHT_ARROW) {
     // if focusing on PREV in TUTORIAL 1, change to focusing on OKAY
@@ -539,6 +565,7 @@ function keyPressed() {
         if (focusXAxis === 0){
           focusXAxis = 1;
           changeFocus(width / 2, height - height / 4, 0);
+        // if focusing on ACCEPT, change to focusing on HISTORY
         }else if (focusXAxis === 1){
           focusXAxis = 2;
           changeFocus(width / 2  + width / 4 + width / 24, height - height / 4, 0);
@@ -552,6 +579,16 @@ function keyPressed() {
       }
     } else if (State === "NOTE") {
 
+    }else if (State === "HISTORY"){
+      // if focusing on PREV, change to focusing on NEXT
+      if (focusXAxis === 1){
+        focusXAxis = 2;
+        changeFocus(width - width / 8, height - height / 12, 1);
+      // if focusing on CLOSE, change to focusing on PREV
+    }else if (focusXAxis === 0){
+        focusXAxis = 1;
+        changeFocus(width - width / 8 - width / 6 - 16, height - height / 12, 1);
+      }
     }
   // Pressing SPACE
   } else if (keyCode === 32) {
@@ -585,8 +622,12 @@ function keyPressed() {
     } else if (State === "PLAY") {
       // if focusing on buttons
       if (focusYAxis === 1){
+        if (focusXAxis === 2){
+          State = "HISTORY";
+          focusXAxis = 0;
+          changeFocus(width / 6, height - height / 12, 0);
         // if focusing on ACCEPT
-        if (focusXAxis === 1){
+        }else if (focusXAxis === 1){
           // if uploading is finished
           if (!videoInterface.uploading && !noCardsAvailable){
             videoInterface.progressBar.reset(); // reset progress bar
@@ -596,10 +637,12 @@ function keyPressed() {
           }
         }else if (focusXAxis === 0){
           swapAllCards();
+          money -= COST_ALL_CARDS;
         }
       }else if (focusYAxis === 0){
         if (!cards[cardIndex].swaped){
           swapCard(cardIndex);
+          money -= COST_CARD;
         }
         // solve the issue which the card stays selected after the player change to another card before the previous card resets
         let lastCard = cardIndex;
@@ -613,6 +656,20 @@ function keyPressed() {
       }
     } else if (State === "NOTE") {
 
+    }else if (State === "HISTORY"){
+      // focusing on CLOSE
+      if (focusXAxis === 0){
+        State = "PLAY";
+        focusYAxis = 0;
+        focusXAxis = 0;
+        selectCard(0);
+      // if focusing on PREV
+      }else if (focusXAxis === 1){
+        history.prevPage();
+      // if focusing on NEXT
+    }else if (focusXAxis === 2){
+        history.nextPage();
+      }
     }else if (State === "END"){
       alert("User account terminated.");
       location.reload();
@@ -704,8 +761,15 @@ function resetCards(){
     cards[i].reset();
   }
   noCardsAvailable = false;
+  uploadVideo();
   randomizeCards();
+}
+
+function uploadVideo(){
+  stats.addVideo(videoInterface.risk);
   stats.addViewsRate(totalValue);
+  stats.updateRating();
+  history.addVideoToRecord(keywords,videoInterface.risk,totalValue);
 }
 
 function updateInterface(){
@@ -727,7 +791,7 @@ function updateInterface(){
     videoInterface.setRisk(2);
   }
   videoInterface.setValue(value);
-  rank = map(stats.views,0,MOST_VIEWS,1,ACTIVE_USERS,true);
+  let rank = map(stats.views,0,MOST_VIEWS,1,ACTIVE_USERS,true);
   videoInterface.setRank(ACTIVE_USERS - rank);
 }
 
@@ -740,7 +804,7 @@ function changeFocus(targetX, targetY, sizeId) {
     focusHeight = height / 12;
   // button text only
   } else if (sizeId === 1) {
-    focusWidth = width / 4 - 48;
+    focusWidth = width / 4 - 64;
     focusHeight = height / 12;
   // card
   }else if (sizeId === 2) {
