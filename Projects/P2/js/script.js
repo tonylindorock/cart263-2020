@@ -45,7 +45,7 @@ const INTRO = "If this is your first time using this system, please read the ins
   "\nany of those violations will have consequences. But do not" +
   "\nworry. We will provide guidance throughout your whole video" +
   "\nproduction adventure." +
-  "\n\n5) R.K.B.V.G. is a subscription service which is charged $500/month." +
+  "\n\n5) R.K.B.V.G. is a subscription service which is charged $"+COST_MONTHLY+"/month." +
   "\nMake sure that you have enough money in your account before" +
   "\nthe next billing cycle.";
 const OTHER_INFO = "** HOW TO MAKE A VIDEO **" +
@@ -61,7 +61,9 @@ const OTHER_INFO = "** HOW TO MAKE A VIDEO **" +
   +"\nto generate and upload the video."+
   "\n\nVideo's VALUE: decides how many views and fans you will get"+
   "\n\nVideo's RISK LEVEL: decides your rating and the chance of you"+
-  "\ngetting a violation"+
+  "\ngetting a violation (4 violations MAX per month)"+
+  "\n\nWEEKLY INCOME: depends on the total views from the past week"+
+  "\nand your rating"+
   "\n\nHISTORY: where you can see all your uploaded videos";
 let tutorialIndex = 0;
 
@@ -78,10 +80,11 @@ const MESSAGE_TO_USER = [
   "\n\nIt has been a pleasure working with you. We look forward to seeing you"+
   "\nagain in the futrue."+
   "\n\n\n\nGood Media Inc.",
-  "your account reached 5 violations, which indicated that some of your"+
-  "\nvideos failed to satisfy the terms of the Online Content Policy. We ask"+
-  "\nour users to create a healthy, kid-friendly online environment, and"+
-  "\nit is your responsibility to comply the Online Content Policy."+
+  "your account reached the maximum violations per month, which"+
+  "\nindicated that some of your videos failed to satisfy the terms"+
+  "\nof the Online Content Policy. We ask our users to create a healthy,"+
+  "\nkid-friendly online environment, and it is your responsibility to comply"+
+  "\nthe Online Content Policy."+
   "\n\nTherefore, you must agree on these terms:"+
   "\n\n1) Your account will be terminated. This includes the erasement"+
   "\nof the record of your views, fans, rating, and videos."+
@@ -130,6 +133,12 @@ let money = 1000;
 let keywords;
 let totalValue = 0;
 let lastMonthViews = 0;
+let pastRating = 100;
+let monthlyIncome = 0;
+
+let displayMessage = false;
+let weekChange = false;
+let monthChange = false;
 
 var nounsJSON;
 var verbsJSON;
@@ -158,7 +167,7 @@ function setup() {
   setupFocus();
   setupCards();
 
-  note = new Notification(0, 0);
+  note = new Notification(0, 1);
   stats = new Stats();
   videoInterface = new Interface();
   history = new History();
@@ -266,6 +275,8 @@ function draw() {
   }else if (State === "NOTE"){
     displayStaticUI();
     displayDynamicUI();
+    note.setMessageType(0);
+    note.display();
     displayFocus();
   }else if (State === "HISTORY"){
     history.display();
@@ -359,15 +370,25 @@ function runTime(){
   let time = frameCount;
   if (time % 120 === 0 && time != 0){
     dayNum ++;
+    if (dayNum === 4){
+      weekChange = false;
+      monthChange = false;
+      displayMessage = false;
+      pastRating = stats.rating;
+    }
   }
   if (dayNum > 7){
+    weekChange = true;
+    displayMessage = true;
     weekNum ++;
     dayNum = 1;
     let thisMonthViews = stats.views - lastMonthViews;
-    money += int((thisMonthViews/50)*(stats.rating/100));
+    monthlyIncome = int((thisMonthViews/50)*(stats.rating/100));
+    money += monthlyIncome;
     lastMonthViews = stats.views;
   }
   if (weekNum > 4){
+    monthChange = true;
     monthNum++;
     weekNum = 1;
     money -= COST_MONTHLY;
@@ -468,7 +489,36 @@ function displayDynamicUI() {
   }
   text("< "+keywords+" >",width / 2, height / 2 + height/8 + 12);
   pop();
+
+  showMessage();
 }
+
+function showMessage(){
+  let msg = "";
+  if (displayMessage){
+    // weekly income
+    if (weekChange){
+      msg += "+$"+monthlyIncome;
+    // monthly charge
+    }
+    if (monthChange){
+      msg += " | -$"+COST_MONTHLY;
+    // rating change
+    }
+    let change = stats.rating - pastRating;
+    if (change >= 0){
+      msg += " | Rating +"+change+"%";
+    }else{
+      msg += " | Rating "+change+"%";
+    }
+    }
+    push();
+    textAlign(CENTER,CENTER);
+    textSize(24);
+    fill(255);
+    text(msg,width / 2, height / 2 - height/6 - height/48);
+    pop();
+  }
 
 function endScreen(){
   push();
@@ -660,9 +710,9 @@ function keyPressed() {
       // focusing on CLOSE
       if (focusXAxis === 0){
         State = "PLAY";
-        focusYAxis = 0;
-        focusXAxis = 0;
-        selectCard(0);
+        focusYAxis = 1;
+        focusXAxis = 1;
+        changeFocus(width / 2, height - height / 4, 0);
       // if focusing on PREV
       }else if (focusXAxis === 1){
         history.prevPage();

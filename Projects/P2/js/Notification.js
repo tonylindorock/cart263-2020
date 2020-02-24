@@ -32,12 +32,36 @@ class Notification{
     }
   }
 
-  setTitle(title){
-    this.title = title;
-  }
-
-  setDes(des){
-    this.des = des;
+  setMessageType(id){
+    if (id === 0){
+      this.title = "MESSAGE";
+      this.des = "MONTHLY INSPECTION"+
+      "\n\nThis month, we will have"+
+      "\na STANDARD inspection."+
+      "\nAny of your videos marked as red"+
+      "\nwill be inspected."+
+      "\n\nHowever, only the videos with"+
+      "\nthe value over 75 will be removed."+
+      "\n\nWe found 0 videos. Your fine is"+
+      "\n$0";
+    }else if (id === 1){
+      this.title = "MESSAGE";
+      this.des = "MONTHLY INSPECTION"+
+      "\n\nThis month, we will have"+
+      "\na DEEP inspection."+
+      "\n\nAny of your videos marked as red"+
+      "\nwill be inspected and be removed."+
+      "\n\nWe found 0 videos. Your fine is"+
+      "\n$0";
+    }else if (id === 2){
+      this.title = "MESSAGE";
+      this.des = "E-MAIL SERVICE"+
+      "\n\nYou have received an e-mail"+
+      "\nfrom Good Medic Inc.."+
+      "\n\nYour account and information"+
+      "\nare being protected."+
+      "\n\nClick OKAY to open it.";
+    }
   }
 
   display(){
@@ -60,8 +84,7 @@ class Notification{
         text("CLOSE",this.x,this.y + this.width/2 - this.height/8);
       }else if (this.id === 1){
         fill(0);
-        text("NO",this.x - this.width/4,this.y + this.width/2 - this.height/8);
-        text("YES",this.x + this.width/4,this.y + this.width/2 - this.height/8);
+        text("READ",this.x,this.y + this.width/2 - this.height/8);
       }
 
       fill(0,200);
