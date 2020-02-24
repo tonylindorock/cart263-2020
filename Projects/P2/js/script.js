@@ -364,7 +364,7 @@ function runTime(){
     weekNum ++;
     dayNum = 1;
     let thisMonthViews = stats.views - lastMonthViews;
-    money += int((thisMonthViews/100)*(stats.rating/100));
+    money += int((thisMonthViews/50)*(stats.rating/100));
     lastMonthViews = stats.views;
   }
   if (weekNum > 4){
