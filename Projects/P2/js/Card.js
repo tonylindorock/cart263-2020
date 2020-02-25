@@ -36,12 +36,30 @@ class Card{
     this.colorId = 0;
     this.des = "KEYWORD";
     this.value = 0;
+
+    this.specialId = -1;
   }
 
   setCardAttributes(word,color,value){
     this.word =word;
     this.colorId = color;
     this.value = value;
+    this.des = "KEYWORD";
+  }
+
+  setSpecial(){
+    let p = int(random(0,4));
+    this.specialId = p;
+    if (p === 0){
+      this.des = "-1\nRISK\nLEVEL";
+    }else if (p === 1){
+      this.des = "-2\nRISK\nLEVEL";
+    }else if (p === 2){
+      this.des = "+10\nVALUE";
+    }else if (p === 3){
+      this.des = "+20\nVALUE";
+    }
+    this.colorId = 3;
   }
 
   display(){
@@ -56,6 +74,8 @@ class Card{
       fill(ORANGE);
     }else if (this.colorId === 2){
       fill(RED);
+    }else if (this.colorId === 3){
+      fill(PURPLE);
     }
     rect(this.x,this.y,this.width*0.9,this.height*0.9);
     fill(255);

@@ -2,11 +2,6 @@ class History{
   constructor(){
     this.rectHieght = height/8;
     this.rectWdith = width - width/12;
-    this.videoObject = {
-      name: "",
-      color :"",
-      value: 0
-    }
 
     this.record = [];
     this.margin = 12;

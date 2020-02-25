@@ -16,7 +16,9 @@ class Stats {
     this.fans = 0;
     this.fansDisplay = "";
     this.rating = 100;
+
     this.recordForRating = [];
+    
     this.videos = 0;
 
     this.viewsAddRate = 0;

@@ -220,10 +220,19 @@ function randomizeACard(id){
     value = int(verbsJSON.verbs[randomIndex].value);
     cards[id].setCardAttributes(word,colorId,value);
   }
+  let p = random(0,1);
+  if (p >= 0.8){
+    cards[id].setSpecial();
+  }
 }
 
 function randomizeCards(){
   randomizeFormat();
+  let p = random(0,1);
+  let randomCard = -1;
+  if (p >= 0.8){
+    randomCard = int(random(0,5));
+  }
   for(let i=0;i<cards.length;i++){
     let word;
     let colorId;
@@ -247,6 +256,9 @@ function randomizeCards(){
       value = int(verbsJSON.verbs[randomIndex].value);
       cards[i].setCardAttributes(word,colorId,value);
     }
+  }
+  if (randomCard > 0){
+    cards[randomCard].setSpecial();
   }
 }
 
