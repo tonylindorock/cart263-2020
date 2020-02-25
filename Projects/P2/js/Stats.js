@@ -94,9 +94,9 @@ class Stats {
 
   addVideo(risk){
     if (risk === 2){
-      this.recordForRating.push(30);
+      this.recordForRating.push(33);
     }else if (risk === 1){
-      this.recordForRating.push(60);
+      this.recordForRating.push(66);
     }else if (risk === 0){
       this.recordForRating.push(100);
     }

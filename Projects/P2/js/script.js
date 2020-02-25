@@ -48,8 +48,7 @@ const INTRO = "If this is your first time using this system, please read the ins
   "\n\n5) R.K.B.V.G. is a subscription service which is charged $"+COST_MONTHLY+"/month." +
   "\nMake sure that you have enough money in your account before" +
   "\nthe next billing cycle.";
-const OTHER_INFO = "** HOW TO MAKE A VIDEO **" +
-  "\n\n1) Each video is composed of 5 keywords. The video's value and"+
+const OTHER_INFO = "1) Each video is composed of 5 keywords. The video's value and"+
   "\nthe risk of violating the Online Content Policy will be estimated"
   +"\nbased on these keywords."+
   "\n\n2) You will have 5 keyword cards each time. Select one and press SPACE"+
