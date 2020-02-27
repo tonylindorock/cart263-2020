@@ -63,6 +63,12 @@ class History{
     this.viewTo = this.rangeTo;
   }
 
+  removeVideo(index){
+    this.record[index].name = "VIDEO REMOVED";
+    this.record[index].color = "#FFF";
+    this.record[index].value = "--";
+  }
+
   displayRecord(){
     push();
     if (this.record[0]!=null){
@@ -70,7 +76,7 @@ class History{
         for(let i = this.record.length - 1, j = 0; i >= 0; i--, j++){
           let yPos = height/6 + j*height/8 + j*this.margin;
           textAlign(LEFT,CENTER);
-          textSize(22);
+          textSize(20);
           fill(this.record[i].color);
           text("0"+(i+1)+" "+this.record[i].name,width / 12, yPos);
           textAlign(RIGHT,CENTER);
@@ -82,7 +88,7 @@ class History{
         for(let i = this.viewFrom, j = 0; i >= this.viewTo; i--, j++){
           let yPos = height/6 + j*height/8 + j*this.margin;
           textAlign(LEFT,CENTER);
-          textSize(22);
+          textSize(20);
           fill(this.record[i].color);
           if (i+1 < 10){
             text("0"+(i+1)+" "+this.record[i].name,width / 12, yPos);

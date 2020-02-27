@@ -23,12 +23,15 @@ const GREEN = "#33de7a"; //  #4bffaf
 const BLUE = "#4bafff";
 const PURPLE = "#af4bff";
 
-const MOST_VIEWS = 21000000; // 21M
-const ACTIVE_USERS = 9999999; // 9M
+const MOST_VIEWS = 3000000; // 3M
+const ACTIVE_USERS = 1999999; // 1M
 
 const COST_CARD = 10;
 const COST_ALL_CARDS = 50;
 const COST_MONTHLY = 500;
+const COST_FINE = 100;
+
+const FRAMES_PER_DAY = 120;
 
 const INTRO = "If this is your first time using this system, please read the instruction." +
   "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
@@ -60,7 +63,7 @@ const OTHER_INFO = "1) Each video is composed of 5 keywords. The video's value a
   +"\nto generate and upload the video."+
   "\n\nVideo's VALUE: decides how many views and fans you will get"+
   "\n\nVideo's RISK LEVEL: decides your rating and the chance of you"+
-  "\ngetting a violation (4 violations MAX per month)"+
+  "\ngetting a violation (3 violations MAX)"+
   "\n\nWEEKLY INCOME: depends on the total views from the past week"+
   "\nand your rating"+
   "\n\nHISTORY: where you can see all your uploaded videos";
@@ -79,7 +82,7 @@ const MESSAGE_TO_USER = [
   "\n\nIt has been a pleasure working with you. We look forward to seeing you"+
   "\nagain in the futrue."+
   "\n\n\n\nGood Media Inc.",
-  "your account reached the maximum violations per month, which"+
+  "your account reached the maximum violations (3), which"+
   "\nindicated that some of your videos failed to satisfy the terms"+
   "\nof the Online Content Policy. We ask our users to create a healthy,"+
   "\nkid-friendly online environment, and it is your responsibility to comply"+
@@ -93,12 +96,13 @@ const MESSAGE_TO_USER = [
   "\nagain in the futrue."+
   "\n\n\n\nGood Media Inc."
 ]
-let endingId = 1;
+let endingId = 0;
 
 let time = "";
 let monthNum = 3;
 let weekNum = 1;
 let dayNum = 1;
+let year = 2020;
 
 // determine current display content
 let State = "START";
@@ -129,6 +133,7 @@ let history;
 let startProgressBar;
 
 let money = 1000;
+let fundDepleted = false;
 let keywords;
 let totalValue = 0;
 let lastMonthViews = 0;
@@ -138,6 +143,7 @@ let monthlyIncome = 0;
 let displayMessage = false;
 let weekChange = false;
 let monthChange = false;
+let removedVideoNum = 0;
 
 var nounsJSON;
 var verbsJSON;
@@ -221,7 +227,7 @@ function randomizeACard(id){
     cards[id].setCardAttributes(word,colorId,value);
   }
   let p = random(0,1);
-  if (p >= 0.8){
+  if (p >= 0.9){
     cards[id].setSpecial();
   }
 }
@@ -230,7 +236,7 @@ function randomizeCards(){
   randomizeFormat();
   let p = random(0,1);
   let randomCard = -1;
-  if (p >= 0.8){
+  if (p >= 0.9){
     randomCard = int(random(0,5));
   }
   for(let i=0;i<cards.length;i++){
@@ -257,7 +263,7 @@ function randomizeCards(){
       cards[i].setCardAttributes(word,colorId,value);
     }
   }
-  if (randomCard > 0){
+  if (randomCard >= 0){
     cards[randomCard].setSpecial();
   }
 }
@@ -283,10 +289,20 @@ function draw() {
     displayStaticUI();
     displayDynamicUI();
     displayFocus();
+    if (videoInterface.violations >= 3){
+      note.setMessageType(2,-1);
+      State = "NOTE";
+      changeFocus(note.buttonX,note.buttonY,1);
+      endingId = 1;
+    }else if (fundDepleted){
+      note.setMessageType(2,-1);
+      State = "NOTE";
+      changeFocus(note.buttonX,note.buttonY,1);
+      endingId = 0;
+    }
   }else if (State === "NOTE"){
     displayStaticUI();
     displayDynamicUI();
-    note.setMessageType(0);
     note.display();
     displayFocus();
   }else if (State === "HISTORY"){
@@ -294,6 +310,7 @@ function draw() {
     displayFocus();
   } else if (State === "END"){
     endScreen();
+    displayFocus();
   }
   displayStatusBar();
 }
@@ -340,7 +357,7 @@ function displayStatusBar() {
   rect(0, 0, width, height / 20);
   fill(0);
   textAlign(LEFT, CENTER);
-  text("@GM", 48, height / 48);
+  text("@GM "+year, 48, height / 48);
   textAlign(RIGHT, CENTER);
   time = "";
   if (monthNum === 1){
@@ -379,7 +396,7 @@ function displayStatusBar() {
 
 function runTime(){
   let time = frameCount;
-  if (time % 120 === 0 && time != 0){
+  if (time % FRAMES_PER_DAY === 0 && time != 0){
     dayNum ++;
     if (dayNum === 4){
       weekChange = false;
@@ -397,15 +414,40 @@ function runTime(){
     monthlyIncome = int((thisMonthViews/50)*(stats.rating/100));
     money += monthlyIncome;
     lastMonthViews = stats.views;
+
+    if (weekNum === 4){
+      let p = random(0,1);
+      if (p > 0.5){
+        p = random(0,1);
+        let msgId = -1;
+        if (p > 0.5){
+          monthlyInspection(1);
+          msgId = 1;
+        }else{
+          monthlyInspection(0);
+          msgId = 0;
+        }
+        selectCard(-1);
+        changeFocus(note.buttonX,note.buttonY,1);
+        note.setMessageType(msgId,removedVideoNum);
+        money -= COST_FINE * removedVideoNum;
+        State = "NOTE";
+      }
+    }
   }
   if (weekNum > 4){
     monthChange = true;
     monthNum++;
     weekNum = 1;
-    money -= COST_MONTHLY;
+    if (money < COST_MONTHLY){
+      fundDepleted = true;
+    }else{
+      money -= COST_MONTHLY;
+    }
   }
   if (monthNum > 12){
     monthNum = 1;
+    year++;
   }
 }
 
@@ -473,8 +515,10 @@ function displayStaticUI() {
 function displayDynamicUI() {
   // views, fans, rating, videos
   stats.display();
-  stats.addView();
-  stats.addFan();
+  if (State === "PLAY"){
+    stats.addView();
+    stats.addFan();
+  }
   // interface
   videoInterface.display();
   updateInterface();
@@ -488,6 +532,8 @@ function displayDynamicUI() {
       keywords += cards[i].word+" ";
     }
   }
+  applySpecialCards();
+
   push();
   textAlign(CENTER,CENTER);
   textSize(24);
@@ -509,11 +555,11 @@ function showMessage(){
   if (displayMessage){
     // weekly income
     if (weekChange){
-      msg += "+$"+monthlyIncome;
+      msg += "Income +$"+monthlyIncome;
     // monthly charge
     }
     if (monthChange){
-      msg += " | -$"+COST_MONTHLY;
+      msg += " | Fee -$"+COST_MONTHLY;
     // rating change
     }
     let change = stats.rating - pastRating;
@@ -684,6 +730,7 @@ function keyPressed() {
       // if focusing on buttons
       if (focusYAxis === 1){
         if (focusXAxis === 2){
+          history.resetView();
           State = "HISTORY";
           focusXAxis = 0;
           changeFocus(width / 6, height - height / 12, 0);
@@ -715,8 +762,17 @@ function keyPressed() {
           }
         },300);
       }
+    // if focusing on CLOSE in NOTE, change to focusing on ACCEPT
     } else if (State === "NOTE") {
-
+      if (note.id === 0 || note.id === 1){
+        State = "PLAY";
+        focusXAxis = 1;
+        focusYAxis = 1;
+        changeFocus(width / 2, height - height / 4, 0);
+      }else if (note.id === 2){
+        State = "END";
+        changeFocus(width / 2, height - height / 12, 0);
+      }
     }else if (State === "HISTORY"){
       // focusing on CLOSE
       if (focusXAxis === 0){
@@ -826,6 +882,22 @@ function resetCards(){
   randomizeCards();
 }
 
+function applySpecialCards(){
+  for(let i = 0; i < cards.length; i++){
+    if (cards[i].colorId === 3){
+      // -1 risk
+      if (cards[i].specialId === 0){
+        videoInterface.risk -= 1;
+        videoInterface.risk = constrain(videoInterface.risk,0,2);
+      // -2 risk
+      }else if (cards[i].specialId === 1){
+        videoInterface.risk -= 2;
+        videoInterface.risk = constrain(videoInterface.risk,0,2);
+      }
+    }
+  }
+}
+
 function uploadVideo(){
   stats.addVideo(videoInterface.risk);
   stats.addViewsRate(totalValue);
@@ -854,6 +926,30 @@ function updateInterface(){
   videoInterface.setValue(value);
   let rank = map(stats.views,0,MOST_VIEWS,1,ACTIVE_USERS,true);
   videoInterface.setRank(ACTIVE_USERS - rank);
+}
+
+function monthlyInspection(id){
+  removedVideoNum = 0;
+  if (id === 1){
+    for (let i = 0; i < history.record.length; i++){
+      if (history.record[i].color === RED){
+        stats.addViewsRate(-(history.record[i].value));
+        history.removeVideo(i);
+        removedVideoNum++;
+      }
+    }
+  }else if (id === 0){
+    for (let i = 0; i < history.record.length; i++){
+      if (history.record[i].color === RED && history.record[i].value >= 75){
+        stats.addViewsRate(-(history.record[i].value));
+        history.removeVideo(i);
+        removedVideoNum++;
+      }
+    }
+  }
+  if (removedVideoNum > 0){
+    videoInterface.addViolation();
+  }
 }
 
 function changeFocus(targetX, targetY, sizeId) {

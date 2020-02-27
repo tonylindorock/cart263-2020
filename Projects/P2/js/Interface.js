@@ -86,7 +86,7 @@ class Interface{
     textAlign(RIGHT,CENTER);
     textSize(32);
     fill(RED);
-    text("VIOLATIONS\n"+this.violations+" / 4 MAX",this.x - width/6 - this.margin,this.y - this.margin*2);
+    text("VIOLATIONS\n"+this.violations+" / 3 MAX",this.x - width/6 - this.margin,this.y - this.margin*2);
     fill(255);
     text("USER RANK\n@ "+this.rank+" @",this.x - width/6 - this.margin,this.y + this.margin*2);
     textAlign(LEFT,CENTER);

@@ -56,8 +56,10 @@ class Card{
       this.des = "-2\nRISK\nLEVEL";
     }else if (p === 2){
       this.des = "+10\nVALUE";
+      this.value += 10;
     }else if (p === 3){
       this.des = "+20\nVALUE";
+      this.value += 20;
     }
     this.colorId = 3;
   }
