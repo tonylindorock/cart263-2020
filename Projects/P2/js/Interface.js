@@ -1,3 +1,6 @@
+// Interface
+//
+// An object used to display the center content of the game with some key information
 class Interface{
   constructor(){
     this.height = height/2 - height/14;
@@ -32,7 +35,7 @@ class Interface{
     if (rank <= 0){
       this.rank = 1
     }else if (rank < 1000 && rank > 0){
-      this.rank = rank;
+      this.rank = int(rank);
     }else if (rank >= 1000 && rank <= 9999){
       let temp = rank.toString()[0];
       this.rank = temp+"K";

@@ -1,3 +1,6 @@
+// Stats
+//
+// An object used to display player account information near the top of the screen
 class Stats {
   constructor() {
     this.width = width / 6;
@@ -18,7 +21,7 @@ class Stats {
     this.rating = 100;
 
     this.recordForRating = [];
-    
+
     this.videos = 0;
 
     this.viewsAddRate = 0;

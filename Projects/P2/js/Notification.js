@@ -1,3 +1,6 @@
+// Notification
+//
+// An object used to display as a notification
 class Notification{
   constructor(id,colorId){
     this.x = width/2;
@@ -60,7 +63,7 @@ class Notification{
       this.color = "#4bafff";
       this.title = "MESSAGE";
       this.des = "From E-MAIL SERVICE"+
-      "\n\nYou have received 1 e-mail"+
+      "\n\nYou have received 1 e-mail!"+
       "\n\nFROM: Good Media Inc."+
       "\nSUBJECT: Important Message"+
       "\nCONTENT: DEAR OUR ROYAL USER..."+

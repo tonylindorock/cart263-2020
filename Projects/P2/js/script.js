@@ -24,7 +24,7 @@ const BLUE = "#4bafff";
 const PURPLE = "#af4bff";
 
 const MOST_VIEWS = 3000000; // 3M
-const ACTIVE_USERS = 1999999; // 1M
+const ACTIVE_USERS = 1000001; // 1M
 
 const COST_CARD = 10;
 const COST_ALL_CARDS = 50;
@@ -98,11 +98,14 @@ const MESSAGE_TO_USER = [
 ]
 let endingId = 0;
 
+const voice = [
+
+];
+
 let time = "";
 let monthNum = 3;
 let weekNum = 1;
 let dayNum = 1;
-let year = 2020;
 
 // determine current display content
 let State = "START";
@@ -357,7 +360,7 @@ function displayStatusBar() {
   rect(0, 0, width, height / 20);
   fill(0);
   textAlign(LEFT, CENTER);
-  text("@GM "+year, 48, height / 48);
+  text("@GM", 48, height / 48);
   textAlign(RIGHT, CENTER);
   time = "";
   if (monthNum === 1){
@@ -501,7 +504,7 @@ function displayStaticUI() {
   fill(255);
   rect(width / 2 - width / 4 - width / 24, height - height / 4, width / 4, height / 12);
   rect(width / 2, height - height / 4, width / 4, height / 12);
-  fill(0);
+  fill(255,100);
   rect(width / 2 + width / 4 + width / 24, height - height / 4, width / 4, height / 12);
   fill(0);
   textSize(32);

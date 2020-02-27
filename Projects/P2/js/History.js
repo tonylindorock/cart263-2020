@@ -1,3 +1,6 @@
+// History
+//
+// An object used to display as a list of player's uploaded videos
 class History{
   constructor(){
     this.rectHieght = height/8;

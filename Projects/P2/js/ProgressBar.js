@@ -1,3 +1,6 @@
+// ProgressBar
+//
+// An object used to display an a progress bar
 class ProgressBar{
   constructor(x,y,color){
     this.color = color;
