@@ -19,20 +19,23 @@ So what are you waiting for? Come and get the R.K.B.V.G. software right now and 
 const RED = "#ff6464";
 const ORANGE = "#ffaf4b";
 const YELLOW = "#ffe600";
-const GREEN = "#33de7a"; //  #4bffaf
+const GREEN = "#33de7a";
 const BLUE = "#4bafff";
 const PURPLE = "#af4bff";
 
-const MOST_VIEWS = 3000000; // 3M
-const ACTIVE_USERS = 1000001; // 1M
+// for calculating user rank
+const MOST_VIEWS = 3000000; // 3M (just a number)
+const ACTIVE_USERS = 1000001; // 1M (just a number)
 
-const COST_CARD = 10;
-const COST_ALL_CARDS = 50;
-const COST_MONTHLY = 500;
-const COST_FINE = 100;
+// costs
+const COST_CARD = 10; // swap one card
+const COST_ALL_CARDS = 50; // swap all cards
+const COST_MONTHLY = 500; // subscription
+const COST_FINE = 100; // fine
 
-const FRAMES_PER_DAY = 120;
+const FRAMES_PER_DAY = 120; // framecounts for one day
 
+// tutorial page 1
 const INTRO = "If this is your first time using this system, please read the instruction." +
   "\n\n1) R.K.B.V.G. is the new way to make an online video. By choosing" +
   "\nany 5 keywords provided, you can ask the advanced A.I. to generate" +
@@ -51,6 +54,7 @@ const INTRO = "If this is your first time using this system, please read the ins
   "\n\n5) R.K.B.V.G. is a subscription service which is charged $"+COST_MONTHLY+"/month." +
   "\nMake sure that you have enough money in your account before" +
   "\nthe next billing cycle.";
+// tutorial page 2
 const OTHER_INFO = "1) Each video is composed of 5 keywords. The video's value and"+
   "\nthe risk of violating the Online Content Policy will be estimated"
   +"\nbased on these keywords."+
@@ -67,8 +71,9 @@ const OTHER_INFO = "1) Each video is composed of 5 keywords. The video's value a
   "\n\nWEEKLY INCOME: depends on the total views from the past week"+
   "\nand your rating"+
   "\n\nHISTORY: where you can see all your uploaded videos";
-let tutorialIndex = 0;
+let tutorialIndex = 0; // current tutorial page index
 
+// messages in the ending
 const MESSAGE_TO_USER = [
   "we found that your account did not have sufficient fund for this"+
   "\nmonth's charge. We believe there must be some reason of why you"+
@@ -96,13 +101,22 @@ const MESSAGE_TO_USER = [
   "\nagain in the futrue."+
   "\n\n\n\nGood Media Inc."
 ]
-let endingId = 0;
+let endingId = 0; // decide ending
 
+// const lines for the voice to speak
 const voice = [
-
+  "Weclome user. R.K.B.V.G. is now booted. Please read the instruction if this is your first time using the system.",
+  "You can learn how to make a video in this page. For more clarity, please proceed to the next interface.",
+  "All cards swap completed.",
+  "Card swap completed.",
+  "History loaded.",
+  "Video generating.",
+  "Video uploaded.",
+  "You've received one message."
 ];
 
-let time = "";
+let time = ""; // time to display in the status bar
+// current month week day
 let monthNum = 3;
 let weekNum = 1;
 let dayNum = 1;
@@ -110,44 +124,54 @@ let dayNum = 1;
 // determine current display content
 let State = "START";
 
+// focus attributes
+// position
 let focusPosX = 0;
 let focusPosY = 0;
+// size
 let focusWidth = 0;
 let focusHeight = 0;
+// index
 let focusXAxis = 0;
 let focusYAxis = 0;
 
+// keyword cards
 let card;
 let card1;
 let card2;
 let card3;
 let card4;
-let cards = [];
-let cardIndex = 0;
-let noCardsAvailable = false;
+let cards = []; // array for keyword cards
+let cardIndex = 0; // remember the current index of card
+let noCardsAvailable = false; // if there's no cards in the interface
 
-let phraseFormat;
+let phraseFormat; // keyword phrase format
 
+// ui elements
 let note;
 let stats;
 let videoInterface;
 let history;
 
-let startProgressBar;
+let startProgressBar; // progress bar in the start screen
 
-let money = 1000;
-let fundDepleted = false;
-let keywords;
-let totalValue = 0;
-let lastMonthViews = 0;
-let pastRating = 100;
-let monthlyIncome = 0;
+let money = 1000; // money in user account
+let fundDepleted = false; // if money is <= 0
 
-let displayMessage = false;
-let weekChange = false;
-let monthChange = false;
-let removedVideoNum = 0;
+let keywords; // keywords phrase
 
+let totalValue = 0; // total value of keywords
+let lastWeekViews = 0; //
+let pastRating = 100; // last week rating
+let weeklyIncome = 0; // income from the weekly views
+
+let displayMessage = false; // display the message each week
+let weekChange = false; // if the week changes
+let monthChange = false; // if the month changes
+
+let removedVideoNum = 0; // num of removed red videos
+
+// JSON files
 var nounsJSON;
 var verbsJSON;
 var adjsJSON;
@@ -182,6 +206,8 @@ function setup() {
 
   startProgressBar = new ProgressBar(width / 2, height / 2 + height / 8, RED);
   startProgressBar.start = true;
+
+
 }
 
 function setupFocus(){
@@ -409,18 +435,19 @@ function runTime(){
     }
   }
   if (dayNum > 7){
-    weekChange = true;
     displayMessage = true;
+    weekChange = true;
     weekNum ++;
     dayNum = 1;
-    let thisMonthViews = stats.views - lastMonthViews;
-    monthlyIncome = int((thisMonthViews/50)*(stats.rating/100));
-    money += monthlyIncome;
-    lastMonthViews = stats.views;
+    let thisWeekViews = stats.views - lastWeekViews;
+    weeklyIncome = int((thisWeekViews/50)*(stats.rating/100));
+    money += weeklyIncome;
+    lastWeekViews = stats.views;
 
     if (weekNum === 4){
       let p = random(0,1);
       if (p > 0.5){
+        systemSpeaks(7);
         p = random(0,1);
         let msgId = -1;
         if (p > 0.5){
@@ -558,7 +585,7 @@ function showMessage(){
   if (displayMessage){
     // weekly income
     if (weekChange){
-      msg += "Income +$"+monthlyIncome;
+      msg += "Income +$"+weeklyIncome;
     // monthly charge
     }
     if (monthChange){
@@ -648,8 +675,6 @@ function keyPressed() {
           selectCard(focusXAxis);
         }
       }
-    } else if (State === "NOTE") {
-
     } else if (State === "HISTORY"){
       // if focusing on NEXT, change to focusing on PREV
       if (focusXAxis === 2){
@@ -687,8 +712,6 @@ function keyPressed() {
           selectCard(focusXAxis);
         }
       }
-    } else if (State === "NOTE") {
-
     }else if (State === "HISTORY"){
       // if focusing on PREV, change to focusing on NEXT
       if (focusXAxis === 1){
@@ -707,6 +730,7 @@ function keyPressed() {
       if (startProgressBar.done) {
         State = "TUTORIAL";
         changeFocus(width / 2, height - height / 12, 0);
+        systemSpeaks(0);
       }
     // if focusing on RUN in TUTORIAL -
     } else if (State === "TUTORIAL") {
@@ -715,6 +739,7 @@ function keyPressed() {
         tutorialIndex = 1;
         focusXAxis = 1;
         changeFocus(width / 2, height - height / 12, 0);
+        systemSpeaks(1);
       // TUTORIAL 1
       } else if (tutorialIndex === 1) {
         // if focusing on PREV, change to focusing on OKAY in TUTORIAL 1
@@ -745,14 +770,17 @@ function keyPressed() {
             videoInterface.upload(); // play the upload animation
             acceptAllCards(); // play the card animtion
             setTimeout(resetCards,2500); // reset cards
+            systemSpeaks(5);
           }
         }else if (focusXAxis === 0){
           swapAllCards();
+          systemSpeaks(2);
           money -= COST_ALL_CARDS;
         }
       }else if (focusYAxis === 0){
         if (!cards[cardIndex].swaped){
           swapCard(cardIndex);
+          systemSpeaks(3);
           money -= COST_CARD;
         }
         // solve the issue which the card stays selected after the player change to another card before the previous card resets
@@ -906,6 +934,7 @@ function uploadVideo(){
   stats.addViewsRate(totalValue);
   stats.updateRating();
   history.addVideoToRecord(keywords,videoInterface.risk,totalValue);
+  systemSpeaks(6);
 }
 
 function updateInterface(){
@@ -981,4 +1010,8 @@ function displayFocus() {
   fill(255, 0);
   rect(focusPosX, focusPosY, focusWidth, focusHeight);
   pop();
+}
+
+function systemSpeaks(index){
+  responsiveVoice.speak(voice[index],"UK English Female");
 }
