@@ -105,14 +105,13 @@ let endingId = 0; // decide ending
 
 // const lines for the voice to speak
 const voice = [
-  "Weclome user. R.K.B.V.G. is now booted. Please read the instruction if this is your first time using the system.",
+  "Welcome user, RK.B.VG is now booted. Please read the instruction if this is your first time using the system.",
   "You can learn how to make a video in this page. For more clarity, please proceed to the next interface.",
-  "All cards swap completed.",
-  "Card swap completed.",
   "History loaded.",
-  "Video generating.",
   "Video uploaded.",
-  "You've received one message."
+  "You have received one message.",
+  "All cards swap completed.",
+  "User account terminated."
 ];
 
 let time = ""; // time to display in the status bar
@@ -364,6 +363,7 @@ function draw() {
     displayFocus();
     // if player has 3 violations
     if (videoInterface.violations >= 3) {
+      systemSpeaks(4);
       // display notification and decide ending
       note.setMessageType(2, -1);
       State = "NOTE";
@@ -371,6 +371,7 @@ function draw() {
       endingId = 1;
       // if player doesn't have money for the monthly fee
     } else if (fundDepleted) {
+      systemSpeaks(4);
       note.setMessageType(2, -1);
       State = "NOTE";
       changeFocus(note.buttonX, note.buttonY, 1);
@@ -524,7 +525,7 @@ function runTime() {
       let p = random(0, 1);
       // 50% chance will have a video inspection
       if (p > 0.5) {
-        systemSpeaks(7);
+        systemSpeaks(5);
         p = random(0, 1);
         let msgId = -1;
         // 50/50 for a standard or deep inspection
@@ -853,6 +854,7 @@ function keyPressed() {
       // if focusing on buttons
       if (focusYAxis === 1) {
         if (focusXAxis === 2) {
+          systemSpeaks(2);
           history.resetView();
           State = "HISTORY";
           focusXAxis = 0;
@@ -865,17 +867,16 @@ function keyPressed() {
             videoInterface.upload(); // play the upload animation
             acceptAllCards(); // play the card animtion
             setTimeout(resetCards, 2500); // reset cards
-            systemSpeaks(5);
+            setTimeout(systemSpeaks, 1800, 3);
           }
         } else if (focusXAxis === 0) {
           swapAllCards();
-          systemSpeaks(2);
+          systemSpeaks(5);
           money -= COST_ALL_CARDS;
         }
       } else if (focusYAxis === 0) {
         if (!cards[cardIndex].swaped) {
           swapCard(cardIndex);
-          systemSpeaks(3);
           money -= COST_CARD;
         }
         // solve the issue which the card stays selected after the player change to another card before the previous card resets
@@ -914,6 +915,7 @@ function keyPressed() {
         history.nextPage();
       }
     } else if (State === "END") {
+      systemSpeaks(6);
       alert("User account terminated.");
       location.reload();
     }
@@ -1064,7 +1066,6 @@ function uploadVideo() {
   stats.addViewsRate(totalValue); // update the rate of getting views and fans
   stats.updateRating(); // calculate rating
   history.addVideoToRecord(keywords, videoInterface.risk, totalValue); // add video info to the history
-  systemSpeaks(6);
 }
 
 // updateInterface()
@@ -1170,5 +1171,9 @@ function displayFocus() {
 //
 // let the voice speak based on given index of the array
 function systemSpeaks(index) {
-  responsiveVoice.speak(voice[index], "UK English Female");
+  responsiveVoice.speak(voice[index], "UK English Female", {
+    pitch: 1.5,
+    rate: 1,
+    volume: 0.75
+  });
 }
