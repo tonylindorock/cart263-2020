@@ -69,7 +69,6 @@ const OTHER_INFO = "1) Each video is composed of 5 keywords. The video's value a
   "\n\nVideo's RISK LEVEL: decides your rating and the chance of you" +
   "\ngetting a violation (3 violations MAX)" +
   "\n\nWEEKLY INCOME: depends on the total views from the past week" +
-  "\nand your rating" +
   "\n\nHISTORY: where you can see all your uploaded videos";
 let tutorialIndex = 0; // current tutorial page index
 
@@ -113,8 +112,6 @@ const voice = [
   "All cards swap completed.",
   "User account terminated."
 ];
-
-let speakingFinished = false;
 
 let time = ""; // time to display in the status bar
 // current month week day
@@ -533,11 +530,11 @@ function runTime() {
     dayNum = 1; // reset day
     // calculate income using last week views and rating
     let thisWeekViews = stats.views - pastTotalViews;
-    weeklyIncome = int((thisWeekViews / 50) * (stats.rating / 100));
+    weeklyIncome = int((thisWeekViews / 50));
     money += weeklyIncome; // add income
     pastTotalViews = stats.views; // upload total views
 
-    if (weeklyIncome > 0){
+    if (weeklyIncome > 0) {
       SOUND_INCOME.play();
     }
 
