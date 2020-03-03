@@ -177,11 +177,14 @@ var nounsJSON;
 var verbsJSON;
 var adjsJSON;
 
+// sounds
 const SOUND_SWAP = new Audio("assets/sounds/Swap.mp3");
 const SOUND_BUTTON = new Audio("assets/sounds/Button.mp3");
 const SOUND_RUN = new Audio("assets/sounds/Run.mp3");
 const SOUND_MESSAGE = new Audio("assets/sounds/Message.mp3");
 const SOUND_GENERATING = new Audio("assets/sounds/Generating.mp3");
+// From https://www.youtube.com/watch?v=4kVTqUxJYBA
+const SOUND_INCOME = new Audio("assets/sounds/Income.mp3");
 
 // custom font
 // https://webfonts.ffonts.net/04b03.font.download
@@ -197,12 +200,13 @@ function preload() {
   nounsJSON = loadJSON("assets/Nouns.json");
   verbsJSON = loadJSON("assets/Verbs.json");
   adjsJSON = loadJSON("assets/Adjectives.json");
-
+  // set up sounds
   SOUND_SWAP.volume = 0.2;
   SOUND_BUTTON.volume = 0.5;
   SOUND_RUN.volume = 0.5;
   SOUND_MESSAGE.volume = 0.5;
-  SOUND_GENERATING.volume = 0.1;
+  SOUND_GENERATING.volume = 0.5;
+  SOUND_INCOME.volume = 0.6;
 }
 
 // setup()
@@ -532,6 +536,10 @@ function runTime() {
     weeklyIncome = int((thisWeekViews / 50) * (stats.rating / 100));
     money += weeklyIncome; // add income
     pastTotalViews = stats.views; // upload total views
+
+    if (weeklyIncome > 0){
+      SOUND_INCOME.play();
+    }
 
     // if week 4
     if (weekNum === 4) {
