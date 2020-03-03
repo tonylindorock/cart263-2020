@@ -114,6 +114,8 @@ const voice = [
   "User account terminated."
 ];
 
+let speakingFinished = false;
+
 let time = ""; // time to display in the status bar
 // current month week day
 let monthNum = 3;
@@ -175,6 +177,12 @@ var nounsJSON;
 var verbsJSON;
 var adjsJSON;
 
+const SOUND_SWAP = new Audio("assets/sounds/Swap.mp3");
+const SOUND_BUTTON = new Audio("assets/sounds/Button.mp3");
+const SOUND_RUN = new Audio("assets/sounds/Run.mp3");
+const SOUND_MESSAGE = new Audio("assets/sounds/Message.mp3");
+const SOUND_GENERATING = new Audio("assets/sounds/Generating.mp3");
+
 // custom font
 // https://webfonts.ffonts.net/04b03.font.download
 let myFont;
@@ -189,6 +197,12 @@ function preload() {
   nounsJSON = loadJSON("assets/Nouns.json");
   verbsJSON = loadJSON("assets/Verbs.json");
   adjsJSON = loadJSON("assets/Adjectives.json");
+
+  SOUND_SWAP.volume = 0.2;
+  SOUND_BUTTON.volume = 0.5;
+  SOUND_RUN.volume = 0.5;
+  SOUND_MESSAGE.volume = 0.5;
+  SOUND_GENERATING.volume = 0.1;
 }
 
 // setup()
@@ -525,7 +539,7 @@ function runTime() {
       let p = random(0, 1);
       // 50% chance will have a video inspection
       if (p > 0.5) {
-        systemSpeaks(5);
+        systemSpeaks(4);
         p = random(0, 1);
         let msgId = -1;
         // 50/50 for a standard or deep inspection
@@ -824,6 +838,7 @@ function keyPressed() {
     // if focusing on RUN in START, change to focusing on NEXT
     if (State === "START") {
       if (startProgressBar.done) {
+        SOUND_RUN.play();
         State = "TUTORIAL";
         changeFocus(width / 2, height - height / 12, 0);
         systemSpeaks(0);
@@ -832,18 +847,21 @@ function keyPressed() {
     } else if (State === "TUTORIAL") {
       // TUTORIAL 0, change to focusing on OKAY
       if (tutorialIndex === 0) {
+        SOUND_BUTTON.play();
         tutorialIndex = 1;
         focusXAxis = 1;
         changeFocus(width / 2, height - height / 12, 0);
         systemSpeaks(1);
         // TUTORIAL 1
       } else if (tutorialIndex === 1) {
+        SOUND_BUTTON.play();
         // if focusing on PREV, change to focusing on OKAY in TUTORIAL 1
         if (focusXAxis === 0) {
           tutorialIndex = 0;
           changeFocus(width / 2, height - height / 12, 0);
           // if focusing on OKAY, change to focusing on - in PLAY
         } else if (focusXAxis === 1) {
+          SOUND_BUTTON.play();
           State = "PLAY";
           focusYAxis = 0;
           focusXAxis = 0;
@@ -854,6 +872,7 @@ function keyPressed() {
       // if focusing on buttons
       if (focusYAxis === 1) {
         if (focusXAxis === 2) {
+          SOUND_BUTTON.play();
           systemSpeaks(2);
           history.resetView();
           State = "HISTORY";
@@ -863,6 +882,8 @@ function keyPressed() {
         } else if (focusXAxis === 1) {
           // if uploading is finished
           if (!videoInterface.uploading && !noCardsAvailable) {
+            SOUND_BUTTON.play();
+            SOUND_GENERATING.play();
             videoInterface.progressBar.reset(); // reset progress bar
             videoInterface.upload(); // play the upload animation
             acceptAllCards(); // play the card animtion
@@ -870,11 +891,14 @@ function keyPressed() {
             setTimeout(systemSpeaks, 1800, 3);
           }
         } else if (focusXAxis === 0) {
+          SOUND_BUTTON.play();
           swapAllCards();
           systemSpeaks(5);
           money -= COST_ALL_CARDS;
         }
       } else if (focusYAxis === 0) {
+        SOUND_SWAP.currentTime = 0;
+        SOUND_SWAP.play();
         if (!cards[cardIndex].swaped) {
           swapCard(cardIndex);
           money -= COST_CARD;
@@ -892,26 +916,31 @@ function keyPressed() {
       // if focusing on CLOSE in NOTE, change to focusing on ACCEPT
     } else if (State === "NOTE") {
       if (note.id === 0 || note.id === 1) {
+        SOUND_BUTTON.play();
         State = "PLAY";
         focusXAxis = 1;
         focusYAxis = 1;
         changeFocus(width / 2, height - height / 4, 0);
       } else if (note.id === 2) {
+        SOUND_BUTTON.play();
         State = "END";
         changeFocus(width / 2, height - height / 12, 0);
       }
     } else if (State === "HISTORY") {
       // focusing on CLOSE
       if (focusXAxis === 0) {
+        SOUND_BUTTON.play();
         State = "PLAY";
         focusYAxis = 1;
         focusXAxis = 1;
         changeFocus(width / 2, height - height / 4, 0);
         // if focusing on PREV
       } else if (focusXAxis === 1) {
+        SOUND_BUTTON.play();
         history.prevPage();
         // if focusing on NEXT
       } else if (focusXAxis === 2) {
+        SOUND_BUTTON.play();
         history.nextPage();
       }
     } else if (State === "END") {
@@ -1172,7 +1201,7 @@ function displayFocus() {
 // let the voice speak based on given index of the array
 function systemSpeaks(index) {
   responsiveVoice.speak(voice[index], "UK English Female", {
-    pitch: 1.5,
+    pitch: 0.5,
     rate: 1,
     volume: 0.75
   });
