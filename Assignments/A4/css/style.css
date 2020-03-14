@@ -3,3 +3,11 @@
 This is the style file for this project.
 
 **********************************************/
+
+body{
+  font-family: Helvetica, sans-sans-serif;
+  font-size: 64px;
+  font-weight: bold;
+
+  margin: 64px;
+}
