@@ -3,9 +3,9 @@ By Yichen Wang
 
 BACKGROUND<br>
 R.K.B.V.G. stands for Random Keywords Based Video Generator. It is a system developed by Good Media Inc. in the 90s - 00s. It is used to generate videos from an immersive video database. By using 5 random keywords, the build-in A.I. can make a video in seconds and upload the video automatically. 
- 
+
 ABOUT THIS PROJECT<br>
-In reality, R.K.B.V.G. is a fantasy computer system. I got the inspiration from Pico-8 (https://www.lexaloffle.com/pico-8.php), a fantasy console for creating simple games and programs. The reason I went for this style is just for aesthetics, and to achieve it, in my opinion, p5 is the most suitable library to use. Phaser could be a great alternative, but I find p5 more familiar to work with. 
+In reality, R.K.B.V.G. is a fantasy computer system. I got the inspiration from Pico-8 (https://www.lexaloffle.com/pico-8.php), a fantasy console for creating simple games and programs. The reason I went for this style is just for aesthetics, and to achieve it, in my opinion, p5 is the most suitable library to use. Phaser could be a great alternative, but I find p5 more familiar to work with.
 
 From making everything boxy to using a limited range of colours, a lot of the UI elements are made to create the aesthetics of a fantasy console. Making the input of this game keyboard-only and hiding the mouse all the time is not a necessary step; however, it indeed made the game (therefore the fantasy computer) appear obsolete. And this unnecessary step led to another unnecessary step. I had to code a nearly-entire "focus" system inside my game. Without a mouse, how the user interacts with the program is only by arrow-keys and a confirm key (SPACE in this case). A focus on a button shows where the invisible cursor is, and using the keys to change the focus to other buttons and confirming it is the only way to navigate in this game. It was time-consuming, and I probably would not attempt to do this again in p5.
 
