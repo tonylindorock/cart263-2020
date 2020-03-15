@@ -53,7 +53,7 @@ function setup() {
   ).then(allFilesLoaded); // when everything is loaded
 
   // so when a key is pressed, call keyPressed function
-  document.addEventListener('keypress', keyPressed);
+  $(document).keypress(keyPressed);
 
   // or a mouse click to reload the page
   $('body').click(function(){
