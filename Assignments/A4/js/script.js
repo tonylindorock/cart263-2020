@@ -54,6 +54,11 @@ function setup() {
 
   // so when a key is pressed, call keyPressed function
   document.addEventListener('keypress', keyPressed);
+
+  // or a mouse click to reload the page
+  $('body').click(function(){
+    location.reload();
+  });
 }
 
 // keyPressed()
