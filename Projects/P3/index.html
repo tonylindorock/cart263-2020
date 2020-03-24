@@ -1,21 +1,53 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
 
-    <!-- CSS stylesheet(s) -->
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
 
-    <!-- Library script(s) -->
-    <!-- Add your required libraries here either as local files or CDN-hosted files -->
+  <!-- CSS stylesheet(s) -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-    <!-- My script(s) -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-  </head>
+  <!-- Library script(s) -->
+  <!-- A-FRAME -->
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+  <!-- JQUERY -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-  <body>
-  </body>
+  <!-- My script(s) -->
+  <script src="js/script.js"></script>
+</head>
+
+<body>
+  <a-scene>
+    <!-- assets -->
+    <a-assets>
+
+    </a-assets>
+    <!-- components -->
+      <a-entity id="camera" camera look-controls position="0 1.8 0">
+        <a-entity cursor position="0 0 -1" geometry="primitive: circle; radius: 0.01" material="color: white; shader: flat" raycaster="far: 20; interval: 1000; objects: .clickable"> </a-entity>
+        <a-entity geometry="primitive: plane; height: 0.2; width: 0.2" position="-1.25 -0.65 -1"
+            material="color: gray; opacity: 0.5"></a-entity>
+    </a-entity>
+
+    <a-box position="-1 0.5 2" color="#4CC3D9"></a-box>
+    <a-cylinder position="1 0.75 2" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <!-- floor -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="5" height="5" color="#7BC8A4"></a-plane>
+    <!-- ceiling -->
+    <a-plane position="0 3.5 0" rotation="90 0 0" width="5" height="5" color="#7BC8A4"></a-plane>
+    <!-- walls -->
+    <!-- right -->
+    <a-plane position="2 1 0" rotation="0 -90 0" width="5" height="5" color="#7BC8A4"></a-plane>
+    <!-- left -->
+    <a-plane position="-2 1 0" rotation="180 -90 0" width="5" height="5" color="#7BC8A4"></a-plane>
+    <!-- front -->
+    <a-plane position="0 2 -3" rotation="0 0 0" width="5" height="5" color="#7BC8A4"></a-plane>
+    <!-- back -->
+    <a-plane position="0 2 3" rotation="180 0 0" width="5" height="5" color="#7BC8A4"></a-plane>
+  </a-scene>
+</body>
 
 </html>
