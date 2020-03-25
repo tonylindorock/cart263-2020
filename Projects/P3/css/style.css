@@ -1,9 +1,36 @@
-
+@font-face {
+	font-family: 'SUPERSCR';
+	src: url('fonts/SUPERSCR.eot');
+	src: local('☺'), url('fonts/SUPERSCR.woff') format('woff'), url('fonts/SUPERSCR.ttf') format('truetype'), url('fonts/SUPERSCR.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
 body{
   padding: 0;
   margin: 0;
+  display: flex;
+
+  font-family: "SUPERSCR",Sans-Serif;
+  font-size: 16px;
 }
 
 canvas{
   display: block;
+  z-index: -1;
+}
+
+.button{
+  z-index: 1;
+  display: inline-block;
+  color: black;
+  background-color: white;
+  line-height: 32px;
+  height: 32px;
+  width: 128px;
+  left: 50%;
+  top: 55%;
+  margin-top: 16px;   /* = -height / 2   */
+  margin-left: -64px; /* = -width / 2    */
+  position: fixed;
+  text-align: center;
 }
