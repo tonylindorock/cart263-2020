@@ -1,7 +1,6 @@
-@font-face {
-	font-family: 'SUPERSCR';
-	src: url('fonts/SUPERSCR.eot');
-	src: local('☺'), url('fonts/SUPERSCR.woff') format('woff'), url('fonts/SUPERSCR.ttf') format('truetype'), url('fonts/SUPERSCR.svg') format('svg');
+@font-face{
+  font-family: 'Superscript';
+	src: url('../assets/font/SUPERSCR.TTF') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -10,8 +9,19 @@ body{
   margin: 0;
   display: flex;
 
-  font-family: "SUPERSCR",Sans-Serif;
+  font-family: "Superscript",sans-serif;
+	font-weight: bold;
   font-size: 16px;
+
+	/* https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
+	-webkit-user-select: none;
+	/* Safari */
+	-moz-user-select: none;
+	/* Firefox */
+	-ms-user-select: none;
+	/* IE10+/Edge */
+	user-select: none;
+	/* Standard */
 }
 
 canvas{
@@ -20,17 +30,25 @@ canvas{
 }
 
 .button{
-  z-index: 1;
   display: inline-block;
-  color: black;
-  background-color: white;
-  line-height: 32px;
-  height: 32px;
-  width: 128px;
+  color: white;
+  background-color: DimGrey;
+
+  font-size: 28px;
+  line-height: 64px;
+
+  border-radius: 8px;
+  height: 64px;
+  width: 200px;
   left: 50%;
-  top: 55%;
-  margin-top: 16px;   /* = -height / 2   */
-  margin-left: -64px; /* = -width / 2    */
+  top: 60%;
+  margin-top: -32px;   /* = -height / 2   */
+  margin-left: -100px; /* = -width / 2    */
   position: fixed;
   text-align: center;
+}
+.button:hover{
+	background-color: Coral;
+  color: white;
+  cursor: pointer;
 }
