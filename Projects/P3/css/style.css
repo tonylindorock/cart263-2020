@@ -63,3 +63,44 @@ canvas{
   color: white;
   cursor: pointer;
 }
+
+.art-canvas{
+  background-color: Coral;
+
+  width: 512px;
+  height: 512px;
+  right: 5%;
+  top: 45%;
+  margin-top: -256px;
+  margin-left: -256px;
+  position: absolute;
+  z-index: 1;
+}
+
+.pixel{
+  z-index: 1;
+  background-color: white;
+
+  width: 32px;
+  height: 32px;
+
+  float: left;
+  display: inline-block;
+  text-align: center;
+  line-height: 150%;
+}
+.pixel:hover{
+  margin: 2px;
+  width: 28px;
+  height: 28px;
+}
+.pixel:active{
+  margin: 2px;
+  width: 28px;
+  height: 28px;
+}
+.pixel:focus{
+  margin: 2px;
+  width: 28px;
+  height: 28px;
+}

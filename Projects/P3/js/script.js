@@ -19,8 +19,20 @@ let tutorialFadeAway = false;
 
 let doOnce = true;
 
+let mouseIsDown = false;
+
+let drawing = true; // if the player is drawing
+let erasing = false; // if the player is erasing
+let currentColor = 0;
+let lastColor = -1;
+
+const CANVAS_SIZE = 16;
+
 // current state of the program
 let state = "START";
+
+let $body;
+let $canvas;
 
 // to store font
 let themeFont;
@@ -49,6 +61,9 @@ function preload() {
 }
 
 function setup() {
+  $body = $('body');
+  $canvas = $('.art-canvas');
+
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
   textFont(themeFont);
@@ -57,6 +72,8 @@ function setup() {
   textAlign(CENTER,CENTER);
   rectMode(CENTER);
   ellipseMode(CENTER);
+
+  setupCanvas();
 
   setupMainMenu();
 }
@@ -99,7 +116,7 @@ function displayMainMenu() {
       titleFadeAway = true;
       $('#title-button').remove();
     }).hide().fadeIn(500);
-    $('body').append($button);
+    $body.append($button);
     doOnce = false;
   }
   if (titleFadeAway && mainMenuFontAlpha <= 1){
@@ -125,7 +142,7 @@ function displayTutorial(){
       tutorialFadeAway = true;
       $('#tutorial-button').remove();
     }).hide().fadeIn(500);
-    $('body').append($button);
+    $body.append($button);
     doOnce = false;
   }
   if (tutorialFadeAway && tutorialFontAlpha <= 1){
@@ -135,8 +152,54 @@ function displayTutorial(){
   pop();
 }
 
-function displayCanvas(){
-  push();
-  
-  pop();
+function setupCanvas(){
+  // fill the window with black pixels
+  for(let i = 0; i < CANVAS_SIZE; i++){
+    for(let j = 0; j < CANVAS_SIZE; j++){
+      var newPixel = $("<div class='pixel'></div>");
+      $canvas.append(newPixel);
+    }
+  }
+  $canvas.click({value:"click"},paint);
+  $canvas.on('mousemove',{value:"down"},paint);
+}
+
+// paint
+//
+// change the pixel background color to the selected color
+// also will remove the drawing after seconds if the keep pixels is disabled
+function paint(e){
+  if (drawing){
+    let pixel = e.target;
+    if (pixel.className === "pixel" && ((e.data.value === "click" )||(e.data.value === "down" && mouseIsPressed))){
+      let color;
+      if (!erasing){
+        // red
+        if (currentColor === 0){
+          color = "rgb(255,0,0)";
+        // orange
+        }else if (currentColor === 1){
+          color = "rgb(255,132,0)";
+        // yellow
+        }else if (currentColor === 2){
+          color = "rgb(255,232,0)";
+        // green
+        }else if (currentColor === 3){
+          color = "rgb(0,255,0)";
+        // cyan
+        }else if (currentColor === 4){
+          color = "rgb(0,255,232)";
+        // blue
+        }else if (currentColor === 5){
+          color = "rgb(0,0,255)";
+        // purple
+        }else if (currentColor === 6){
+          color = "rgb(255,0,232)";
+        }
+      }else{
+        color = "white";
+      }
+      $(pixel).css({"background-color":color});
+  }
+}
 }
