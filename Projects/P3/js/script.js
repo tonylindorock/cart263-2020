@@ -32,6 +32,7 @@ const CANVAS_SIZE = 16;
 let state = "START";
 
 let $body;
+let $right;
 let $canvas;
 
 // to store font
@@ -62,6 +63,7 @@ function preload() {
 
 function setup() {
   $body = $('body');
+  $right = $('.right-content');
   $canvas = $('.art-canvas');
 
   createCanvas(windowWidth, windowHeight);
@@ -78,6 +80,23 @@ function setup() {
   setupMainMenu();
 }
 
+function setupMainMenu(){
+  mainMenuFontHeight = height;
+  mainMenuFontAlpha = 0;
+}
+
+function setupCanvas(){
+  // fill the window with black pixels
+  for(let i = 0; i < CANVAS_SIZE; i++){
+    for(let j = 0; j < CANVAS_SIZE; j++){
+      var newPixel = $("<div class='pixel'></div>");
+      $canvas.append(newPixel);
+    }
+  }
+  $canvas.click({value:"click"},paint);
+  $canvas.on('mousemove',{value:"down"},paint);
+}
+
 function draw() {
   background(BG_COLOR);
   if (state === "START"){
@@ -87,11 +106,6 @@ function draw() {
   }else if (state === "PLAY"){
 
   }
-}
-
-function setupMainMenu(){
-  mainMenuFontHeight = height;
-  mainMenuFontAlpha = 0;
 }
 
 function displayMainMenu() {
@@ -119,7 +133,7 @@ function displayMainMenu() {
     $body.append($button);
     doOnce = false;
   }
-  if (titleFadeAway && mainMenuFontAlpha <= 1){
+  if (titleFadeAway && mainMenuFontAlpha <= 10){
     state = "TUTORIAL"; // to the next state
     doOnce = true; // reset doOnce
   }
@@ -152,16 +166,12 @@ function displayTutorial(){
   pop();
 }
 
-function setupCanvas(){
-  // fill the window with black pixels
-  for(let i = 0; i < CANVAS_SIZE; i++){
-    for(let j = 0; j < CANVAS_SIZE; j++){
-      var newPixel = $("<div class='pixel'></div>");
-      $canvas.append(newPixel);
-    }
-  }
-  $canvas.click({value:"click"},paint);
-  $canvas.on('mousemove',{value:"down"},paint);
+function displayGallery(){
+
+}
+
+function displayWorkshop(){
+  
 }
 
 // paint
