@@ -68,3 +68,31 @@ canvas{
   color: white;
   font-size: 32px;
 }
+
+.inventory{
+  z-index: 1;
+  position: absolute;
+  width: 80%;
+  height: 96px;
+  background-color: white;
+  left: 50%;
+  top: 10%;
+  margin-top: -48px;
+  margin-left: -40%;
+  text-align: center;
+}
+.item{
+  background-color: black;
+  display: inline-block;
+  width: 84px;
+  height: 84px;
+  margin: 6px;
+}
+.item-slot{
+  z-index: 2;
+  background-color: black;
+  display: inline-block;
+  width: 84px;
+  height: 84px;
+  margin: 6px;
+}

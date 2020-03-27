@@ -30,6 +30,8 @@ let $body;
 let showTextBox = true;
 let textBox;
 
+let inventory;
+
 // to store font
 let themeFont;
 
@@ -66,7 +68,8 @@ function setup() {
   ellipseMode(CENTER);
   noStroke();
 
-  textBox = new TextBox("What happened? Did I fall asleep? Where am I? Why am I here? I can do you one better! Why is Drax?What happened? Did I fall asleep? Where am I? Why am I here? I can do you one better! Why is Drax?");
+  textBox = new TextBox("What happened? Did I fall asleep? Where am I?");
+  inventory = new Inventory();
 
   setupMainMenu();
 }
@@ -86,6 +89,7 @@ function draw() {
     if(showTextBox){
       textBox.display();
     }
+    inventory.display();
   }
 }
 
