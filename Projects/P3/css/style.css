@@ -26,7 +26,7 @@ body{
 
 canvas{
   display: block;
-  z-index: -1;
+  z-index: 0;
 }
 
 .button{
@@ -64,93 +64,7 @@ canvas{
   cursor: pointer;
 }
 
-.right-content{
-  display: none;
-
-  z-index: 1;
-  position: absolute;
-  width: 50%;
-  height: 100%;
-  right: 0%;
-  text-align: center;
-
-  background-color: grey;
-}
-
-#drawing{
-  width: 100%;
-  height: 100%;
-}
-
 .text{
   color: white;
   font-size: 32px;
-}
-
-#art-name{
-  position: absolute;
-  width: 256px;
-  height: 32px;
-
-  left: 50%;
-  top: 5%;
-
-  margin-left: -128px;
-  margin-top: -16px;
-}
-
-.art-canvas{
-  background-color: Coral;
-
-  width: 512px;
-  height: 512px;
-  left: 50%;
-  top: 10%;
-  margin-left: -256px;
-  position: absolute;
-  z-index: 1;
-}
-
-.pixel{
-  z-index: 1;
-  background-color: white;
-
-  width: 32px;
-  height: 32px;
-
-  float: left;
-  display: inline-block;
-  text-align: center;
-  line-height: 150%;
-}
-.pixel:hover{
-  margin: 2px;
-  width: 28px;
-  height: 28px;
-}
-.pixel:active{
-  margin: 2px;
-  width: 28px;
-  height: 28px;
-}
-.pixel:focus{
-  margin: 2px;
-  width: 28px;
-  height: 28px;
-}
-
-.palette{
-  background-color: black;
-  width: 30%;
-  height: 10%;
-  position: absolute;
-
-  bottom:3%;
-  left:5%;
-}
-
-.palette-button{
-  background-color: red;
-  width: 20%;
-  height: 50%;
 }

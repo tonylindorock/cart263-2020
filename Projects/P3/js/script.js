@@ -1,10 +1,11 @@
 "use strict";
-
 /********************************************************************
 
 Project 3
-The Art of Being Artistic
+Questionable Logic
 Yichen Wang
+
+A point & click adventrue.
 
 FONT FROM: https://www.urbanfonts.com/fonts/superscript.htm
 *********************************************************************/
@@ -19,37 +20,28 @@ let tutorialFadeAway = false;
 
 let doOnce = true;
 
-let mouseIsDown = false;
-
-let drawing = true; // if the player is drawing
-let erasing = false; // if the player is erasing
-let currentColor = 0;
-let lastColor = -1;
-
-const CANVAS_SIZE = 16;
-
 // current state of the program
 let state = "START";
+// the dir the player is facing
+let current_Dir = 0;
 
 let $body;
-let $right;
-let $canvas;
+
+let showTextBox = true;
+let textBox;
 
 // to store font
 let themeFont;
 
 const TEXT_TUTORIAL = "Hi,"
-+"\n\nI heard that you finally decided to open up your"
-+"\nown online art gallery. It's gonna be hard."
-+"\nAs a friend, I want to give you some really"
-+"\nhelpful advice."
-+"\n\nBesides producing artworks to attract buyers, you"
-+"\nalso need to spend your money wisely. You will"
-+"\nneed to pay for your rent & food and"
-+"\nhandle incidents."
-+"\n\nBe creative!"
++"\n\nI know it has been many years since we were"
++"\ntogether, but there's something I need to tell you."
++"\n\nThe Cube is real! I got in! And I escaped!"
++"\nIt was incredible! No one would ever believe me."
++"\nBut I know you will. It's not a MYTH any more."
++"\n\nI'm going in again. Wish me luck."
 +"\n\nBest wishes,"
-+"\nA friend";
++"\nOliver";
 
 // the color of background
 const BG_COLOR = "#111";
@@ -63,8 +55,6 @@ function preload() {
 
 function setup() {
   $body = $('body');
-  $right = $('.right-content');
-  $canvas = $('.art-canvas');
 
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
@@ -74,8 +64,9 @@ function setup() {
   textAlign(CENTER,CENTER);
   rectMode(CENTER);
   ellipseMode(CENTER);
+  noStroke();
 
-  setupCanvas();
+  textBox = new TextBox("What happened? Did I fall asleep? Where am I? Why am I here? I can do you one better! Why is Drax?What happened? Did I fall asleep? Where am I? Why am I here? I can do you one better! Why is Drax?");
 
   setupMainMenu();
 }
@@ -85,18 +76,6 @@ function setupMainMenu(){
   mainMenuFontAlpha = 0;
 }
 
-function setupCanvas(){
-  // fill the window with black pixels
-  for(let i = 0; i < CANVAS_SIZE; i++){
-    for(let j = 0; j < CANVAS_SIZE; j++){
-      var newPixel = $("<div class='pixel'></div>");
-      $canvas.append(newPixel);
-    }
-  }
-  $canvas.click({value:"click"},paint);
-  $canvas.on('mousemove',{value:"down"},paint);
-}
-
 function draw() {
   background(BG_COLOR);
   if (state === "START"){
@@ -104,7 +83,9 @@ function draw() {
   }else if (state === "TUTORIAL"){
     displayTutorial();
   }else if (state === "PLAY"){
-
+    if(showTextBox){
+      textBox.display();
+    }
   }
 }
 
@@ -112,7 +93,7 @@ function displayMainMenu() {
   push();
   textSize(32);
   fill(255,mainMenuFontAlpha);
-  text("A Net Artist Sim",width/2,height-height/8);
+  text("Special Episode: The Cube",width/2,height-height/8);
   textSize(64);
   if (!titleFadeAway){
     mainMenuFontAlpha = lerp(mainMenuFontAlpha, 255, 0.05);
@@ -123,7 +104,7 @@ function displayMainMenu() {
   }
   // fill the title
   fill(127,255,212,mainMenuFontAlpha);
-  text("The Art of\nBeing Artistic",width/2,mainMenuFontHeight);
+  text("Questionable\nLogic",width/2,mainMenuFontHeight);
 
   if (mainMenuFontAlpha >= 210 && doOnce){
     var $button = $("<div class='button' id = 'title-button'></div>").text("Start").button().click(function(){
@@ -152,7 +133,7 @@ function displayTutorial(){
   fill(255,tutorialFontAlpha);
   text(TEXT_TUTORIAL,width/12,height/2);
   if (doOnce){
-    var $button = $("<div class='button' id = 'tutorial-button'></div>").text("Okay").button().click(function(){
+    var $button = $("<div class='button' id = 'tutorial-button'></div>").text("Next").button().click(function(){
       tutorialFadeAway = true;
       $('#tutorial-button').remove();
     }).hide().fadeIn(500);
@@ -166,50 +147,13 @@ function displayTutorial(){
   pop();
 }
 
-function displayGallery(){
-
-}
-
-function displayWorkshop(){
-  
-}
-
-// paint
-//
-// change the pixel background color to the selected color
-// also will remove the drawing after seconds if the keep pixels is disabled
-function paint(e){
-  if (drawing){
-    let pixel = e.target;
-    if (pixel.className === "pixel" && ((e.data.value === "click" )||(e.data.value === "down" && mouseIsPressed))){
-      let color;
-      if (!erasing){
-        // red
-        if (currentColor === 0){
-          color = "rgb(255,0,0)";
-        // orange
-        }else if (currentColor === 1){
-          color = "rgb(255,132,0)";
-        // yellow
-        }else if (currentColor === 2){
-          color = "rgb(255,232,0)";
-        // green
-        }else if (currentColor === 3){
-          color = "rgb(0,255,0)";
-        // cyan
-        }else if (currentColor === 4){
-          color = "rgb(0,255,232)";
-        // blue
-        }else if (currentColor === 5){
-          color = "rgb(0,0,255)";
-        // purple
-        }else if (currentColor === 6){
-          color = "rgb(255,0,232)";
-        }
-      }else{
-        color = "white";
-      }
-      $(pixel).css({"background-color":color});
+function keyPressed() {
+  if (state === "PLAY" && textBox.update){
+    textBox.fullText();
   }
 }
+function mousePressed(){
+  if (state === "PLAY" && textBox.update){
+    textBox.fullText();
+  }
 }
