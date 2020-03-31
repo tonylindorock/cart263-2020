@@ -2,7 +2,7 @@
 /********************************************************************
 
 Project 3
-Questionable Logic
+Questionable Logic: The Cube
 Yichen Wang
 
 A point & click adventrue.
@@ -15,29 +15,32 @@ let mainMenuFontHeight;
 let mainMenuFontAlpha = 0;
 let titleFadeAway = false;
 
+// tutorial text animation attributes
 let tutorialFontAlpha = 0;
 let tutorialFadeAway = false;
 
-let doOnce = true;
+let doOnce = true; // do only once
 
 // current state of the program
 let state = "START";
-// the dir the player is facing
-let current_Dir = 0;
+// the direction the player is facing
+let currentDir = 0;
 
-let $body;
+let $body; // store the html body
 
+// text box
 let showTextBox = true;
-let textBox;
+let textBox; // store the obj
 
-let inventory;
+// text box
+let inventory; // store the obj
 
-// to store font
-let themeFont;
+// background manager
+let gameBackground; // store the obj
 
 const TEXT_TUTORIAL = "Hi,"
-+"\n\nI know it has been many years since we were"
-+"\ntogether, but there's something I need to tell you."
++"\n\nI know it has been many years since we departed,"
++"\nbut there's something I need to tell you."
 +"\n\nThe Cube is real! I got in! And I escaped!"
 +"\nIt was incredible! No one would ever believe me."
 +"\nBut I know you will. It's not a MYTH any more."
@@ -45,40 +48,97 @@ const TEXT_TUTORIAL = "Hi,"
 +"\n\nBest wishes,"
 +"\nOliver";
 
-// the color of background
-const BG_COLOR = "#111";
-// color of highlight
+const BG_COLOR = "#262626"; // the color of background
+
+// colors
 const HIGHLIGHT = "#FF7F50";
 const GREEN_BLUE = "#7FFFD4";
 
+// * game assests * //
+let THEME_FONT; // store the font
+// backgrounds
+let BG_MM;
+let BG_FRONT;
+let BG_LEFT;
+let BG_RIGHT;
+let BG_BACK;
+let BG_DOWN;
+let BG_UP;
+let bgArray;
+// objs appear in the bgs
+let OBJ_BOOKLET;
+let OBJ_CABIN_BOTTOM_OUT;
+let OBJ_CABIN_LEFT_OUT;
+let OBJ_CABIN_RIGHT_OUT;
+let OBJ_DRAWER_LEFT_OUT;
+let OBJ_DRAWER_RIGHT_OUT;
+let OBJ_PANEL;
+let OBJ_PANEL_OPENED;
+let OBJ_PLANT;
+let OBJ_PLANT_MOVED;
+// closer look at objs
+let CLOSE_KEYPAD;
+
+// preload()
+//
+//
 function preload() {
-  themeFont = loadFont("assets/font/superscript/SUPERSCR.TTF");
+  THEME_FONT = loadFont("assets/font/superscript/SUPERSCR.TTF");
+
+  BG_FRONT = loadImage("assets/images/Dir_front.png");
+  BG_LEFT = loadImage("assets/images/Dir_left.png");
+  BG_RIGHT = loadImage("assets/images/Dir_right.png");
+  BG_BACK = loadImage("assets/images/Dir_back.png");
+  BG_DOWN = loadImage("assets/images/Dir_down.png");
+  BG_UP = loadImage("assets/images/Dir_up.png");
+  bgArray = [BG_FRONT,BG_LEFT,BG_RIGHT,BG_BACK,BG_DOWN,BG_UP];
+  OBJ_BOOKLET = loadImage("assets/images/Booklet.png");
+  OBJ_CABIN_BOTTOM_OUT = loadImage("assets/images/Cabin_bottom_out.png");
+  OBJ_CABIN_LEFT_OUT = loadImage("assets/images/Cabin_left_out.png");
+  OBJ_CABIN_RIGHT_OUT = loadImage("assets/images/Cabin_right_out.png");
+  OBJ_DRAWER_LEFT_OUT = loadImage("assets/images/Drawer_left_out.png");
+  OBJ_DRAWER_RIGHT_OUT = loadImage("assets/images/Drawer_right_out.png");
+  OBJ_PANEL = loadImage("assets/images/Panel.png");
+  OBJ_PANEL_OPENED = loadImage("assets/images/Panel_opened.png");
+  OBJ_PLANT = loadImage("assets/images/Plant.png");
+  OBJ_PLANT_MOVED = loadImage("assets/images/Plant_moved.png");
 }
 
+// setup()
+//
+//
 function setup() {
   $body = $('body');
-
+  // style/theme
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
-  textFont(themeFont);
+  textFont(THEME_FONT);
   textStyle(BOLD);
   textSize(16);
   textAlign(CENTER,CENTER);
   rectMode(CENTER);
-  ellipseMode(CENTER);
+  imageMode(CENTER);
   noStroke();
 
-  textBox = new TextBox("What happened? Did I fall asleep? Where am I?");
+  gameBackground = new Background(BG_FRONT);
   inventory = new Inventory();
+  textBox = new TextBox("What happened? Where am I? How did I get here?"
+  +"\n\n[press any key to continue]");
 
   setupMainMenu();
 }
 
+// setupMainMenu()
+//
+//
 function setupMainMenu(){
   mainMenuFontHeight = height;
   mainMenuFontAlpha = 0;
 }
 
+// draw()
+//
+//
 function draw() {
   background(BG_COLOR);
   if (state === "START"){
@@ -86,6 +146,7 @@ function draw() {
   }else if (state === "TUTORIAL"){
     displayTutorial();
   }else if (state === "PLAY"){
+    gameBackground.display();
     if(showTextBox){
       textBox.display();
     }
@@ -93,6 +154,27 @@ function draw() {
   }
 }
 
+// keyPressed()
+//
+//
+function keyPressed() {
+  if (state === "PLAY" && textBox.update){
+    textBox.fullText();
+  }
+}
+
+// mousePressed()
+//
+//
+function mousePressed(){
+  if (state === "PLAY" && textBox.update){
+    textBox.fullText();
+  }
+}
+
+// displayMainMenu()
+//
+//
 function displayMainMenu() {
   push();
   textSize(32);
@@ -125,6 +207,9 @@ function displayMainMenu() {
   pop();
 }
 
+// displayTutorial()
+//
+//
 function displayTutorial(){
   push();
   textSize(28);
@@ -151,13 +236,6 @@ function displayTutorial(){
   pop();
 }
 
-function keyPressed() {
-  if (state === "PLAY" && textBox.update){
-    textBox.fullText();
-  }
-}
-function mousePressed(){
-  if (state === "PLAY" && textBox.update){
-    textBox.fullText();
-  }
+function useItem(item_id){
+
 }
