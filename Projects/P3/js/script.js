@@ -28,7 +28,6 @@ let doOnce = true; // do only once
 let state = "PLAY";
 // the direction the player is facing
 let currentDir = 0;
-let dirChanged = false;
 
 let $body; // store the html body
 let $objTrigger;
@@ -62,7 +61,7 @@ const TEXT_TUTORIAL = "Hi," +
 
 const TEXT_BEGIN = [
   "What happened? Where am I? How did I get here?\n\n[press any key to continue]",
-  "I don't... remember anything.\nI should probably get out of here."
+  "I don't... remember anything.\nI should probably get out of here.\n\n[press Arrowkeys to change your facing direction]"
 ];
 let begin = true;
 
@@ -202,6 +201,28 @@ function setupObjTriggers() {
   $("#book").click({
     id: 1
   }, objTriggered);
+  // back triggers
+  $("#newspaper").click({id: 2}, objTriggered);
+  $("#coffeemachine").click({id: 2}, objTriggered);
+  $("#plug").click({id: 2}, objTriggered);
+  $("#socket").click({id: 2}, objTriggered);
+  $("#fuse").click({id: 2}, objTriggered);
+  // right triggers
+  $("#paintings").click({
+    id: 3
+  }, objTriggered);
+  $("#cabin-left").click({
+    id: 3
+  }, objTriggered);
+  $("#cabin-right").click({
+    id: 3
+  }, objTriggered);
+  $("#cabin-bottom").click({
+    id: 3
+  }, objTriggered);
+  $("#manual").click({
+    id: 3
+  }, objTriggered);
 }
 
 // draw()
@@ -236,49 +257,50 @@ function keyPressed() {
         textBox.insertBuffer();
         return;
       } else {
-        if (textBox.showing){
+        if (textBox.showing) {
           textBox.hide();
           return;
         }
       }
+      if (keyCode === UP_ARROW) {
+        if (currentDir === 4) {
+          gameBackground.changeDirTo(gameBackground.lastDir);
+        } else {
+          if (currentDir != 5) {
+            gameBackground.changeDirTo(5);
+          }
+        }
+      } else if (keyCode === DOWN_ARROW) {
+        if (currentDir === 5) {
+          gameBackground.changeDirTo(gameBackground.lastDir);
+        } else {
+          if (currentDir != 4) {
+            gameBackground.changeDirTo(4);
+          }
+        }
+      } else if (keyCode === LEFT_ARROW) {
+        if (currentDir != 4 && currentDir != 5) {
+          if (currentDir < 3) {
+            currentDir++;
+            gameBackground.changeDirTo(currentDir);
+          } else if (currentDir === 3) {
+            gameBackground.changeDirTo(0);
+          }
+        }
+      } else if (keyCode === RIGHT_ARROW) {
+        if (currentDir != 4 && currentDir != 5) {
+          if (currentDir > 0) {
+            currentDir--;
+            gameBackground.changeDirTo(currentDir);
+          } else if (currentDir === 0) {
+            gameBackground.changeDirTo(3);
+          }
+        }
+      }
+      showTriggers();
+      currentDir = gameBackground.dir;
     }
-    if (keyCode === UP_ARROW){
-      if (currentDir === 4){
-        gameBackground.changeDirTo(gameBackground.lastDir);
-      }else{
-        if (currentDir != 5){
-          gameBackground.changeDirTo(5);
-        }
-      }
-    }else if (keyCode === DOWN_ARROW){
-      if (currentDir === 5){
-        gameBackground.changeDirTo(gameBackground.lastDir);
-      }else{
-        if (currentDir != 4){
-          gameBackground.changeDirTo(4);
-        }
-      }
-    }else if (keyCode === LEFT_ARROW){
-      if (currentDir != 4 && currentDir != 5){
-        if (currentDir < 3){
-          currentDir++;
-          gameBackground.changeDirTo(currentDir);
-        }else if (currentDir === 3){
-          gameBackground.changeDirTo(0);
-        }
-      }
-    }else if (keyCode === RIGHT_ARROW){
-      if (currentDir != 4 && currentDir != 5){
-        if (currentDir > 0){
-          currentDir--;
-          gameBackground.changeDirTo(currentDir);
-        }else if (currentDir === 0){
-          gameBackground.changeDirTo(3);
-        }
-      }
-    }
-    showTriggers();
-    currentDir = gameBackground.dir;
+
   }
 }
 
@@ -374,7 +396,7 @@ function objTriggered(event) {
     // front
     if (event.data.id === 0) {
       if ($(this).is("#keypad")) {
-        textBox.insertText("Only if I know the code...\nMaybe I can find something in this room\n\n[Press arrowkeys to change your facing direction]");
+
       } else if ($(this).is("#switch")) {
         if (gameBackground.fuseInstalled) {
 
@@ -397,48 +419,78 @@ function objTriggered(event) {
       // left
     } else if (event.data.id === 1) {
       if ($(this).is("#plant")) {
-        if (gameBackground.plantMoved) {
-          textBox.insertText("There's a number hidden under it\nWhy is it 4?");
-        } else {
+        if (!gameBackground.plantMoved) {
           textBox.insertText("I moved the plant\nThere's a number hidden under it");
           gameBackground.plantMoved = true;
         }
       } else if ($(this).is("#card")) {
-        textBox.insertText("A birthday card!\n\nI hope you will enjoy\nthis heat changeing mug.\n--Oliver");
+
       } else if ($(this).is("#drawer-left")) {
-        if (gameBackground.drawerLeftOut) {
-          textBox.insertText("There's nothing left");
-        } else {
+        if (!gameBackground.drawerLeftOut) {
           textBox.insertText("There's a screwdriver in this drawer");
-          $(this).css({
-            "height": "9%",
-            "bottom": "19%"
-          });
           gameBackground.drawerLeftOut = true;
         }
       } else if ($(this).is("#drawer-right")) {
-        if (gameBackground.drawerRightOut) {
-          textBox.insertText("I found nothing in this drawer");
-        } else {
+        if (!gameBackground.drawerRightOut) {
           textBox.insertText("It's empty");
-          $(this).css({
-            "height": "9%",
-            "bottom": "19%"
-          });
           gameBackground.drawerRightOut = true;
         }
       } else if ($(this).is("#book")) {
         textBox.insertText("The green book named\n\"The Key to the Light Is Under the Cube\"\nhas nothing written on it");
         textBox.buffer("The red book is fully blank");
       }
-    // back
+      // back
     } else if (event.data.id === 2) {
-    // right
+      if ($(this).is("#newspaper")){
+
+      }else if ($(this).is("#coffeemachine")){
+        textBox.insertText("It doesn't have power");
+      }else if ($(this).is("#plug")){
+        textBox.insertText("Where do I plug this in?\nThe only power socket is out of reach!");
+      }else if ($(this).is("#socket")){
+        textBox.insertText("Why is the power socket way up there?");
+      }else if ($(this).is("#fuse")){
+        if (!gameBackground.posterOpened){
+          textBox.insertText("There's something behind...");
+          gameBackground.posterOpened = true;
+        }else{
+          if (!gameBackground.fuseTaken){
+            textBox.insertText("It's a fuse!");
+            gameBackground.fuseTaken = true;
+          }
+        }
+      }
+      // right
     } else if (event.data.id === 3) {
+      if ($(this).is("#paintings")) {
+        textBox.insertText("There're 3 strange abstract paintings\nI hope I can understand them");
+      } else if ($(this).is("#cabin-left")) {
+        if (!gameBackground.cabinLeftOut) {
+          textBox.insertText("I found a mug in here");
+          gameBackground.cabinLeftOut = true;
+        }
+      } else if ($(this).is("#cabin-right")) {
+        if (!gameBackground.cabinRightOut) {
+          textBox.insertText("There's nothing in it");
+          gameBackground.cabinRightOut = true;
+        }
+      } else if ($(this).is("#cabin-bottom")) {
+        if (!gameBackground.cabinBottomOut) {
+          textBox.insertText("It's empty except the number written inside");
+          gameBackground.cabinBottomOut = true;
+        }
+      } else if ($(this).is("#manual")) {
+        if (!gameBackground.manualTaken){
+          textBox.insertText("It's a manual for a coffee machine");
+          gameBackground.manualTaken = true;
+        }
+      }
       // down
     } else if (event.data.id === 4) {
       // up
-    } else if (event.data.id === 5) {}
+    } else if (event.data.id === 5) {
+
+    }
   }
 }
 

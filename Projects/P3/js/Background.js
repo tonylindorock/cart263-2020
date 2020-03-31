@@ -7,7 +7,7 @@ class Background{
   constructor(img){
     this.img = img; // the first image has to be BG_FRONT to match the dir index
     this.dir = 0;
-    this.lastDir = 0;
+    this.lastDir = this.dir;
 
     // position
     this.x = width/2;
@@ -39,12 +39,13 @@ class Background{
     this.plantMoved = false;
     // back
     this.coffeeMachinePowered = false;
+    this.posterOpened = false;
     this.fuseTaken = false;
     // right
     this.cabinLeftOut = false;
     this.cabinRightOut = false;
     this.cabinBottomOut = false;
-    this.bookletTaken = false;
+    this.manualTaken = false;
     // down
     this.trapDoorOpened = false;
     this.cordTaken = false;
@@ -76,16 +77,16 @@ class Background{
     }else if (this.dir === 2){
 
     }else if (this.dir === 3){
+      if (this.cabinBottomOut){
+        this.displayImg(OBJ_CABIN_BOTTOM_OUT);
+      }
       if (this.cabinLeftOut){
         this.displayImg(OBJ_CABIN_LEFT_OUT);
       }
       if (this.cabinRightOut){
         this.displayImg(OBJ_CABIN_RIGHT_OUT);
       }
-      if (this.cabinBottomOut){
-        this.displayImg(OBJ_CABIN_BOTTOM_OUT);
-      }
-      if (!this.bookletTaken){
+      if (!this.manualTaken){
         this.displayImg(OBJ_BOOKLET);
       }
     }else if (this.dir === 4){
