@@ -5,9 +5,12 @@ Project 3
 Questionable Logic: The Cube
 Yichen Wang
 
-A point & click adventrue.
+HIGHLIGHTS:
++ A "simple" point & click adventrue
++ 6 scenes to explore and over 10 puzzles to solve
++ Listen to the ambient and interact with the environment
++ Logic is questionable
 
-FONT FROM: https://www.urbanfonts.com/fonts/superscript.htm
 *********************************************************************/
 
 // the font attributes of title for the animation
@@ -27,6 +30,7 @@ let state = "START";
 let currentDir = 0;
 
 let $body; // store the html body
+let $objTrigger;
 
 // text box
 let showTextBox = true;
@@ -83,8 +87,6 @@ let CLOSE_KEYPAD;
 //
 //
 function preload() {
-  THEME_FONT = loadFont("assets/font/superscript/SUPERSCR.TTF");
-
   BG_FRONT = loadImage("assets/images/Dir_front.png");
   BG_LEFT = loadImage("assets/images/Dir_left.png");
   BG_RIGHT = loadImage("assets/images/Dir_right.png");
@@ -102,6 +104,7 @@ function preload() {
   OBJ_PANEL_OPENED = loadImage("assets/images/Panel_opened.png");
   OBJ_PLANT = loadImage("assets/images/Plant.png");
   OBJ_PLANT_MOVED = loadImage("assets/images/Plant_moved.png");
+
 }
 
 // setup()
@@ -112,7 +115,7 @@ function setup() {
   // style/theme
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
-  textFont(THEME_FONT);
+  textFont("Gill Sans");
   textStyle(BOLD);
   textSize(16);
   textAlign(CENTER,CENTER);
@@ -120,12 +123,14 @@ function setup() {
   imageMode(CENTER);
   noStroke();
 
+  // create objects
   gameBackground = new Background(BG_FRONT);
   inventory = new Inventory();
   textBox = new TextBox("What happened? Where am I? How did I get here?"
   +"\n\n[press any key to continue]");
 
-  setupMainMenu();
+  setupMainMenu(); // set up main menu
+  setupObjTriggers(); // set up triggers
 }
 
 // setupMainMenu()
@@ -134,6 +139,11 @@ function setup() {
 function setupMainMenu(){
   mainMenuFontHeight = height;
   mainMenuFontAlpha = 0;
+}
+
+function setupObjTriggers(){
+  $(".obj-trigger").button();
+  $("#keypad").click({id:0},objTriggered);
 }
 
 // draw()
@@ -151,6 +161,8 @@ function draw() {
       textBox.display();
     }
     inventory.display();
+  }else if (state === "END"){
+
   }
 }
 
@@ -177,9 +189,9 @@ function mousePressed(){
 //
 function displayMainMenu() {
   push();
-  textSize(32);
+  textSize(28);
   fill(255,mainMenuFontAlpha);
-  text("Special Episode: The Cube",width/2,height-height/8);
+  text("SPECIAL EPISODE: THE CUBE",width/2,height-height/8);
   textSize(64);
   if (!titleFadeAway){
     mainMenuFontAlpha = lerp(mainMenuFontAlpha, 255, 0.05);
@@ -190,7 +202,7 @@ function displayMainMenu() {
   }
   // fill the title
   fill(127,255,212,mainMenuFontAlpha);
-  text("Questionable\nLogic",width/2,mainMenuFontHeight);
+  text("QUESTIONABLE\nLOGIC",width/2,mainMenuFontHeight);
 
   if (mainMenuFontAlpha >= 210 && doOnce){
     var $button = $("<div class='button' id = 'title-button'></div>").text("Start").button().click(function(){
@@ -234,6 +246,32 @@ function displayTutorial(){
     doOnce = true;
   }
   pop();
+}
+
+function objTriggered(event){
+  // if the textBox is not on the screen, handle the trigger
+  if (!textBox.showing){
+    // front
+    if (event.data.id === 0){
+      if ($(this).is("#keypad")){
+        gameBackground.changeDirTo(0);
+      }else if ($(this).is("#switch")){
+
+      }else if ($(this).is("#panel")){
+
+      }
+    // left
+    }else if (event.data.id === 1){
+    // right
+    }else if (event.data.id === 2){
+    // back
+    }else if (event.data.id === 3){
+    // down
+    }else if (event.data.id === 4){
+    // up
+    }else if (event.data.id === 5){
+    }
+  }
 }
 
 function useItem(item_id){

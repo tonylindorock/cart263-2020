@@ -1,6 +1,8 @@
 // Background
 //
-// to manage game background
+// acts as a separated componenet
+// to manage game background itself
+// so that script.js will be cleaner
 class Background{
   constructor(img){
     this.img = img; // the first image has to be BG_FRONT to match the dir index

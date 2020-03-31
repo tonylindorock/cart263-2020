@@ -5,7 +5,7 @@ class TextBox{
     this.height = height/4;
     // position
     this.x = width/2;
-    this.y = height - height/6;
+    this.y = height/2;
 
     this.margin = 24;
 
@@ -17,10 +17,21 @@ class TextBox{
     this.text = [];
     this.index = 0;
 
+    this.showing = false;
+
     this.insertText(text);
   }
 
+  show(){
+    this.showing = true;
+  }
+
+  hide(){
+    this.showing = false;
+  }
+
   insertText(text){
+    this.show();
     this.displayText = "";
     this.textInput = text;
     this.textLength = text.length
@@ -51,21 +62,19 @@ class TextBox{
   }
 
   display(){
-    push();
-    rectMode(CENTER);
-    noStroke();
-    fill(0,150);
-    rect(this.x,this.y,this.width,this.height);
-    textAlign(LEFT,TOP);
-    fill(255);
-    if (this.update){
-      this.updateText();
-    }else{
+    if (this.showing){
+      push();
+      rectMode(CENTER);
+      stroke(0);
+      strokeWeight(4);
+      textAlign(CENTER,TOP);
       fill(255);
-      rect(this.x + this.width/2 - this.margin,this.y + this.height/2 - this.margin,16,16);
+      if (this.update){
+        this.updateText();
+      }
+      textSize(20);
+      text(this.displayText,this.x,this.y);
+      pop();
     }
-    textSize(24);
-    text(this.displayText,this.x - this.width/2 + this.margin,this.y - this.height/2 + this.margin);
-    pop();
   }
 }
