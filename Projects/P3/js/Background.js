@@ -7,6 +7,7 @@ class Background{
   constructor(img){
     this.img = img; // the first image has to be BG_FRONT to match the dir index
     this.dir = 0;
+    this.lastDir = 0;
 
     // position
     this.x = width/2;
@@ -16,22 +17,34 @@ class Background{
     this.height = height; // window height
     this.width = (this.height/img.height)*img.width; //
 
-    // bg details
+    this.arrowSize = height/24;
+    this.arrowSizeHover = height/18;
+
+    this.hoverRight = false;
+    this.hoverLeft = false;
+    this.hoverUp = false;
+    this.hoverDown = false;
+
+    this.margin = 24;
+
+    // game progress
+    this.lightOff = false;
     // front
     this.panelOpened = false;
+    this.fuseInstalled = false;
     this.doorOpened = false;
     // left
     this.drawerLeftOut = false;
     this.drawerRightOut = false;
     this.plantMoved = false;
+    // back
+    this.coffeeMachinePowered = false;
+    this.fuseTaken = false;
     // right
     this.cabinLeftOut = false;
     this.cabinRightOut = false;
     this.cabinBottomOut = false;
     this.bookletTaken = false;
-    // back
-    this.coffeeMachinePowered = false;
-    this.fuseTaken = false;
     // down
     this.trapDoorOpened = false;
     this.cordTaken = false;
@@ -39,8 +52,9 @@ class Background{
 
   display(){
     push();
-    imageMode(CENTER);
+    imageMode(CORNER);
     this.displayImg(bgArray[this.dir]);
+    pop();
     if (this.dir === 0){
       if (this.panelOpened){
         this.displayImg(OBJ_PANEL_OPENED);
@@ -60,6 +74,8 @@ class Background{
         this.displayImg(OBJ_PLANT);
       }
     }else if (this.dir === 2){
+
+    }else if (this.dir === 3){
       if (this.cabinLeftOut){
         this.displayImg(OBJ_CABIN_LEFT_OUT);
       }
@@ -72,15 +88,11 @@ class Background{
       if (!this.bookletTaken){
         this.displayImg(OBJ_BOOKLET);
       }
-
-    }else if (this.dir === 3){
-
     }else if (this.dir === 4){
 
     }else if (this.dir === 5){
 
     }
-    pop();
   }
 
   displayImg(img){
@@ -91,6 +103,7 @@ class Background{
   }
 
   changeDirTo(newDir){
+    this.lastDir = this.dir;
     this.dir = newDir;
   }
 }

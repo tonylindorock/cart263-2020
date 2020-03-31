@@ -1,7 +1,7 @@
 class TextBox{
-  constructor(text){
+  constructor(){
     // dimension
-    this.width = width - width/4;
+    this.width = width/2;
     this.height = height/4;
     // position
     this.x = width/2;
@@ -10,6 +10,8 @@ class TextBox{
     this.margin = 24;
 
     this.update = false;
+    this.isBuffer = false;
+    this.bufferText = null;
 
     this.displayText = "";
     this.textInput;
@@ -18,8 +20,6 @@ class TextBox{
     this.index = 0;
 
     this.showing = false;
-
-    this.insertText(text);
   }
 
   show(){
@@ -28,6 +28,15 @@ class TextBox{
 
   hide(){
     this.showing = false;
+  }
+
+  buffer(text){
+    this.bufferText = text;
+  }
+
+  insertBuffer(){
+    this.isBuffer = true;
+    this.insertText(this.bufferText);
   }
 
   insertText(text){
@@ -46,19 +55,27 @@ class TextBox{
 
   updateText(){
     let time = frameCount;
-    if (time%2 === 0 && time !=0){
-      this.displayText += this.text[this.index];
+    if (time%1 === 0 && time !=0){
+      this.displayText += this.text[this.index].toUpperCase();
       if (this.index < this.textLength - 1){
         this.index += 1;
       }else{
         this.update = false;
+        if (this.isBuffer){
+          this.bufferText = null;
+          this.isBuffer = false;
+        }
       }
     }
   }
 
   fullText(){
-    this.displayText = this.textInput;
+    this.displayText = this.textInput.toUpperCase();
     this.update = false;
+    if(this.isBuffer){
+      this.bufferText = null;
+      this.isBuffer = false;
+    }
   }
 
   display(){
@@ -67,7 +84,8 @@ class TextBox{
       rectMode(CENTER);
       stroke(0);
       strokeWeight(4);
-      textAlign(CENTER,TOP);
+      strokeJoin(ROUND);
+      textAlign(CENTER,CENTER);
       fill(255);
       if (this.update){
         this.updateText();

@@ -67,7 +67,7 @@ canvas{
   z-index: 1;
   display: inline-block;
   background-color: white;
-  opacity: 0;
+  opacity: 0.75;
   position: fixed;
   text-align: center;
 }
@@ -81,8 +81,8 @@ canvas{
 }
 #switch{
   height: 7%;
-  width: 3%;
-  right: 31%;
+  width: 2.5%;
+  right: 31.5%;
   top: 48%;
 }
 #panel{
@@ -90,4 +90,42 @@ canvas{
   width: 10%;
   right: 27%;
   bottom: 12%;
+}
+#door{
+  height: 62%;
+  width: 19%;
+  left: 41%;
+  top: 28%;
+}
+
+/* left objs */
+#plant{
+  height: 8%;
+  width: 4%;
+  left: 16%;
+  top: 60%;
+}
+#card{
+  height: 3.5%;
+  width: 3.5%;
+  left: 32%;
+  top: 66%;
+}
+#drawer-left{
+  height: 4%;
+  width: 13%;
+  left: 11%;
+  bottom: 24%;
+}
+#drawer-right{
+  height: 4%;
+  width: 13%;
+  left: 25%;
+  bottom: 24%;
+}
+#book{
+  height: 8%;
+  width: 6%;
+  right: 29%;
+  top: 41%;
 }
