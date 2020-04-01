@@ -8,6 +8,7 @@ class Background{
     this.img = img; // the first image has to be BG_FRONT to match the dir index
     this.dir = 0;
     this.lastDir = this.dir;
+    this.targetDir = this.dir
 
     // position
     this.x = width/2;
@@ -17,15 +18,11 @@ class Background{
     this.height = height; // window height
     this.width = (this.height/img.height)*img.width; //
 
-    this.arrowSize = height/24;
-    this.arrowSizeHover = height/18;
-
-    this.hoverRight = false;
-    this.hoverLeft = false;
-    this.hoverUp = false;
-    this.hoverDown = false;
-
     this.margin = 24;
+
+    this.fadeIn = false;
+    this.fadeOut = false
+    this.alpha = 255;
 
     // game progress
     this.lightOff = false;
@@ -45,10 +42,9 @@ class Background{
     this.cabinLeftOut = false;
     this.cabinRightOut = false;
     this.cabinBottomOut = false;
-    this.manualTaken = false;
     // down
     this.trapDoorOpened = false;
-    this.cordTaken = false;
+    this.stripTaken = false;
   }
 
   display(){
@@ -86,14 +82,13 @@ class Background{
       if (this.cabinRightOut){
         this.displayImg(OBJ_CABIN_RIGHT_OUT);
       }
-      if (!this.manualTaken){
-        this.displayImg(OBJ_BOOKLET);
-      }
+      this.displayImg(OBJ_BOOKLET);
     }else if (this.dir === 4){
 
     }else if (this.dir === 5){
 
     }
+    this.animation();
   }
 
   displayImg(img){
@@ -103,8 +98,28 @@ class Background{
     pop();
   }
 
+  animation(){
+    push();
+    if (this.fadeIn){
+      this.alpha = lerp(this.alpha, 0, 0.3);
+      if (this.alpha <= 1){
+        this.fadeIn = false;
+      }
+    }else if(this.fadeOut){
+      this.alpha = lerp(this.alpha, 255, 1);
+      if (this.alpha >= 254){
+        this.fadeOut = false;
+        this.fadeIn = true;
+      }
+    }
+    fill(38,this.alpha);
+    rect(this.x,this.y,width,height);
+    pop();
+  }
+
   changeDirTo(newDir){
     this.lastDir = this.dir;
-    this.dir = newDir;
+    this.dir= newDir;
+    this.fadeOut = true;
   }
 }

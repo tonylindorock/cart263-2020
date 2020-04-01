@@ -153,7 +153,17 @@ function setup() {
 
   setupMainMenu(); // set up main menu
   setupObjTriggers(); // set up triggers
-  showTriggers();
+
+  let containerLeftMargin = (gameBackground.width)/2;
+  $(".container").css({
+    "width": gameBackground.width.toString()+"px",
+    "margin-left": "-"+containerLeftMargin.toString()+"px"
+  });
+
+  if(state === "PLAY"){
+    gameBackground.fadeIn = true;
+    showTriggers();
+  }
 }
 
 // setupMainMenu()
@@ -223,6 +233,12 @@ function setupObjTriggers() {
   $("#manual").click({
     id: 3
   }, objTriggered);
+  $("#trapdoor").click({
+    id: 4
+  }, objTriggered);
+  $("#light").click({
+    id: 5
+  }, objTriggered);
 }
 
 // draw()
@@ -251,7 +267,7 @@ function draw() {
 function keyPressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      textBox.fullText();
+      // textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -262,6 +278,7 @@ function keyPressed() {
           return;
         }
       }
+      currentDir = gameBackground.dir;
       if (keyCode === UP_ARROW) {
         if (currentDir === 4) {
           gameBackground.changeDirTo(gameBackground.lastDir);
@@ -298,11 +315,10 @@ function keyPressed() {
         }
       }
       showTriggers();
-      currentDir = gameBackground.dir;
+      }
     }
 
   }
-}
 
 // mousePressed()
 //
@@ -310,7 +326,7 @@ function keyPressed() {
 function mousePressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      textBox.fullText();
+      // textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -381,6 +397,8 @@ function displayTutorial() {
   if (tutorialFadeAway && tutorialFontAlpha <= 1) {
     state = "PLAY";
     doOnce = true;
+    gameBackground.fadeIn = true;
+    showTriggers();
   }
   pop();
 }
@@ -480,16 +498,20 @@ function objTriggered(event) {
           gameBackground.cabinBottomOut = true;
         }
       } else if ($(this).is("#manual")) {
-        if (!gameBackground.manualTaken){
-          textBox.insertText("It's a manual for a coffee machine");
-          gameBackground.manualTaken = true;
+
         }
-      }
       // down
     } else if (event.data.id === 4) {
+      if (!gameBackground.trapDoorOpened){
+        textBox.insertText("A trap door on the floor\nDamn it, it's locked");
+      }else{
+        if(!gameBackground.stripTaken){
+          textBox.insertText("There's a power strip under the floor\nI'm taking it");
+        }
+      }
       // up
     } else if (event.data.id === 5) {
-
+      textBox.insertText("A light on the ceiling\nIt looks like nothing special");
     }
   }
 }

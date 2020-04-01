@@ -2,8 +2,8 @@ class Inventory{
   constructor(){
     this.margin = 24;
     // dimension
-    this.width = width - width/4;
     this.height = height/8;
+    this.width = this.height*8;
     // position
     this.x = width/2;
     this.y = this.height/2 + this.margin;
