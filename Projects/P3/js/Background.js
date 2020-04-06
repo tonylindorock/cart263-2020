@@ -44,7 +44,7 @@ class Background{
     this.cabinBottomOut = false;
     // down
     this.trapDoorOpened = false;
-    this.stripTaken = false;
+    this.cordTaken = false;
   }
 
   display(){
@@ -52,12 +52,20 @@ class Background{
     imageMode(CORNER);
     this.displayImg(bgArray[this.dir]);
     pop();
+    // front
     if (this.dir === 0){
       if (this.panelOpened){
         this.displayImg(OBJ_PANEL_OPENED);
       }else{
         this.displayImg(OBJ_PANEL);
+        if (this.fuseInstalled){
+          this.displayImg(OBJ_FUSE_INSTALLED);
+        }
       }
+      if (this.doorOpened){
+        this.dispayImg(OBJ_DOOR_OPENED);
+      }
+    // left
     }else if (this.dir === 1){
       if (this.drawerLeftOut){
         this.displayImg(OBJ_DRAWER_LEFT_OUT);
@@ -70,8 +78,18 @@ class Background{
       }else{
         this.displayImg(OBJ_PLANT);
       }
+    // back
     }else if (this.dir === 2){
-
+      if (this.posterOpened){
+        this.displayImg(OBJ_HOLE);
+        if (!this.fuseTaken){
+          this.displayImg(OBJ_FUSE);
+        }
+      }
+      if (this.coffeeMachinePowered){
+        this.displayImg(OBJ_CORD_USED);
+      }
+    // right
     }else if (this.dir === 3){
       if (this.cabinBottomOut){
         this.displayImg(OBJ_CABIN_BOTTOM_OUT);
@@ -83,10 +101,23 @@ class Background{
         this.displayImg(OBJ_CABIN_RIGHT_OUT);
       }
       this.displayImg(OBJ_BOOKLET);
+    // down
     }else if (this.dir === 4){
-
-    }else if (this.dir === 5){
-
+      if (this.trapDoorOpened){
+        this.displayImg(OBJ_TRAPDOOR_OPENED);
+        if (!this.cordTaken){
+          this.displayImg(OBJ_CORD);
+        }
+      }
+    }
+    if (this.lightOff){
+      if (this.dir === 0){
+        this.displayImg(OVERLAY_DARKEN_FRONT);
+      }else if (this.dir === 5){
+        this.displayImg(OVERLAY_LIGHT_OFF);
+      }else{
+        this.displayImg(OVERLAY_DARKEN);
+      }
     }
     this.animation();
   }

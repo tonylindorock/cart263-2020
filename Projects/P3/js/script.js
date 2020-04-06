@@ -93,8 +93,27 @@ let OBJ_PANEL;
 let OBJ_PANEL_OPENED;
 let OBJ_PLANT;
 let OBJ_PLANT_MOVED;
+let OBJ_CORD;
+let OBJ_CORD_USED;
+let OBJ_DOOR_OPENED;
+let OBJ_FUSE;
+let OBJ_FUSE_INSTALLED;
+let OBJ_HOLE;
+let OBJ_MUG_PLACED;
+let OBJ_TRAPDOOR_OPENED;
+// overlay for the bg
+let OVERLAY_LIGHT_OFF;
+let OVERLAY_DARKEN;
+let OVERLAY_DARKEN_FRONT;
 // closer look at objs
 let CLOSE_KEYPAD;
+let CLOSE_LOCK;
+let CLOSE_MANUAL;
+// items
+let ITEM_SCREWDRIVER;
+let ITEM_MUG;
+let ITEM_FUSE;
+let ITEM_CORD;
 
 // preload()
 //
@@ -117,6 +136,19 @@ function preload() {
   OBJ_PANEL_OPENED = loadImage("assets/images/Panel_opened.png");
   OBJ_PLANT = loadImage("assets/images/Plant.png");
   OBJ_PLANT_MOVED = loadImage("assets/images/Plant_moved.png");
+  OBJ_CORD = loadImage("assets/images/Extensioncord.png");
+  OBJ_CORD_USED = loadImage("assets/images/Cord_used.png");
+  OBJ_DOOR_OPENED = loadImage("assets/images/Door_opened.png");
+  OBJ_FUSE = loadImage("assets/images/Fuse.png");
+  OBJ_FUSE_INSTALLED = loadImage("assets/images/Fuse_installed.png");
+  OBJ_HOLE = loadImage("assets/images/Hole.png");
+  OBJ_MUG_PLACED = loadImage("assets/images/Mug_placed.png");
+  OBJ_TRAPDOOR_OPENED = loadImage("assets/images/Trapdoor_opened.png");
+
+  OVERLAY_LIGHT_OFF = loadImage("assets/images/Light_off.png");
+  OVERLAY_DARKEN = loadImage("assets/images/Darken.png");
+  OVERLAY_DARKEN_FRONT = loadImage("assets/images/Darken_front.png");
+
   CLOSE_KEYPAD = loadImage("assets/images/Keypad.png");
 
 }
