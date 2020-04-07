@@ -152,5 +152,6 @@ class Background{
     this.lastDir = this.dir;
     this.dir= newDir;
     this.fadeOut = true;
+    this.fadeIn = false;
   }
 }

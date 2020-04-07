@@ -29,6 +29,12 @@ let state = "PLAY";
 // the direction the player is facing
 let currentDir = 0;
 
+// player's inventory
+let screwDriverTaken = false;
+let mugTaken = false;
+let cordTaken = false;
+let fuseTaken = false;
+
 let $body; // store the html body
 let $objTrigger;
 let $front;
@@ -61,7 +67,7 @@ const TEXT_TUTORIAL = "Hi," +
 
 const TEXT_BEGIN = [
   "What happened? Where am I? How did I get here?\n\n[press any key to continue]",
-  "I don't... remember anything.\nI should probably get out of here.\n\n[press Arrowkeys to change your facing direction]"
+  "I don't... remember anything.\nI should probably get out of here.\n\n[use all Arrowkeys to see your surroundings]"
 ];
 let begin = true;
 
@@ -449,21 +455,29 @@ function objTriggered(event) {
 
       } else if ($(this).is("#switch")) {
         if (gameBackground.fuseInstalled) {
-
+          textBox.insertText("I can turn off the light now");
+          gameBackground.lightOff = true;
         } else {
           textBox.insertText("It doesn't do anything\nIs it broken?");
         }
       } else if ($(this).is("#panel")) {
         if (gameBackground.panelOpened) {
-
+          if (gameBackground.fuseInstalled) {
+            textBox.insertText("I think I fixed something at least");
+          }else{
+            textBox.insertText("It looks like something is missing");
+            textBox.buffer("Maybe I can find it somewhere");
+          }
         } else {
-          textBox.insertText("A panel held by 4 screws\nI wonder if I can get it open with something");
+          textBox.insertText("A panel held by 4 screws");
+          textBox.buffer("I wonder if I can get it open with something");
         }
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
 
         } else {
-          textBox.insertText("Door is locked\nI need to enter some kinda of passcode or something?");
+          textBox.insertText("Door is locked");
+          textBox.buffer("I need to enter some kinda of\npasscode or something?");
         }
       }
       // left
@@ -477,8 +491,9 @@ function objTriggered(event) {
 
       } else if ($(this).is("#drawer-left")) {
         if (!gameBackground.drawerLeftOut) {
-          textBox.insertText("There's a screwdriver in this drawer");
+          textBox.insertText("There's a screwdriver in this drawer\nI'm taking it");
           gameBackground.drawerLeftOut = true;
+          screwDriverTaken = true;
         }
       } else if ($(this).is("#drawer-right")) {
         if (!gameBackground.drawerRightOut) {
@@ -496,7 +511,8 @@ function objTriggered(event) {
       }else if ($(this).is("#coffeemachine")){
         textBox.insertText("It doesn't have power");
       }else if ($(this).is("#plug")){
-        textBox.insertText("Where do I plug this in?\nThe only power socket is out of reach!");
+        textBox.insertText("Where do I plug this in?");
+        textBox.buffer("The only power socket is out of reach!");
       }else if ($(this).is("#socket")){
         textBox.insertText("Why is the power socket way up there?");
       }else if ($(this).is("#fuse")){
@@ -505,7 +521,7 @@ function objTriggered(event) {
           gameBackground.posterOpened = true;
         }else{
           if (!gameBackground.fuseTaken){
-            textBox.insertText("It's a fuse!");
+            textBox.insertText("It's a fuse!\nI'm taking it");
             gameBackground.fuseTaken = true;
           }
         }
@@ -513,11 +529,13 @@ function objTriggered(event) {
       // right
     } else if (event.data.id === 3) {
       if ($(this).is("#paintings")) {
-        textBox.insertText("There're 3 strange abstract paintings\nI hope I can understand them");
+        textBox.insertText("There're 3 strange abstract paintings");
+        textBox.buffer("I hope I can understand them");
       } else if ($(this).is("#cabin-left")) {
         if (!gameBackground.cabinLeftOut) {
-          textBox.insertText("I found a mug in here");
+          textBox.insertText("I found a mug in here\nI'm taking it");
           gameBackground.cabinLeftOut = true;
+          mugTaken = true;
         }
       } else if ($(this).is("#cabin-right")) {
         if (!gameBackground.cabinRightOut) {
@@ -535,15 +553,22 @@ function objTriggered(event) {
       // down
     } else if (event.data.id === 4) {
       if (!gameBackground.trapDoorOpened){
-        textBox.insertText("A trap door on the floor\nDamn it, it's locked");
+
       }else{
-        if(!gameBackground.stripTaken){
+        if(!gameBackground.cordTaken){
           textBox.insertText("There's a power strip under the floor\nI'm taking it");
+          gameBackground.cordTaken = true;
+          cordTaken = true;
         }
       }
       // up
     } else if (event.data.id === 5) {
-      textBox.insertText("A light on the ceiling\nIt looks like nothing special");
+      if (gameBackground.lightOff){
+        textBox.insertText("The light is off");
+        textBox.buffer("The writing on the ceiling is interesting");
+      }else{
+        textBox.insertText("A light on the ceiling\nIt looks like nothing special");
+      }
     }
   }
 }
