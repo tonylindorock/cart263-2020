@@ -35,6 +35,10 @@ let mugTaken = false;
 let cordTaken = false;
 let fuseTaken = false;
 
+let inventory;
+
+let closeObjShowing = false;
+
 let $body; // store the html body
 let $objTrigger;
 let $front;
@@ -54,9 +58,6 @@ let inventory; // store the obj
 
 // background manager
 let gameBackground; // store the obj
-
-let keypad;
-let lock;
 
 const TEXT_TUTORIAL = "Hi," +
   "\n\nI know it has been many years since we departed," +
@@ -79,6 +80,8 @@ const BG_COLOR = "#262626"; // the color of background
 // colors
 const HIGHLIGHT = "#FF7F50";
 const GREEN_BLUE = "#7FFFD4";
+
+const PASSCODE = "9264";
 
 // * game assests * //
 let THEME_FONT; // store the font
@@ -157,6 +160,11 @@ function preload() {
   OBJ_MUG_PLACED = loadImage("assets/images/Mug_placed.png");
   OBJ_TRAPDOOR_OPENED = loadImage("assets/images/Trapdoor_opened.png");
 
+  ITEM_SCREWDRIVER = loadImage("assets/images/Item_Screwdriver.png");
+  ITEM_MUG = loadImage("assets/images/Item_Mug.png");
+  ITEM_FUSE = loadImage("assets/images/Item_Fuse.png");
+  ITEM_CORD = loadImage("assets/images/Item_Cord.png");
+
   OVERLAY_LIGHT_OFF = loadImage("assets/images/Light_off.png");
   OVERLAY_DARKEN = loadImage("assets/images/Darken.png");
   OVERLAY_DARKEN_FRONT = loadImage("assets/images/Darken_front.png");
@@ -190,11 +198,9 @@ function setup() {
 
   // create objects
   gameBackground = new Background(BG_FRONT);
-  inventory = new Inventory();
   textBox = new TextBox();
   textBox.insertText(TEXT_BEGIN[0]);
   textBox.buffer(TEXT_BEGIN[1]);
-  keypad = new Keypad(CLOSE_KEYPAD);
 
   setupMainMenu(); // set up main menu
   setupObjTriggers(); // set up triggers
@@ -209,6 +215,8 @@ function setup() {
     gameBackground.fadeIn = true;
     showTriggers();
   }
+
+  setupKeypad();
 }
 
 // setupMainMenu()
@@ -286,6 +294,21 @@ function setupObjTriggers() {
   }, objTriggered);
 }
 
+function setupKeypad(){
+  var $keypad = $("<div class = 'keypad'></div>");
+  var $keypadCode = $("<div class = 'keypad-code'>0000</div>");
+  $keypad.append($keypadCode);
+  for (let i = 1; i < 11; i++){
+    if (i === 10){
+      var $keypadBtn = $(`<div class = "keypad-btn" onclick="addCode('0')">0</div>`);
+    }else{
+      var $keypadBtn = $(`<div class = 'keypad-btn' onclick="addCode('${i}')">${i}</div>`);
+    }
+    $keypad.append($keypadBtn);
+  }
+  $body.append($keypad.hide());
+}
+
 // draw()
 //
 //
@@ -300,8 +323,7 @@ function draw() {
     if (showTextBox) {
       textBox.display();
     }
-    keypad.display();
-    inventory.display();
+    showOverlay();
   } else if (state === "END") {
 
   }
@@ -349,7 +371,6 @@ function keyPressed() {
       }
       currentDir = gameBackground.dir;
       if (keyCode === UP_ARROW) {
-        showTriggers();
         if (currentDir === 4) {
           gameBackground.changeDirTo(gameBackground.lastDir);
         } else {
@@ -357,8 +378,8 @@ function keyPressed() {
             gameBackground.changeDirTo(5);
           }
         }
-      } else if (keyCode === DOWN_ARROW) {
         showTriggers();
+      } else if (keyCode === DOWN_ARROW) {
         if (currentDir === 5) {
           gameBackground.changeDirTo(gameBackground.lastDir);
         } else {
@@ -366,8 +387,8 @@ function keyPressed() {
             gameBackground.changeDirTo(4);
           }
         }
-      } else if (keyCode === LEFT_ARROW) {
         showTriggers();
+      } else if (keyCode === LEFT_ARROW) {
         if (currentDir != 4 && currentDir != 5) {
           if (currentDir < 3) {
             currentDir++;
@@ -376,8 +397,8 @@ function keyPressed() {
             gameBackground.changeDirTo(0);
           }
         }
-      } else if (keyCode === RIGHT_ARROW) {
         showTriggers();
+      } else if (keyCode === RIGHT_ARROW) {
         if (currentDir != 4 && currentDir != 5) {
           if (currentDir > 0) {
             currentDir--;
@@ -386,6 +407,7 @@ function keyPressed() {
             gameBackground.changeDirTo(3);
           }
         }
+        showTriggers();
       }
       }
     }
@@ -612,24 +634,75 @@ function objTriggered(event) {
 }
 
 function showCloserObj(id){
+  var $button = $("<div class='button' id = 'close-button'></div>").text("close").button().click(function() {
+    $('#close-button').remove();
+    $(".keypad").hide();
+    showTriggers();
+    closeObjShowing = false;
+  });
   if (id === 0){
-    keypad.show = true;
-    var $button = $("<div class='button' id = 'close-button'></div>").text("close").button().click(function() {
+    $(".keypad").show();
+    $button.click(function() {
       $('#close-button').remove();
+      $(".keypad").hide();
       showTriggers();
-      keypad.show = false;
+      closeObjShowing = false;
     });
-    $body.append($button);
   }else if (id === 1){
+    $button.click(function() {
+      $('#close-button').remove();
 
+      showTriggers();
+      closeObjShowing = false;
+    });
   }else if (id === 2){
+    $button.click(function() {
+      $('#close-button').remove();
 
+      showTriggers();
+      closeObjShowing = false;
+    });
   }else if (id === 3){
+    $button.click(function() {
+      $('#close-button').remove();
 
+      showTriggers();
+      closeObjShowing = false;
+    });
   }else if (id === 4){
+    $button.click(function() {
+      $('#close-button').remove();
 
+      showTriggers();
+      closeObjShowing = false;
+    });
   }
+  $body.append($button);
   hideTriggers();
+  closeObjShowing = true;
+}
+
+function showOverlay(){
+  if (closeObjShowing){
+    push();
+    fill(0,200);
+    rect(width/2,height/2,width,height);
+    pop();
+  }
+}
+
+function addCode(num){
+  let code = $(".keypad-code").text();
+  if (code.length >= 4){
+    $(".keypad-code").text(num);
+  }else{
+    code += num;
+    $(".keypad-code").text(code);
+    let newCode = $(".keypad-code").text();
+    if (newCode === PASSCODE){
+
+    }
+  }
 }
 
 function useItem(item_id) {

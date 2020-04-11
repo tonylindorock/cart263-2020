@@ -53,8 +53,8 @@ canvas{
 }
 
 #close-button{
-  left: 50%;
-  bottom: 5%;
+  right: 10%;
+  bottom: 10%;
   margin-top: -32px;
   margin-left: -100px;
 }
@@ -63,6 +63,31 @@ canvas{
 	background-color: Coral;
   color: white;
   cursor: pointer;
+}
+
+.inventory{
+  z-index: 1;
+  background-color: black;
+  width: 116px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+}
+
+.item{
+  left:50%;
+  width: 100px;
+  height: 100px;
+  margin: 8px;
+  border-radius: 16px;
+  display: inline-block;
+  background-color: white;
+}
+
+.item:active{
+  background-color: Coral;
 }
 
 .text{
@@ -215,4 +240,42 @@ canvas{
   width: 12%;
   left: 45%;
   top: 42%;
+}
+
+.keypad{
+  height: 480px;
+  width: 420px;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  top:50%;
+  left:50%;
+  margin-top: -240px;
+  margin-left: -210px;
+}
+.keypad-code{
+  margin: 2px;
+  margin-bottom: 32px;
+  padding: 0;
+  height: 86px;
+  width: 404px;
+  display: inline-block;
+  text-align: center;
+  font-size: 64px;
+  line-height: 86px;
+  background-color: white;
+  color: black;
+}
+
+.keypad-btn{
+  margin: 2px;
+  padding: 0;
+  height: 86px;
+  width: 132px;
+  display:inline-block;
+  text-align: center;
+  font-size: 28px;
+  line-height: 86px;
+  background-color: white;
+  color: black;
 }
