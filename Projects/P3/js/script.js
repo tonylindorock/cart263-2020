@@ -55,6 +55,9 @@ let inventory; // store the obj
 // background manager
 let gameBackground; // store the obj
 
+let keypad;
+let lock;
+
 const TEXT_TUTORIAL = "Hi," +
   "\n\nI know it has been many years since we departed," +
   "\nbut there's something I need to tell you." +
@@ -114,7 +117,10 @@ let OVERLAY_DARKEN_FRONT;
 // closer look at objs
 let CLOSE_KEYPAD;
 let CLOSE_LOCK;
+let CLOSE_CARD;
+let CLOSE_NEWSPAPER;
 let CLOSE_MANUAL;
+
 // items
 let ITEM_SCREWDRIVER;
 let ITEM_MUG;
@@ -188,6 +194,7 @@ function setup() {
   textBox = new TextBox();
   textBox.insertText(TEXT_BEGIN[0]);
   textBox.buffer(TEXT_BEGIN[1]);
+  keypad = new Keypad(CLOSE_KEYPAD);
 
   setupMainMenu(); // set up main menu
   setupObjTriggers(); // set up triggers
@@ -293,6 +300,7 @@ function draw() {
     if (showTextBox) {
       textBox.display();
     }
+    keypad.display();
     inventory.display();
   } else if (state === "END") {
 
@@ -304,6 +312,29 @@ function draw() {
 //
 function keyPressed() {
   if (state === "PLAY") {
+    if (keypad.show === true){
+      if (keyCode === 49) {
+        keypad.addCode(1);
+      }else if (keyCode === 50) {
+        keypad.addCode(2);
+      }else if (keyCode === 51) {
+        keypad.addCode(3);
+      }else if (keyCode === 52) {
+        keypad.addCode(4);
+      }else if (keyCode === 53) {
+        keypad.addCode(5);
+      }else if (keyCode === 54) {
+        keypad.addCode(6);
+      }else if (keyCode === 55) {
+        keypad.addCode(7);
+      }else if (keyCode === 56) {
+        keypad.addCode(8);
+      }else if (keyCode === 57) {
+        keypad.addCode(9);
+      }else if (keyCode === 48) {
+        keypad.addCode(0);
+      }
+    }
     if (textBox.update) {
       // textBox.fullText();
     } else {
@@ -318,6 +349,7 @@ function keyPressed() {
       }
       currentDir = gameBackground.dir;
       if (keyCode === UP_ARROW) {
+        showTriggers();
         if (currentDir === 4) {
           gameBackground.changeDirTo(gameBackground.lastDir);
         } else {
@@ -326,6 +358,7 @@ function keyPressed() {
           }
         }
       } else if (keyCode === DOWN_ARROW) {
+        showTriggers();
         if (currentDir === 5) {
           gameBackground.changeDirTo(gameBackground.lastDir);
         } else {
@@ -334,6 +367,7 @@ function keyPressed() {
           }
         }
       } else if (keyCode === LEFT_ARROW) {
+        showTriggers();
         if (currentDir != 4 && currentDir != 5) {
           if (currentDir < 3) {
             currentDir++;
@@ -343,6 +377,7 @@ function keyPressed() {
           }
         }
       } else if (keyCode === RIGHT_ARROW) {
+        showTriggers();
         if (currentDir != 4 && currentDir != 5) {
           if (currentDir > 0) {
             currentDir--;
@@ -352,7 +387,6 @@ function keyPressed() {
           }
         }
       }
-      showTriggers();
       }
     }
 
@@ -446,13 +480,17 @@ function showTriggers() {
   dirArray[gameBackground.dir].show();
 }
 
+function hideTriggers(){
+  dirArray[gameBackground.dir].hide();
+}
+
 function objTriggered(event) {
   // if the textBox is not on the screen, handle the trigger
   if (!textBox.showing) {
     // front
     if (event.data.id === 0) {
       if ($(this).is("#keypad")) {
-
+        showCloserObj(0);
       } else if ($(this).is("#switch")) {
         if (gameBackground.fuseInstalled) {
           textBox.insertText("I can turn off the light now");
@@ -571,6 +609,27 @@ function objTriggered(event) {
       }
     }
   }
+}
+
+function showCloserObj(id){
+  if (id === 0){
+    keypad.show = true;
+    var $button = $("<div class='button' id = 'close-button'></div>").text("close").button().click(function() {
+      $('#close-button').remove();
+      showTriggers();
+      keypad.show = false;
+    });
+    $body.append($button);
+  }else if (id === 1){
+
+  }else if (id === 2){
+
+  }else if (id === 3){
+
+  }else if (id === 4){
+
+  }
+  hideTriggers();
 }
 
 function useItem(item_id) {

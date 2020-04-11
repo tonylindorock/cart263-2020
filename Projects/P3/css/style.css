@@ -52,6 +52,13 @@ canvas{
   margin-left: -100px;
 }
 
+#close-button{
+  left: 50%;
+  bottom: 5%;
+  margin-top: -32px;
+  margin-left: -100px;
+}
+
 .button:hover{
 	background-color: Coral;
   color: white;
