@@ -67,7 +67,7 @@ canvas{
 
 .inventory{
   z-index: 1;
-  background-color: black;
+  background-color: rgba(0,0,0,0.5);
   width: 116px;
   height: 100%;
   position: absolute;
@@ -77,6 +77,7 @@ canvas{
 }
 
 .item{
+  z-index: 2;
   left:50%;
   width: 100px;
   height: 100px;
@@ -84,10 +85,6 @@ canvas{
   border-radius: 16px;
   display: inline-block;
   background-color: white;
-}
-
-.item:active{
-  background-color: Coral;
 }
 
 .text{

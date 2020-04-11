@@ -30,12 +30,14 @@ let state = "PLAY";
 let currentDir = 0;
 
 // player's inventory
-let screwDriverTaken = false;
-let mugTaken = false;
-let cordTaken = false;
-let fuseTaken = false;
+let usingScrewDriver = false;
+let usingMug = false;
+let usingCord = false;
+let usingFuse = false;
 
-let inventory;
+let inventory = [];
+let usingItem = false;
+let usingItemId = -1;
 
 let closeObjShowing = false;
 
@@ -48,13 +50,11 @@ let $back;
 let $down;
 let $up;
 let dirArray;
+let $inventory;
 
 // text box
 let showTextBox = true;
 let textBox; // store the obj
-
-// text box
-let inventory; // store the obj
 
 // background manager
 let gameBackground; // store the obj
@@ -185,6 +185,7 @@ function setup() {
   $down = $("#down");
   $up = $("#up");
   dirArray = [$front, $left, $back, $right, $down, $up];
+  $inventory = $(".inventory");
   // style/theme
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
@@ -323,6 +324,7 @@ function draw() {
     if (showTextBox) {
       textBox.display();
     }
+    useItem();
     showOverlay();
   } else if (state === "END") {
 
@@ -427,6 +429,9 @@ function mousePressed() {
       } else {
         textBox.hide();
       }
+      if (usingItem){
+        dropItem();
+      }
     }
   }
 }
@@ -529,8 +534,13 @@ function objTriggered(event) {
             textBox.buffer("Maybe I can find it somewhere");
           }
         } else {
-          textBox.insertText("A panel held by 4 screws");
-          textBox.buffer("I wonder if I can get it open with something");
+          if (usingScrewDriver){
+            gameBackground.panelOpened = true;
+            textBox.insertText("I unscrewed all the screws and opened it!");
+          }else{
+            textBox.insertText("A panel held by 4 screws");
+            textBox.buffer("I wonder if I can get it open with something");
+          }
         }
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
@@ -553,7 +563,8 @@ function objTriggered(event) {
         if (!gameBackground.drawerLeftOut) {
           textBox.insertText("There's a screwdriver in this drawer\nI'm taking it");
           gameBackground.drawerLeftOut = true;
-          screwDriverTaken = true;
+
+          addItem(0);
         }
       } else if ($(this).is("#drawer-right")) {
         if (!gameBackground.drawerRightOut) {
@@ -583,6 +594,7 @@ function objTriggered(event) {
           if (!gameBackground.fuseTaken){
             textBox.insertText("It's a fuse!\nI'm taking it");
             gameBackground.fuseTaken = true;
+            addItem(1);
           }
         }
       }
@@ -595,7 +607,7 @@ function objTriggered(event) {
         if (!gameBackground.cabinLeftOut) {
           textBox.insertText("I found a mug in here\nI'm taking it");
           gameBackground.cabinLeftOut = true;
-          mugTaken = true;
+          addItem(2);
         }
       } else if ($(this).is("#cabin-right")) {
         if (!gameBackground.cabinRightOut) {
@@ -618,7 +630,7 @@ function objTriggered(event) {
         if(!gameBackground.cordTaken){
           textBox.insertText("There's a power strip under the floor\nI'm taking it");
           gameBackground.cordTaken = true;
-          cordTaken = true;
+          addItem(3);
         }
       }
       // up
@@ -705,6 +717,67 @@ function addCode(num){
   }
 }
 
-function useItem(item_id) {
+function addItem(item_id){
+  let $item;
+  if (item_id === 0){
+    inventory.push("Screwdriver");
+    $item = $("<img class = 'item' id = 'item0' src = 'assets/images/Item_Screwdriver.png'>");
+    $item.click(function(){
+      usingItemId = 0;
+      usingItem = true;
+      $(this).css({"background-color":"Coral"});
+    });
+  }else if (item_id === 1){
+    inventory.push("Fuse");
+    $item = $("<img class = 'item' id = 'item1' src = 'assets/images/Item_Fuse.png'>");
+    $item.click(function(){
+      usingItemId = 1;
+      usingItem = true;
+      $(this).css({"background-color":"Coral"});
+    });
+  }else if (item_id === 2){
+    inventory.push("Mug");
+    $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug.png'>");
+    $item.click(function(){
+      usingItemId = 2;
+      usingItem = true;
+      $(this).css({"background-color":"Coral"});
+    });
+  }else if (item_id === 3){
+    inventory.push("Cord");
+    $item = $("<img class = 'item' id = 'item3' src = 'assets/images/Item_Cord.png'>");
+    $item.click(function(){
+      usingItemId = 3;
+      usingItem = true;
+      $(this).css({"background-color":"Coral"});
+    });
+  }
+  $inventory.append($item);
+}
 
+function useItem() {
+  if (usingItem){
+    let texture;
+    if (usingItemId === 0){
+      texture = ITEM_SCREWDRIVER;
+      usingScrewDriver = true;
+    }else if (usingItemId === 1){
+      texture = ITEM_FUSE;
+      usingFuse = true;
+    }else if (usingItemId === 2){
+      texture = ITEM_MUG;
+      usingMug = true;
+    }else if (usingItemId === 3){
+      texture = ITEM_CORD;
+      usingCord = true;
+    }
+    usingItem = true;
+    image(texture,mouseX,mouseY,height/8,height/8);
+  }
+}
+
+function dropItem(){
+  $("#item"+usingItemId).css({"background-color":"white"});
+  usingItemId = -1;
+  usingItem = false;
 }
