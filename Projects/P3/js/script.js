@@ -82,6 +82,7 @@ const HIGHLIGHT = "#FF7F50";
 const GREEN_BLUE = "#7FFFD4";
 
 const PASSCODE = "9264";
+const LOCK_COMBO = "301"
 
 // * game assests * //
 let THEME_FONT; // store the font
@@ -205,6 +206,8 @@ function setup() {
 
   setupMainMenu(); // set up main menu
   setupObjTriggers(); // set up triggers
+  setupKeypad();
+  setupLock();
 
   let containerLeftMargin = (gameBackground.width)/2;
   $(".container").css({
@@ -216,8 +219,6 @@ function setup() {
     gameBackground.fadeIn = true;
     showTriggers();
   }
-
-  setupKeypad();
 }
 
 // setupMainMenu()
@@ -310,6 +311,16 @@ function setupKeypad(){
   $body.append($keypad.hide());
 }
 
+function setupLock(){
+  var $lock = $("<div class = 'lock'></div>");
+  for(let i = 0; i < 3; i++){
+    var $lockBtn = $(`<div class = 'lock-btn' id = 'lock-btn-${i}'>0</div>`);
+    $lockBtn.click(changeCode);
+    $lock.append($lockBtn);
+  }
+  $body.append($lock.hide());
+}
+
 // draw()
 //
 //
@@ -336,29 +347,6 @@ function draw() {
 //
 function keyPressed() {
   if (state === "PLAY") {
-    if (keypad.show === true){
-      if (keyCode === 49) {
-        keypad.addCode(1);
-      }else if (keyCode === 50) {
-        keypad.addCode(2);
-      }else if (keyCode === 51) {
-        keypad.addCode(3);
-      }else if (keyCode === 52) {
-        keypad.addCode(4);
-      }else if (keyCode === 53) {
-        keypad.addCode(5);
-      }else if (keyCode === 54) {
-        keypad.addCode(6);
-      }else if (keyCode === 55) {
-        keypad.addCode(7);
-      }else if (keyCode === 56) {
-        keypad.addCode(8);
-      }else if (keyCode === 57) {
-        keypad.addCode(9);
-      }else if (keyCode === 48) {
-        keypad.addCode(0);
-      }
-    }
     if (textBox.update) {
       // textBox.fullText();
     } else {
@@ -625,7 +613,7 @@ function objTriggered(event) {
       // down
     } else if (event.data.id === 4) {
       if (!gameBackground.trapDoorOpened){
-
+        showCloserObj(1);
       }else{
         if(!gameBackground.cordTaken){
           textBox.insertText("There's a power strip under the floor\nI'm taking it");
@@ -646,27 +634,42 @@ function objTriggered(event) {
 }
 
 function showCloserObj(id){
-  var $button = $("<div class='button' id = 'close-button'></div>").text("close").button().click(function() {
-    $('#close-button').remove();
-    $(".keypad").hide();
-    showTriggers();
-    closeObjShowing = false;
-  });
+  var $button = $("<div class='button' id = 'close-button'></div>").text("close").button();
   if (id === 0){
     $(".keypad").show();
     $button.click(function() {
       $('#close-button').remove();
+      $('#confirm-button').remove();
       $(".keypad").hide();
       showTriggers();
       closeObjShowing = false;
     });
+    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
+      if ($(".keypad-code").text() === PASSCODE){
+        console.log("Unlocked");
+      }else{
+
+      }
+    });
+    $body.append($buttonConfirm);
   }else if (id === 1){
+    $(".lock").show();
     $button.click(function() {
       $('#close-button').remove();
-
+      $('#confirm-button').remove();
+      $(".lock").hide();
       showTriggers();
       closeObjShowing = false;
     });
+    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
+      let code = $("#lock-btn-0").text() + $("#lock-btn-1").text() + $("#lock-btn-2").text();
+      if (code === LOCK_COMBO){
+        console.log("Unlocked");
+      }else{
+
+      }
+    });
+    $body.append($buttonConfirm);
   }else if (id === 2){
     $button.click(function() {
       $('#close-button').remove();
@@ -710,10 +713,16 @@ function addCode(num){
   }else{
     code += num;
     $(".keypad-code").text(code);
-    let newCode = $(".keypad-code").text();
-    if (newCode === PASSCODE){
+  }
+}
 
-    }
+function changeCode(){
+  let num = $(this).text();
+  if (num === "9"){
+    $(this).text("0");
+  }else{
+    num = int(num) + 1;
+    $(this).text(num);
   }
 }
 
