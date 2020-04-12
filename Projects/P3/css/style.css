@@ -48,7 +48,7 @@ canvas{
   height: 30px;
   margin-left: 30px;
   margin-top: 30px;
-  animation: spin 1s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {
@@ -328,7 +328,7 @@ canvas{
   text-align: center;
   font-size: 64px;
   line-height: 86px;
-  background-color: DimGrey;
+  background-color: black;
   color: #7FFFD4;
 }
 
