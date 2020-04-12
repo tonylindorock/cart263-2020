@@ -32,6 +32,7 @@ let currentDir = 0;
 // player's inventory
 let usingScrewDriver = false;
 let usingMug = false;
+let mugTaken = false;
 let usingCord = false;
 let usingFuse = false;
 
@@ -127,6 +128,7 @@ let CLOSE_MANUAL;
 // items
 let ITEM_SCREWDRIVER;
 let ITEM_MUG;
+let ITEM_MUG_HEATED;
 let ITEM_FUSE;
 let ITEM_CORD;
 
@@ -162,6 +164,7 @@ function preload() {
 
   ITEM_SCREWDRIVER = loadImage("assets/images/Item_Screwdriver.png");
   ITEM_MUG = loadImage("assets/images/Item_Mug.png");
+  ITEM_MUG_HEATED = loadImage("assets/images/Item_Mug_Heated.png");
   ITEM_FUSE = loadImage("assets/images/Item_Fuse.png");
   ITEM_CORD = loadImage("assets/images/Item_Cord.png");
 
@@ -338,7 +341,7 @@ function draw() {
     useItem();
     showOverlay();
   } else if (state === "END") {
-
+    
   }
 }
 
@@ -524,7 +527,7 @@ function objTriggered(event) {
             textBox.insertText("I think I fixed something at least");
           }else{
             if (usingFuse){
-              textBox.insertText("It looks fit");
+              textBox.insertText("I suppose it fits");
               gameBackground.fuseInstalled = true;
               removeItem(1);
             }else{
@@ -543,7 +546,7 @@ function objTriggered(event) {
         }
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
-
+          state = "END";
         } else {
           textBox.insertText("Door is locked");
           textBox.buffer("I need to enter some kinda of\npasscode or something?");
@@ -583,10 +586,21 @@ function objTriggered(event) {
           textBox.insertText("It doesn't have power");
         }else{
           if (gameBackground.mugPlaced){
-            textBox.insertText("It's working!");
+            if (!gameBackground.coffeeMachineUsed){
+              textBox.insertText("It's working!");
+              gameBackground.coffeeMachineUsed = true;
+            }else{
+              textBox.insertText("There's hot water in the mug");
+              gameBackground.mugPlaced = false;
+              if(!mugTaken){
+                addItem(2);
+              }
+            }
           }else{
-            textBox.insertText("I think I can use the coffee machine\nfor coffee?");
-            textBox.buffer("I don't think it has coffee\nWhat I get probably is gonna be hot water");
+            if (!gameBackground.coffeeMachineUsed){
+              textBox.insertText("I think I can use the coffee machine\nfor coffee?");
+              textBox.buffer("I don't think it has coffee\nWhat I get probably is gonna be hot water");
+            }
           }
         }
         if (usingMug){
@@ -664,7 +678,7 @@ function objTriggered(event) {
         showCloserObj(1);
       }else{
         if(!gameBackground.cordTaken){
-          textBox.insertText("There's a power strip under the floor\nI'm taking it");
+          textBox.insertText("There's an extension cord under the floor\nI'm taking it");
           gameBackground.cordTaken = true;
           addItem(3);
         }
@@ -698,6 +712,7 @@ function showCloserObj(id){
       if ($(".keypad-code").text() === PASSCODE){
         console.log("Unlocked");
         gameBackground.doorOpened = true;
+        gameBackground.lightOff = false;
         $('#close-button').remove();
         $('#confirm-button').remove();
         $(".keypad").hide();
@@ -824,7 +839,11 @@ function addItem(item_id){
       $(this).css({"background-color":"Coral"});
     });
   }else if (item_id === 2){
-    $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug.png'>");
+    if (gameBackground.coffeeMachineUsed){
+      $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug_Heated.png'>");
+    }else{
+      $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug.png'>");
+    }
     $item.click(function(){
       usingItemId = 2;
       usingItem = true;
@@ -851,8 +870,13 @@ function useItem() {
       texture = ITEM_FUSE;
       usingFuse = true;
     }else if (usingItemId === 2){
-      texture = ITEM_MUG;
+      if (gameBackground.coffeeMachineUsed){
+        texture = ITEM_MUG_HEATED;
+      }else{
+        texture = ITEM_MUG;
+      }
       usingMug = true;
+      mugTaken = true;
     }else if (usingItemId === 3){
       texture = ITEM_CORD;
       usingCord = true;
@@ -877,4 +901,7 @@ function dropItem(){
 function removeItem(id){
   dropItem();
   $(`#item${id}`).remove();
+  if (id === 2){
+    mugTaken = false;
+  }
 }

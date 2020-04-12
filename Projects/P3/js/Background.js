@@ -36,6 +36,7 @@ class Background{
     this.plantMoved = false;
     // back
     this.coffeeMachinePowered = false;
+    this.coffeeMachineUsed= false;
     this.posterOpened = false;
     this.fuseTaken = false;
     this.mugPlaced = false;
