@@ -15,11 +15,45 @@ body{
 	/* IE10+/Edge */
 	user-select: none;
 	/* Standard */
+
+  overflow: hidden;
+  background-color: #262626;
+}
+
+html{
+  padding: 0;
+  margin: 0;
+
+  overflow: hidden;
 }
 
 canvas{
   display: block;
   z-index: 0;
+}
+
+#p5_loading{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+}
+
+.loader {
+  position: absolute;
+  border: 16px solid Grey;
+  border-top: 16px solid Coral;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-left: 30px;
+  margin-top: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .button{

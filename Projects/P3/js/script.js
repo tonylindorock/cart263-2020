@@ -25,7 +25,7 @@ let tutorialFadeAway = false;
 let doOnce = true; // do only once
 
 // current state of the program
-let state = "PLAY";
+let state = "START";
 // the direction the player is facing
 let currentDir = 0;
 
@@ -177,6 +177,7 @@ function preload() {
   CLOSE_NEWSPAPER = loadImage("assets/images/Newspaper.png");
 }
 
+
 // setup()
 //
 //
@@ -324,6 +325,13 @@ function setupLock(){
   $body.append($lock.hide());
 }
 
+function setupHint(){
+  var $hint = $("<div class = 'hint-box'></div>").click(function(){
+
+  }).hide();
+
+}
+
 // draw()
 //
 //
@@ -341,8 +349,12 @@ function draw() {
     useItem();
     showOverlay();
   } else if (state === "END") {
-    
+
   }
+}
+
+function appendHint(){
+
 }
 
 // keyPressed()
