@@ -38,6 +38,7 @@ class Background{
     this.coffeeMachinePowered = false;
     this.posterOpened = false;
     this.fuseTaken = false;
+    this.mugPlaced = false;
     // right
     this.cabinLeftOut = false;
     this.cabinRightOut = false;
@@ -56,14 +57,14 @@ class Background{
     if (this.dir === 0){
       if (this.panelOpened){
         this.displayImg(OBJ_PANEL_OPENED);
-      }else{
-        this.displayImg(OBJ_PANEL);
         if (this.fuseInstalled){
           this.displayImg(OBJ_FUSE_INSTALLED);
         }
+      }else{
+        this.displayImg(OBJ_PANEL);
       }
       if (this.doorOpened){
-        this.dispayImg(OBJ_DOOR_OPENED);
+        this.displayImg(OBJ_DOOR_OPENED);
       }
     // left
     }else if (this.dir === 1){
@@ -88,6 +89,9 @@ class Background{
       }
       if (this.coffeeMachinePowered){
         this.displayImg(OBJ_CORD_USED);
+      }
+      if (this.mugPlaced){
+        this.displayImg(OBJ_MUG_PLACED);
       }
     // right
     }else if (this.dir === 3){

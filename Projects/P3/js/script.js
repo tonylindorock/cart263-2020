@@ -40,6 +40,7 @@ let usingItem = false;
 let usingItemId = -1;
 
 let closeObjShowing = false;
+let closeObjId = -1;
 
 let $body; // store the html body
 let $objTrigger;
@@ -119,8 +120,6 @@ let OVERLAY_LIGHT_OFF;
 let OVERLAY_DARKEN;
 let OVERLAY_DARKEN_FRONT;
 // closer look at objs
-let CLOSE_KEYPAD;
-let CLOSE_LOCK;
 let CLOSE_CARD;
 let CLOSE_NEWSPAPER;
 let CLOSE_MANUAL;
@@ -170,8 +169,9 @@ function preload() {
   OVERLAY_DARKEN = loadImage("assets/images/Darken.png");
   OVERLAY_DARKEN_FRONT = loadImage("assets/images/Darken_front.png");
 
-  CLOSE_KEYPAD = loadImage("assets/images/Keypad.png");
-
+  CLOSE_MANUAL = loadImage("assets/images/Manual.png");
+  CLOSE_CARD = loadImage("assets/images/Card.png");
+  CLOSE_NEWSPAPER = loadImage("assets/images/Newspaper.png");
 }
 
 // setup()
@@ -348,7 +348,7 @@ function draw() {
 function keyPressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      // textBox.fullText();
+      textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -410,7 +410,7 @@ function keyPressed() {
 function mousePressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      // textBox.fullText();
+      textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -508,8 +508,13 @@ function objTriggered(event) {
         showCloserObj(0);
       } else if ($(this).is("#switch")) {
         if (gameBackground.fuseInstalled) {
-          textBox.insertText("I can turn off the light now");
-          gameBackground.lightOff = true;
+          if (!gameBackground.lightOff){
+            textBox.insertText("I can turn off the light now");
+            gameBackground.lightOff = true;
+          }else{
+            textBox.insertText("Light is back on");
+            gameBackground.lightOff = false;
+          }
         } else {
           textBox.insertText("It doesn't do anything\nIs it broken?");
         }
@@ -518,8 +523,14 @@ function objTriggered(event) {
           if (gameBackground.fuseInstalled) {
             textBox.insertText("I think I fixed something at least");
           }else{
-            textBox.insertText("It looks like something is missing");
-            textBox.buffer("Maybe I can find it somewhere");
+            if (usingFuse){
+              textBox.insertText("It looks fit");
+              gameBackground.fuseInstalled = true;
+              removeItem(1);
+            }else{
+              textBox.insertText("It looks like something is missing");
+              textBox.buffer("Maybe I can find it somewhere");
+            }
           }
         } else {
           if (usingScrewDriver){
@@ -546,7 +557,7 @@ function objTriggered(event) {
           gameBackground.plantMoved = true;
         }
       } else if ($(this).is("#card")) {
-
+        showCloserObj(2);
       } else if ($(this).is("#drawer-left")) {
         if (!gameBackground.drawerLeftOut) {
           textBox.insertText("There's a screwdriver in this drawer\nI'm taking it");
@@ -566,14 +577,51 @@ function objTriggered(event) {
       // back
     } else if (event.data.id === 2) {
       if ($(this).is("#newspaper")){
-
+        showCloserObj(3);
       }else if ($(this).is("#coffeemachine")){
-        textBox.insertText("It doesn't have power");
+        if (!gameBackground.coffeeMachinePowered){
+          textBox.insertText("It doesn't have power");
+        }else{
+          if (gameBackground.mugPlaced){
+            textBox.insertText("It's working!");
+          }else{
+            textBox.insertText("I think I can use the coffee machine\nfor coffee?");
+            textBox.buffer("I don't think it has coffee\nWhat I get probably is gonna be hot water");
+          }
+        }
+        if (usingMug){
+          if (!gameBackground.coffeeMachinePowered){
+            textBox.insertText("Yeah, I wish I could get some coffee");
+            textBox.buffer("But it doesn't have power");
+          }else{
+            textBox.insertText("Let's get some coffee or hot water...");
+          }
+          gameBackground.mugPlaced = true;
+          removeItem(2);
+        }
       }else if ($(this).is("#plug")){
-        textBox.insertText("Where do I plug this in?");
-        textBox.buffer("The only power socket is out of reach!");
+        if (!gameBackground.coffeeMachinePowered){
+          if(usingCord){
+            textBox.insertText("The extension cord is so useful...\nin this way");
+            gameBackground.coffeeMachinePowered = true;
+            removeItem(3);
+          }else{
+            textBox.insertText("Where do I plug this in?");
+            textBox.buffer("The only power socket is out of reach!");
+          }
+        }
       }else if ($(this).is("#socket")){
-        textBox.insertText("Why is the power socket way up there?");
+        if (!gameBackground.coffeeMachinePowered){
+          if(usingCord){
+            textBox.insertText("The extension cord is so useful...\nin this way");
+            gameBackground.coffeeMachinePowered = true;
+            removeItem(3);
+          }else{
+            textBox.insertText("Why is the power socket way up there?");
+          }
+        }else{
+          textBox.insertText("I think I can use the coffee machine now");
+        }
       }else if ($(this).is("#fuse")){
         if (!gameBackground.posterOpened){
           textBox.insertText("There's something behind...");
@@ -590,7 +638,7 @@ function objTriggered(event) {
     } else if (event.data.id === 3) {
       if ($(this).is("#paintings")) {
         textBox.insertText("There're 3 strange abstract paintings");
-        textBox.buffer("I hope I can understand them");
+        textBox.buffer("I wish I can understand them");
       } else if ($(this).is("#cabin-left")) {
         if (!gameBackground.cabinLeftOut) {
           textBox.insertText("I found a mug in here\nI'm taking it");
@@ -608,7 +656,7 @@ function objTriggered(event) {
           gameBackground.cabinBottomOut = true;
         }
       } else if ($(this).is("#manual")) {
-
+        showCloserObj(4);
         }
       // down
     } else if (event.data.id === 4) {
@@ -624,8 +672,8 @@ function objTriggered(event) {
       // up
     } else if (event.data.id === 5) {
       if (gameBackground.lightOff){
-        textBox.insertText("The light is off");
-        textBox.buffer("The writing on the ceiling is interesting");
+        textBox.insertText("The writing on the ceiling...\nIs it a riddle?");
+        textBox.buffer("Nine? What is 9 for?");
       }else{
         textBox.insertText("A light on the ceiling\nIt looks like nothing special");
       }
@@ -635,6 +683,7 @@ function objTriggered(event) {
 
 function showCloserObj(id){
   var $button = $("<div class='button' id = 'close-button'></div>").text("close").button();
+  // keypad
   if (id === 0){
     $(".keypad").show();
     $button.click(function() {
@@ -643,15 +692,24 @@ function showCloserObj(id){
       $(".keypad").hide();
       showTriggers();
       closeObjShowing = false;
+      closeObjId = -1;
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
       if ($(".keypad-code").text() === PASSCODE){
         console.log("Unlocked");
+        gameBackground.doorOpened = true;
+        $('#close-button').remove();
+        $('#confirm-button').remove();
+        $(".keypad").hide();
+        showTriggers();
+        closeObjShowing = false;
+        closeObjId = -1;
       }else{
 
       }
     });
     $body.append($buttonConfirm);
+  // lock
   }else if (id === 1){
     $(".lock").show();
     $button.click(function() {
@@ -660,40 +718,52 @@ function showCloserObj(id){
       $(".lock").hide();
       showTriggers();
       closeObjShowing = false;
+      closeObjId = -1;
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
       let code = $("#lock-btn-0").text() + $("#lock-btn-1").text() + $("#lock-btn-2").text();
       if (code === LOCK_COMBO){
         console.log("Unlocked");
+        gameBackground.trapDoorOpened = true;
+        $('#close-button').remove();
+        $('#confirm-button').remove();
+        $(".lock").hide();
+        showTriggers();
+        closeObjShowing = false;
+        closeObjId = -1;
       }else{
 
       }
     });
     $body.append($buttonConfirm);
+  // card
   }else if (id === 2){
     $button.click(function() {
       $('#close-button').remove();
-
+      closeObjId = -1;
       showTriggers();
       closeObjShowing = false;
     });
+  // newspaer
   }else if (id === 3){
     $button.click(function() {
       $('#close-button').remove();
-
+      closeObjId = -1;
       showTriggers();
       closeObjShowing = false;
     });
+  // manual
   }else if (id === 4){
     $button.click(function() {
       $('#close-button').remove();
-
+      closeObjId = -1;
       showTriggers();
       closeObjShowing = false;
     });
   }
   $body.append($button);
   hideTriggers();
+  closeObjId = id;
   closeObjShowing = true;
 }
 
@@ -702,6 +772,17 @@ function showOverlay(){
     push();
     fill(0,200);
     rect(width/2,height/2,width,height);
+    let closeObjImg = null;
+    if (closeObjId === 2){
+      closeObjImg = CLOSE_CARD;
+    }else if (closeObjId === 3){
+      closeObjImg = CLOSE_NEWSPAPER;
+    }else if (closeObjId === 4){
+      closeObjImg = CLOSE_MANUAL;
+    }
+    if (closeObjImg != null){
+      image(closeObjImg,width/2,height/2,((height/1.5)/closeObjImg.height)*closeObjImg.width,height/1.5);
+    }
     pop();
   }
 }
@@ -729,7 +810,6 @@ function changeCode(){
 function addItem(item_id){
   let $item;
   if (item_id === 0){
-    inventory.push("Screwdriver");
     $item = $("<img class = 'item' id = 'item0' src = 'assets/images/Item_Screwdriver.png'>");
     $item.click(function(){
       usingItemId = 0;
@@ -737,7 +817,6 @@ function addItem(item_id){
       $(this).css({"background-color":"Coral"});
     });
   }else if (item_id === 1){
-    inventory.push("Fuse");
     $item = $("<img class = 'item' id = 'item1' src = 'assets/images/Item_Fuse.png'>");
     $item.click(function(){
       usingItemId = 1;
@@ -745,7 +824,6 @@ function addItem(item_id){
       $(this).css({"background-color":"Coral"});
     });
   }else if (item_id === 2){
-    inventory.push("Mug");
     $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug.png'>");
     $item.click(function(){
       usingItemId = 2;
@@ -753,7 +831,6 @@ function addItem(item_id){
       $(this).css({"background-color":"Coral"});
     });
   }else if (item_id === 3){
-    inventory.push("Cord");
     $item = $("<img class = 'item' id = 'item3' src = 'assets/images/Item_Cord.png'>");
     $item.click(function(){
       usingItemId = 3;
@@ -789,4 +866,15 @@ function dropItem(){
   $("#item"+usingItemId).css({"background-color":"white"});
   usingItemId = -1;
   usingItem = false;
+  setTimeout(function(){
+    usingScrewDriver = false;
+    usingFuse = false;
+    usingMug = false;
+    usingCord = false;
+  },250);
+}
+
+function removeItem(id){
+  dropItem();
+  $(`#item${id}`).remove();
 }
