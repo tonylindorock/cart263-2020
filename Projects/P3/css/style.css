@@ -128,7 +128,7 @@ canvas{
   background-color: white;
 }
 
-.hint{
+.tip{
   z-index: 1;
   background-color: rgba(0,0,0,0);
   width: 116px;
@@ -139,7 +139,7 @@ canvas{
   text-align: center;
   font-size: 20px;
 }
-.hint-box{
+.tip-box{
   z-index: 2;
   display: inline-block;
   left: 50%;

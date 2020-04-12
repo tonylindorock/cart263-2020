@@ -25,7 +25,7 @@ let tutorialFadeAway = false;
 let doOnce = true; // do only once
 
 // current state of the program
-let state = "START";
+let state = "PLAY";
 // the direction the player is facing
 let currentDir = 0;
 
@@ -35,6 +35,7 @@ let usingMug = false;
 let mugTaken = false;
 let usingCord = false;
 let usingFuse = false;
+let coffeemachineRunning = false;
 
 let inventory = [];
 let usingItem = false;
@@ -62,7 +63,7 @@ let textBox; // store the obj
 let gameBackground; // store the obj
 
 const TEXT_TUTORIAL = "Hi," +
-  "\n\nI know it has been many years since we departed," +
+  "\n\nI know it has been many years since we last met," +
   "\nbut there's something I need to tell you." +
   "\n\nThe Cube is real! I got in! And I escaped!" +
   "\nIt was incredible! No one would ever believe me." +
@@ -86,8 +87,9 @@ const GREEN_BLUE = "#7FFFD4";
 const PASSCODE = "9264";
 const LOCK_COMBO = "301"
 
-// * game assests * //
+// * GAME ASSESTS * //
 let THEME_FONT; // store the font
+// **** Pictures **** //
 // backgrounds
 let BG_MM;
 let BG_FRONT;
@@ -124,13 +126,26 @@ let OVERLAY_DARKEN_FRONT;
 let CLOSE_CARD;
 let CLOSE_NEWSPAPER;
 let CLOSE_MANUAL;
-
-// items
+// item textures
 let ITEM_SCREWDRIVER;
 let ITEM_MUG;
 let ITEM_MUG_HEATED;
 let ITEM_FUSE;
 let ITEM_CORD;
+// **** Sounds **** //
+let SOUND_BEEP;
+let SOUND_READ;
+let SOUND_SWITCH;
+let SOUND_TAKE_ITEM;
+let SOUND_USE_ITEM;
+let SOUND_PLUG_IN;
+let SOUND_PLACE_MUG;
+let SOUND_COMBO_LOCK;
+let SOUND_ERROR;
+let SOUND_DOOR_LOCKED;
+let SOUND_DOOR_OPEN;
+let SOUND_CM_POWERED;
+let SOUND_CM_WORKING;
 
 // preload()
 //
@@ -175,6 +190,20 @@ function preload() {
   CLOSE_MANUAL = loadImage("assets/images/Manual.png");
   CLOSE_CARD = loadImage("assets/images/Card.png");
   CLOSE_NEWSPAPER = loadImage("assets/images/Newspaper.png");
+
+  SOUND_BEEP = loadSound("assets/sounds/Beep_short.mp3");
+  SOUND_READ = loadSound("assets/sounds/Read.mp3");
+  SOUND_SWITCH = loadSound("assets/sounds/Switch.mp3");
+  SOUND_TAKE_ITEM = loadSound("assets/sounds/Take_item.mp3");
+  SOUND_USE_ITEM = loadSound("assets/sounds/Use_item.mp3");
+  SOUND_PLUG_IN = loadSound("assets/sounds/Plugin.mp3");
+  SOUND_PLACE_MUG = loadSound("assets/sounds/Mug_placed.mp3");
+  SOUND_COMBO_LOCK = loadSound("assets/sounds/Combolock.mp3");
+  SOUND_ERROR = loadSound("assets/sounds/Error.mp3");
+  SOUND_DOOR_LOCKED = loadSound("assets/sounds/Door_locked.mp3");
+  SOUND_DOOR_OPEN = loadSound("assets/sounds/Door_open.mp3");
+  SOUND_CM_POWERED = loadSound("assets/sounds/Coffeemachine_poweredon.mp3");
+  SOUND_CM_WORKING = loadSound("assets/sounds/Coffeemachine_working.mp3");
 }
 
 
@@ -213,6 +242,8 @@ function setup() {
   setupKeypad();
   setupLock();
 
+  setupSFX();
+
   let containerLeftMargin = (gameBackground.width)/2;
   $(".container").css({
     "width": gameBackground.width.toString()+"px",
@@ -223,6 +254,21 @@ function setup() {
     gameBackground.fadeIn = true;
     showTriggers();
   }
+}
+
+function setupSFX(){
+  SOUND_BEEP.setVolume(0.1);
+  SOUND_ERROR.setVolume(0.1);
+  SOUND_COMBO_LOCK.setVolume(0.25);
+  SOUND_DOOR_LOCKED.setVolume(0.75);
+  SOUND_DOOR_OPEN.setVolume(0.25);
+  SOUND_SWITCH.setVolume(0.25);
+  SOUND_TAKE_ITEM.setVolume(0.5);
+  SOUND_USE_ITEM.setVolume(0.1);
+  SOUND_CM_POWERED.setVolume(0.1);
+  SOUND_CM_WORKING.setVolume(0.25);
+  SOUND_PLUG_IN.setVolume(0.25);
+  SOUND_PLACE_MUG.setVolume(0.1);
 }
 
 // setupMainMenu()
@@ -325,8 +371,8 @@ function setupLock(){
   $body.append($lock.hide());
 }
 
-function setupHint(){
-  var $hint = $("<div class = 'hint-box'></div>").click(function(){
+function setupTip(){
+  var $tip = $("<div class = 'tip-box'></div>").click(function(){
 
   }).hide();
 
@@ -533,6 +579,7 @@ function objTriggered(event) {
         } else {
           textBox.insertText("It doesn't do anything\nIs it broken?");
         }
+        SOUND_SWITCH.play();
       } else if ($(this).is("#panel")) {
         if (gameBackground.panelOpened) {
           if (gameBackground.fuseInstalled) {
@@ -559,9 +606,11 @@ function objTriggered(event) {
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
           state = "END";
+          $inventory.hide();
         } else {
           textBox.insertText("Door is locked");
           textBox.buffer("I need to enter some kinda of\npasscode or something?");
+          SOUND_DOOR_LOCKED.play();
         }
       }
       // left
@@ -573,6 +622,7 @@ function objTriggered(event) {
         }
       } else if ($(this).is("#card")) {
         showCloserObj(2);
+        SOUND_READ.play();
       } else if ($(this).is("#drawer-left")) {
         if (!gameBackground.drawerLeftOut) {
           textBox.insertText("There's a screwdriver in this drawer\nI'm taking it");
@@ -588,24 +638,33 @@ function objTriggered(event) {
       } else if ($(this).is("#book")) {
         textBox.insertText("The green book named\n\"The Key to the Light Is Under the Cube\"\nhas nothing written on it");
         textBox.buffer("The red book is fully blank");
+        SOUND_READ.play();
       }
       // back
     } else if (event.data.id === 2) {
       if ($(this).is("#newspaper")){
         showCloserObj(3);
+        SOUND_READ.play();
       }else if ($(this).is("#coffeemachine")){
         if (!gameBackground.coffeeMachinePowered){
           textBox.insertText("It doesn't have power");
         }else{
           if (gameBackground.mugPlaced){
-            if (!gameBackground.coffeeMachineUsed){
+            if (!gameBackground.coffeeMachineUsed && !coffeemachineRunning){
               textBox.insertText("It's working!");
-              gameBackground.coffeeMachineUsed = true;
-            }else{
-              textBox.insertText("There's hot water in the mug");
-              gameBackground.mugPlaced = false;
-              if(!mugTaken){
-                addItem(2);
+              coffeemachineRunning = true;
+              SOUND_CM_WORKING.play();
+              setTimeout(function(){
+                gameBackground.coffeeMachineUsed = true;
+                coffeemachineRunning = false;
+              },12000);
+            }else {
+              if (!coffeemachineRunning){
+                textBox.insertText("There's hot water in the mug");
+                gameBackground.mugPlaced = false;
+                if(!mugTaken){
+                  addItem(2);
+                }
               }
             }
           }else{
@@ -624,6 +683,7 @@ function objTriggered(event) {
           }
           gameBackground.mugPlaced = true;
           removeItem(2);
+          SOUND_PLACE_MUG.play();
         }
       }else if ($(this).is("#plug")){
         if (!gameBackground.coffeeMachinePowered){
@@ -631,6 +691,10 @@ function objTriggered(event) {
             textBox.insertText("The extension cord is so useful...\nin this way");
             gameBackground.coffeeMachinePowered = true;
             removeItem(3);
+            SOUND_PLUG_IN.play();
+            setTimeout(function(){
+              SOUND_CM_POWERED.play();
+            },250);
           }else{
             textBox.insertText("Where do I plug this in?");
             textBox.buffer("The only power socket is out of reach!");
@@ -642,6 +706,10 @@ function objTriggered(event) {
             textBox.insertText("The extension cord is so useful...\nin this way");
             gameBackground.coffeeMachinePowered = true;
             removeItem(3);
+            SOUND_PLUG_IN.play();
+            setTimeout(function(){
+              SOUND_CM_POWERED.play();
+            },250);
           }else{
             textBox.insertText("Why is the power socket way up there?");
           }
@@ -683,6 +751,7 @@ function objTriggered(event) {
         }
       } else if ($(this).is("#manual")) {
         showCloserObj(4);
+        SOUND_READ.play();
         }
       // down
     } else if (event.data.id === 4) {
@@ -731,8 +800,10 @@ function showCloserObj(id){
         showTriggers();
         closeObjShowing = false;
         closeObjId = -1;
+        SOUND_DOOR_OPEN.play();
       }else{
-
+        SOUND_ERROR.stop();
+        SOUND_ERROR.play();
       }
     });
     $body.append($buttonConfirm);
@@ -758,6 +829,7 @@ function showCloserObj(id){
         showTriggers();
         closeObjShowing = false;
         closeObjId = -1;
+        SOUND_DOOR_OPEN.play();
       }else{
 
       }
@@ -822,6 +894,7 @@ function addCode(num){
     code += num;
     $(".keypad-code").text(code);
   }
+  SOUND_BEEP.play();
 }
 
 function changeCode(){
@@ -832,6 +905,7 @@ function changeCode(){
     num = int(num) + 1;
     $(this).text(num);
   }
+  SOUND_COMBO_LOCK.play();
 }
 
 function addItem(item_id){
@@ -842,6 +916,7 @@ function addItem(item_id){
       usingItemId = 0;
       usingItem = true;
       $(this).css({"background-color":"Coral"});
+      SOUND_USE_ITEM.play();
     });
   }else if (item_id === 1){
     $item = $("<img class = 'item' id = 'item1' src = 'assets/images/Item_Fuse.png'>");
@@ -849,6 +924,7 @@ function addItem(item_id){
       usingItemId = 1;
       usingItem = true;
       $(this).css({"background-color":"Coral"});
+      SOUND_USE_ITEM.play();
     });
   }else if (item_id === 2){
     if (gameBackground.coffeeMachineUsed){
@@ -860,6 +936,7 @@ function addItem(item_id){
       usingItemId = 2;
       usingItem = true;
       $(this).css({"background-color":"Coral"});
+      SOUND_USE_ITEM.play();
     });
   }else if (item_id === 3){
     $item = $("<img class = 'item' id = 'item3' src = 'assets/images/Item_Cord.png'>");
@@ -867,9 +944,11 @@ function addItem(item_id){
       usingItemId = 3;
       usingItem = true;
       $(this).css({"background-color":"Coral"});
+      SOUND_USE_ITEM.play();
     });
   }
   $inventory.append($item);
+  SOUND_TAKE_ITEM.play();
 }
 
 function useItem() {
