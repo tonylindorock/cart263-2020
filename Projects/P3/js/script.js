@@ -136,6 +136,10 @@ let ITEM_CORD;
 let SOUND_BEEP;
 let SOUND_READ;
 let SOUND_SWITCH;
+let SOUND_DRAWER;
+let SOUND_PANEL;
+let SOUND_MOVE;
+let SOUND_POSTER;
 let SOUND_TAKE_ITEM;
 let SOUND_USE_ITEM;
 let SOUND_PLUG_IN;
@@ -146,6 +150,7 @@ let SOUND_DOOR_LOCKED;
 let SOUND_DOOR_OPEN;
 let SOUND_CM_POWERED;
 let SOUND_CM_WORKING;
+let SOUND_CM_SWITCH;
 
 // preload()
 //
@@ -194,6 +199,10 @@ function preload() {
   SOUND_BEEP = loadSound("assets/sounds/Beep_short.mp3");
   SOUND_READ = loadSound("assets/sounds/Read.mp3");
   SOUND_SWITCH = loadSound("assets/sounds/Switch.mp3");
+  SOUND_DRAWER = loadSound("assets/sounds/Drawer.mp3");
+  SOUND_PANEL = loadSound("assets/sounds/Panel.mp3");
+  SOUND_MOVE = loadSound("assets/sounds/Move_object.mp3");
+  SOUND_POSTER = loadSound("assets/sounds/Poster.mp3");
   SOUND_TAKE_ITEM = loadSound("assets/sounds/Take_item.mp3");
   SOUND_USE_ITEM = loadSound("assets/sounds/Use_item.mp3");
   SOUND_PLUG_IN = loadSound("assets/sounds/Plugin.mp3");
@@ -204,6 +213,7 @@ function preload() {
   SOUND_DOOR_OPEN = loadSound("assets/sounds/Door_open.mp3");
   SOUND_CM_POWERED = loadSound("assets/sounds/Coffeemachine_poweredon.mp3");
   SOUND_CM_WORKING = loadSound("assets/sounds/Coffeemachine_working.mp3");
+  SOUND_CM_SWITCH = loadSound("assets/sounds/Coffeemachine_switch.mp3");
 }
 
 
@@ -257,6 +267,10 @@ function setup() {
 }
 
 function setupSFX(){
+  SOUND_DRAWER.setVolume(0.5);
+  SOUND_PANEL.setVolume(0.25);
+  SOUND_MOVE.setVolume(0.25);
+  SOUND_POSTER.setVolume(0.1);
   SOUND_BEEP.setVolume(0.1);
   SOUND_ERROR.setVolume(0.1);
   SOUND_COMBO_LOCK.setVolume(0.25);
@@ -267,6 +281,7 @@ function setupSFX(){
   SOUND_USE_ITEM.setVolume(0.1);
   SOUND_CM_POWERED.setVolume(0.1);
   SOUND_CM_WORKING.setVolume(0.25);
+  SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.25);
   SOUND_PLACE_MUG.setVolume(0.1);
 }
@@ -409,7 +424,7 @@ function appendHint(){
 function keyPressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      textBox.fullText();
+      // textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -471,7 +486,7 @@ function keyPressed() {
 function mousePressed() {
   if (state === "PLAY") {
     if (textBox.update) {
-      textBox.fullText();
+      // textBox.fullText();
     } else {
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
@@ -589,6 +604,7 @@ function objTriggered(event) {
               textBox.insertText("I suppose it fits");
               gameBackground.fuseInstalled = true;
               removeItem(1);
+              SOUND_PLUG_IN.play();
             }else{
               textBox.insertText("It looks like something is missing");
               textBox.buffer("Maybe I can find it somewhere");
@@ -597,10 +613,13 @@ function objTriggered(event) {
         } else {
           if (usingScrewDriver){
             gameBackground.panelOpened = true;
-            textBox.insertText("I unscrewed all the screws and opened it!");
+            textBox.insertText("I unscrewed all the screws and opened the panel!");
+            SOUND_MOVE.play();
           }else{
             textBox.insertText("A panel held by 4 screws");
             textBox.buffer("I wonder if I can get it open with something");
+            SOUND_PANEL.stop();
+            SOUND_PANEL.play();
           }
         }
       } else if ($(this).is("#door")) {
@@ -619,6 +638,7 @@ function objTriggered(event) {
         if (!gameBackground.plantMoved) {
           textBox.insertText("I moved the plant\nThere's a number hidden under it");
           gameBackground.plantMoved = true;
+          SOUND_MOVE.play();
         }
       } else if ($(this).is("#card")) {
         showCloserObj(2);
@@ -627,13 +647,14 @@ function objTriggered(event) {
         if (!gameBackground.drawerLeftOut) {
           textBox.insertText("There's a screwdriver in this drawer\nI'm taking it");
           gameBackground.drawerLeftOut = true;
-
+          SOUND_DRAWER.play();
           addItem(0);
         }
       } else if ($(this).is("#drawer-right")) {
         if (!gameBackground.drawerRightOut) {
           textBox.insertText("It's empty");
           gameBackground.drawerRightOut = true;
+          SOUND_DRAWER.play();
         }
       } else if ($(this).is("#book")) {
         textBox.insertText("The green book named\n\"The Key to the Light Is Under the Cube\"\nhas nothing written on it");
@@ -648,6 +669,9 @@ function objTriggered(event) {
       }else if ($(this).is("#coffeemachine")){
         if (!gameBackground.coffeeMachinePowered){
           textBox.insertText("It doesn't have power");
+          if (!usingMug){
+            SOUND_CM_SWITCH.play();
+          }
         }else{
           if (gameBackground.mugPlaced){
             if (!gameBackground.coffeeMachineUsed && !coffeemachineRunning){
@@ -720,6 +744,7 @@ function objTriggered(event) {
         if (!gameBackground.posterOpened){
           textBox.insertText("There's something behind...");
           gameBackground.posterOpened = true;
+          SOUND_POSTER.play();
         }else{
           if (!gameBackground.fuseTaken){
             textBox.insertText("It's a fuse!\nI'm taking it");
@@ -738,16 +763,19 @@ function objTriggered(event) {
           textBox.insertText("I found a mug in here\nI'm taking it");
           gameBackground.cabinLeftOut = true;
           addItem(2);
+          SOUND_DRAWER.play();
         }
       } else if ($(this).is("#cabin-right")) {
         if (!gameBackground.cabinRightOut) {
           textBox.insertText("There's nothing in it");
           gameBackground.cabinRightOut = true;
+          SOUND_DRAWER.play();
         }
       } else if ($(this).is("#cabin-bottom")) {
         if (!gameBackground.cabinBottomOut) {
           textBox.insertText("It's empty except the number written inside");
           gameBackground.cabinBottomOut = true;
+          SOUND_DRAWER.play();
         }
       } else if ($(this).is("#manual")) {
         showCloserObj(4);
