@@ -22,6 +22,10 @@ let titleFadeAway = false;
 let tutorialFontAlpha = 0;
 let tutorialFadeAway = false;
 
+let endFontAlpha = 0;
+let endFadeAway = false;
+let endFontHeight
+
 let doOnce = true; // do only once
 
 // current state of the program
@@ -52,6 +56,7 @@ let $right;
 let $back;
 let $down;
 let $up;
+let $end;
 let dirArray;
 
 let $inventory;
@@ -65,6 +70,9 @@ let textBox; // store the obj
 
 // background manager
 let gameBackground; // store the obj
+
+let choiceMade = false;
+let endId = 0;
 
 const TEXT_TUTORIAL = "Hi," +
   "\n\nI know it has been many years since we last met," +
@@ -102,6 +110,7 @@ let BG_RIGHT;
 let BG_BACK;
 let BG_DOWN;
 let BG_UP;
+let BG_END;
 let bgArray;
 // objs appear in the bgs
 let OBJ_BOOKLET;
@@ -156,6 +165,11 @@ let SOUND_DOOR_OPEN;
 let SOUND_CM_POWERED;
 let SOUND_CM_WORKING;
 let SOUND_CM_SWITCH;
+// **** Background music **** //
+let currentPlaying = 0;
+let playing = false;
+let BGM_LONE;
+let BGM_CONCLUSION;
 
 // preload()
 //
@@ -167,6 +181,7 @@ function preload() {
   BG_BACK = loadImage("assets/images/Dir_back.png");
   BG_DOWN = loadImage("assets/images/Dir_down.png");
   BG_UP = loadImage("assets/images/Dir_up.png");
+  BG_END = loadImage("assets/images/Dir_end.png");
   bgArray = [BG_FRONT, BG_LEFT, BG_BACK, BG_RIGHT, BG_DOWN, BG_UP];
   OBJ_BOOKLET = loadImage("assets/images/Booklet.png");
   OBJ_CABIN_BOTTOM_OUT = loadImage("assets/images/Cabin_bottom_out.png");
@@ -220,6 +235,9 @@ function preload() {
   SOUND_CM_POWERED = loadSound("assets/sounds/Coffeemachine_poweredon.mp3");
   SOUND_CM_WORKING = loadSound("assets/sounds/Coffeemachine_working.mp3");
   SOUND_CM_SWITCH = loadSound("assets/sounds/Coffeemachine_switch.mp3");
+
+  BGM_LONE = loadSound("assets/sounds/Lone.mp3");
+  BGM_CONCLUSION = loadSound("assets/sounds/Conclusion.mp3");
 }
 
 
@@ -252,17 +270,18 @@ function setup() {
 
   setupSFX();
 
-  let containerLeftMargin = (gameBackground.width)/2;
+  let containerLeftMargin = (gameBackground.width) / 2;
   $(".container").css({
-    "width": gameBackground.width.toString()+"px",
-    "margin-left": "-"+containerLeftMargin.toString()+"px"
+    "width": gameBackground.width.toString() + "px",
+    "margin-left": "-" + containerLeftMargin.toString() + "px"
   });
 }
 
-function setupSFX(){
+function setupSFX() {
   SOUND_DRAWER.setVolume(0.5);
   SOUND_PANEL.setVolume(0.15);
-  SOUND_MOVE.setVolume(0.25);
+  SOUND_MOVE.setVolume(0.3);
+  SOUND_READ.setVolume(1.25);
   SOUND_POSTER.setVolume(0.1);
   SOUND_BEEP.setVolume(0.1);
   SOUND_ERROR.setVolume(0.05);
@@ -278,9 +297,11 @@ function setupSFX(){
   SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
+  BGM_LONE.setVolume(0.1);
+  BGM_CONCLUSION.setVolume(0.1);
 }
 
-function setupHTMLPointers(){
+function setupHTMLPointers() {
   $body = $('body');
   $front = $("#front");
   $left = $("#left");
@@ -288,11 +309,12 @@ function setupHTMLPointers(){
   $back = $("#back");
   $down = $("#down");
   $up = $("#up");
-  dirArray = [$front, $left, $back, $right, $down, $up];
+  $end = $("#end");
+  dirArray = [$front, $left, $back, $right, $down, $up, $end];
   $inventory = $(".inventory");
   $directionIndicator = $(".direction-indicator");
-  for(let i =0;i<6;i++){
-    let id = "#dir-"+i;
+  for (let i = 0; i < 6; i++) {
+    let id = "#dir-" + i;
     dirIndicatorArr.push($(id));
   }
 }
@@ -306,12 +328,12 @@ function setupMainMenu() {
 }
 
 function setupObjTriggers() {
-  $("#front").hide();
-  $("#left").hide();
-  $("#right").hide();
-  $("#back").hide();
-  $("#down").hide();
-  $("#up").hide();
+  $front.hide();
+  $left.hide();
+  $right.hide();
+  $back.hide();
+  $down.hide();
+  $up.hide();
   $(".obj-trigger").button();
   // front triggers
   $("#keypad").click({
@@ -343,11 +365,21 @@ function setupObjTriggers() {
     id: 1
   }, objTriggered);
   // back triggers
-  $("#newspaper").click({id: 2}, objTriggered);
-  $("#coffeemachine").click({id: 2}, objTriggered);
-  $("#plug").click({id: 2}, objTriggered);
-  $("#socket").click({id: 2}, objTriggered);
-  $("#fuse").click({id: 2}, objTriggered);
+  $("#newspaper").click({
+    id: 2
+  }, objTriggered);
+  $("#coffeemachine").click({
+    id: 2
+  }, objTriggered);
+  $("#plug").click({
+    id: 2
+  }, objTriggered);
+  $("#socket").click({
+    id: 2
+  }, objTriggered);
+  $("#fuse").click({
+    id: 2
+  }, objTriggered);
   // right triggers
   $("#paintings").click({
     id: 3
@@ -370,16 +402,18 @@ function setupObjTriggers() {
   $("#light").click({
     id: 5
   }, objTriggered);
+  $("#door-exit").click({id:6},objTriggered);
+  $("#door-oliver").click({id:6},objTriggered);
 }
 
-function setupKeypad(){
+function setupKeypad() {
   var $keypad = $("<div class = 'keypad'></div>");
   var $keypadCode = $("<div class = 'keypad-code'>0000</div>");
   $keypad.append($keypadCode);
-  for (let i = 1; i < 11; i++){
-    if (i === 10){
+  for (let i = 1; i < 11; i++) {
+    if (i === 10) {
       var $keypadBtn = $(`<div class = "keypad-btn" onclick="addCode('0')">0</div>`);
-    }else{
+    } else {
       var $keypadBtn = $(`<div class = 'keypad-btn' onclick="addCode('${i}')">${i}</div>`);
     }
     $keypad.append($keypadBtn);
@@ -387,9 +421,9 @@ function setupKeypad(){
   $body.append($keypad.hide());
 }
 
-function setupLock(){
+function setupLock() {
   var $lock = $("<div class = 'lock'></div>");
-  for(let i = 0; i < 3; i++){
+  for (let i = 0; i < 3; i++) {
     var $lockBtn = $(`<div class = 'lock-btn' id = 'lock-btn-${i}'>0</div>`);
     $lockBtn.click(changeCode);
     $lock.append($lockBtn);
@@ -413,16 +447,21 @@ function draw() {
     }
     useItem();
     showOverlay();
+
   } else if (state === "END") {
 
+    if (showTextBox) {
+      textBox.display();
+    }
   }
+  playMusic();
 }
 
 // keyPressed()
 //
 //
 function keyPressed() {
-  if (state === "PLAY") {
+  if (state === "PLAY" || state === "END") {
     if (textBox.update) {
       // textBox.fullText();
     } else {
@@ -435,56 +474,75 @@ function keyPressed() {
           return;
         }
       }
-      currentDir = gameBackground.dir;
-      if (keyCode === UP_ARROW) {
-        if (currentDir === 4) {
-          gameBackground.changeDirTo(gameBackground.lastDir);
-        } else {
-          if (currentDir != 5) {
-            gameBackground.changeDirTo(5);
+      if (state === "PLAY"){
+        currentDir = gameBackground.dir;
+        if (keyCode === UP_ARROW) {
+          if (currentDir === 4) {
+            currentDir = gameBackground.lastDir;
+            gameBackground.changeDirTo(gameBackground.lastDir);
+          } else {
+            if (currentDir != 5) {
+              currentDir = 5;
+              gameBackground.changeDirTo(5);
+            }
           }
-        }
-        showTriggers();
-      } else if (keyCode === DOWN_ARROW) {
-        if (currentDir === 5) {
-          gameBackground.changeDirTo(gameBackground.lastDir);
-        } else {
-          if (currentDir != 4) {
-            gameBackground.changeDirTo(4);
-          }
-        }
-        showTriggers();
-      } else if (keyCode === LEFT_ARROW) {
-        if (currentDir != 4 && currentDir != 5) {
-          if (currentDir < 3) {
-            currentDir++;
+          showTriggers();
+        } else if (keyCode === DOWN_ARROW) {
+          if (currentDir === 5) {
+            currentDir = gameBackground.lastDir;
             gameBackground.changeDirTo(currentDir);
-          } else if (currentDir === 3) {
-            gameBackground.changeDirTo(0);
+          } else {
+            if (currentDir != 4) {
+              currentDir = 4;
+              gameBackground.changeDirTo(currentDir);
+            }
           }
-        }
-        showTriggers();
-      } else if (keyCode === RIGHT_ARROW) {
-        if (currentDir != 4 && currentDir != 5) {
-          if (currentDir > 0) {
-            currentDir--;
-            gameBackground.changeDirTo(currentDir);
-          } else if (currentDir === 0) {
-            gameBackground.changeDirTo(3);
+          showTriggers();
+        } else if (keyCode === LEFT_ARROW) {
+          if (currentDir != 4 && currentDir != 5) {
+            if (currentDir < 3) {
+              currentDir++;
+              gameBackground.changeDirTo(currentDir);
+            } else if (currentDir === 3) {
+              currentDir = 0;
+              gameBackground.changeDirTo(currentDir);
+            }
           }
+          showTriggers();
+        } else if (keyCode === RIGHT_ARROW) {
+          if (currentDir != 4 && currentDir != 5) {
+            if (currentDir > 0) {
+              currentDir--;
+              gameBackground.changeDirTo(currentDir);
+            } else if (currentDir === 0) {
+              currentDir = 3;
+              gameBackground.changeDirTo(currentDir);
+            }
+          }
+          showTriggers();
         }
-        showTriggers();
-      }
       }
     }
-
   }
+}
+
+function changeDirection(id){
+  if (currentDir != int(id)){
+    currentDir = int(id);
+    if (id != 6){
+      gameBackground.changeDirTo(currentDir);
+    }else{
+      gameBackground.lastDir = 0;
+    }
+    showTriggers();
+  }
+}
 
 // mousePressed()
 //
 //
 function mousePressed() {
-  if (state === "PLAY") {
+  if (state === "PLAY" || state === "END") {
     if (textBox.update) {
       // textBox.fullText();
     } else {
@@ -493,7 +551,7 @@ function mousePressed() {
       } else {
         textBox.hide();
       }
-      if (usingItem){
+      if (usingItem) {
         dropItem();
       }
     }
@@ -563,18 +621,34 @@ function displayTutorial() {
     gameBackground.fadeIn = true;
     showTriggers();
     $directionIndicator.show();
+    setTimeout(function(){
+      playing = true;
+    },2000);
   }
   pop();
 }
 
-function showTriggers() {
-  dirArray[gameBackground.lastDir].hide();
-  dirArray[gameBackground.dir].show();
-  dirIndicatorArr[gameBackground.lastDir].css({"color":"White"});
-  dirIndicatorArr[gameBackground.dir].css({"color":"Coral"});
+function displayEnd(){
+  if (!choiceMade){
+    image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
+  }else{
+    push();
+    pop()
+  }
 }
 
-function hideTriggers(){
+function showTriggers() {
+  dirArray[gameBackground.lastDir].hide();
+  dirArray[currentDir].show();
+  dirIndicatorArr[gameBackground.lastDir].css({
+    "color": "White"
+  });
+  dirIndicatorArr[gameBackground.dir].css({
+    "color": "Coral"
+  });
+}
+
+function hideTriggers() {
   dirArray[gameBackground.dir].hide();
 }
 
@@ -587,10 +661,10 @@ function objTriggered(event) {
         showCloserObj(0);
       } else if ($(this).is("#switch")) {
         if (gameBackground.fuseInstalled) {
-          if (!gameBackground.lightOff){
+          if (!gameBackground.lightOff) {
             textBox.insertText("I can turn off the light now");
             gameBackground.lightOff = true;
-          }else{
+          } else {
             textBox.insertText("Light is back on");
             gameBackground.lightOff = false;
           }
@@ -602,23 +676,23 @@ function objTriggered(event) {
         if (gameBackground.panelOpened) {
           if (gameBackground.fuseInstalled) {
             textBox.insertText("I think I fixed something at least");
-          }else{
-            if (usingFuse){
+          } else {
+            if (usingFuse) {
               textBox.insertText("I suppose it fits");
               gameBackground.fuseInstalled = true;
               removeItem(1);
               SOUND_PLUG_IN.play();
-            }else{
+            } else {
               textBox.insertText("It looks like something is missing");
               textBox.buffer("Maybe I can find it somewhere");
             }
           }
         } else {
-          if (usingScrewDriver){
+          if (usingScrewDriver) {
             gameBackground.panelOpened = true;
             textBox.insertText("I unscrewed all the screws and opened the panel!");
             SOUND_MOVE.play();
-          }else{
+          } else {
             textBox.insertText("A panel held by 4 screws");
             textBox.buffer("I wonder if I can get it open with something");
             SOUND_PANEL.stop();
@@ -628,7 +702,18 @@ function objTriggered(event) {
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
           state = "END";
+          changeDirection(6);
+
           $inventory.hide();
+          $directionIndicator.hide();
+          currentPlaying = -1;
+          BGM_LONE.stop();
+          setTimeout(function(){
+            currentPlaying = 1;
+          },2000);
+
+          textBox.insertText("Now I remeber!\nI was opening my apartment door...\nbut ended up in here");
+          textBox.buffer("Do I leave the Cube for good?\nOr find Oliver and bring him home?");
         } else {
           textBox.insertText("Door is locked");
           textBox.buffer("I need to enter some kinda of\npasscode or something?");
@@ -666,90 +751,91 @@ function objTriggered(event) {
       }
       // back
     } else if (event.data.id === 2) {
-      if ($(this).is("#newspaper")){
+      if ($(this).is("#newspaper")) {
         showCloserObj(3);
         SOUND_READ.play();
-      }else if ($(this).is("#coffeemachine")){
-        if (!gameBackground.coffeeMachinePowered){
+      } else if ($(this).is("#coffeemachine")) {
+        if (!gameBackground.coffeeMachinePowered) {
           textBox.insertText("It doesn't have power");
-          if (!usingMug){
+          if (!usingMug) {
             SOUND_CM_SWITCH.play();
           }
-        }else{
-          if (gameBackground.mugPlaced){
-            if (!gameBackground.coffeeMachineUsed && !coffeemachineRunning){
+        } else {
+          if (gameBackground.mugPlaced) {
+            if (!gameBackground.coffeeMachineUsed && !coffeemachineRunning) {
               textBox.insertText("It's working!");
               coffeemachineRunning = true;
               SOUND_CM_WORKING.play();
-              setTimeout(function(){
+              setTimeout(function() {
                 gameBackground.coffeeMachineUsed = true;
                 coffeemachineRunning = false;
-              },12000);
-            }else {
-              if (!coffeemachineRunning){
+              }, 12000);
+            } else {
+              if (!coffeemachineRunning) {
                 textBox.insertText("There's hot water in the mug");
+                textBox.buffer("There's something written on the mug!");
                 gameBackground.mugPlaced = false;
-                if(!mugTaken){
+                if (!mugTaken) {
                   addItem(2);
                 }
               }
             }
-          }else{
-            if (!gameBackground.coffeeMachineUsed){
+          } else {
+            if (!gameBackground.coffeeMachineUsed) {
               textBox.insertText("I think I can use the coffee machine\nfor coffee?");
               textBox.buffer("I don't think it has coffee\nWhat I get probably is gonna be hot water");
             }
           }
         }
-        if (usingMug){
-          if (!gameBackground.coffeeMachinePowered){
+        if (usingMug) {
+          if (!gameBackground.coffeeMachinePowered) {
             textBox.insertText("Yeah, I wish I could get some coffee");
             textBox.buffer("But it doesn't have power");
-          }else{
+          } else {
             textBox.insertText("Let's get some coffee or hot water...");
           }
           gameBackground.mugPlaced = true;
           removeItem(2);
           SOUND_PLACE_MUG.play();
         }
-      }else if ($(this).is("#plug")){
-        if (!gameBackground.coffeeMachinePowered){
-          if(usingCord){
+      } else if ($(this).is("#plug")) {
+        if (!gameBackground.coffeeMachinePowered) {
+          if (usingCord) {
             textBox.insertText("The extension cord is so useful...\nin this way");
             gameBackground.coffeeMachinePowered = true;
             removeItem(3);
             SOUND_PLUG_IN.play();
-            setTimeout(function(){
+            setTimeout(function() {
               SOUND_CM_POWERED.play();
-            },250);
-          }else{
+            }, 250);
+          } else {
             textBox.insertText("Where do I plug this in?");
             textBox.buffer("The only power socket is out of reach!");
           }
         }
-      }else if ($(this).is("#socket")){
-        if (!gameBackground.coffeeMachinePowered){
-          if(usingCord){
+      } else if ($(this).is("#socket")) {
+        if (!gameBackground.coffeeMachinePowered) {
+          if (usingCord) {
             textBox.insertText("The extension cord is so useful...\nin this way");
             gameBackground.coffeeMachinePowered = true;
             removeItem(3);
             SOUND_PLUG_IN.play();
-            setTimeout(function(){
+            setTimeout(function() {
               SOUND_CM_POWERED.play();
-            },250);
-          }else{
+            }, 250);
+          } else {
             textBox.insertText("Why is the power socket way up there?");
           }
-        }else{
+        } else {
           textBox.insertText("I think I can use the coffee machine now");
         }
-      }else if ($(this).is("#fuse")){
-        if (!gameBackground.posterOpened){
+      } else if ($(this).is("#fuse")) {
+        if (!gameBackground.posterOpened) {
           textBox.insertText("There's something behind...");
           gameBackground.posterOpened = true;
           SOUND_POSTER.play();
-        }else{
-          if (!gameBackground.fuseTaken){
+        } else {
+          if (!gameBackground.fuseTaken) {
             textBox.insertText("It's a fuse!\nI'm taking it");
             gameBackground.fuseTaken = true;
             addItem(1);
@@ -783,13 +869,13 @@ function objTriggered(event) {
       } else if ($(this).is("#manual")) {
         showCloserObj(4);
         SOUND_READ.play();
-        }
+      }
       // down
     } else if (event.data.id === 4) {
-      if (!gameBackground.trapDoorOpened){
+      if (!gameBackground.trapDoorOpened) {
         showCloserObj(1);
-      }else{
-        if(!gameBackground.cordTaken){
+      } else {
+        if (!gameBackground.cordTaken) {
           textBox.insertText("There's an extension cord under the floor\nI'm taking it");
           gameBackground.cordTaken = true;
           addItem(3);
@@ -797,20 +883,28 @@ function objTriggered(event) {
       }
       // up
     } else if (event.data.id === 5) {
-      if (gameBackground.lightOff){
+      if (gameBackground.lightOff) {
         textBox.insertText("The writing on the ceiling...\nIs it a riddle?");
         textBox.buffer("Nine? What is 9 for?");
-      }else{
+      } else {
         textBox.insertText("A light on the ceiling\nIt looks like nothing special");
       }
-    }
+    }else if (event.data.id === 6) {
+      if ($(this).is("#door-exit")){
+        choiceMade = true;
+      }else if ($(this).is("#door-oliver")){
+        choiceMade = true;
+        endId = 1;
+      }
+      hideTriggers();
   }
 }
+}
 
-function showCloserObj(id){
+function showCloserObj(id) {
   var $button = $("<div class='button' id = 'close-button'></div>").text("close").button();
   // keypad
-  if (id === 0){
+  if (id === 0) {
     $(".keypad").show();
     $button.click(function() {
       $('#close-button').remove();
@@ -820,8 +914,8 @@ function showCloserObj(id){
       closeObjShowing = false;
       closeObjId = -1;
     });
-    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
-      if ($(".keypad-code").text() === PASSCODE){
+    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
+      if ($(".keypad-code").text() === PASSCODE) {
         console.log("Unlocked");
         gameBackground.doorOpened = true;
         gameBackground.lightOff = false;
@@ -832,14 +926,14 @@ function showCloserObj(id){
         closeObjShowing = false;
         closeObjId = -1;
         SOUND_DOOR_OPEN.play();
-      }else{
+      } else {
         SOUND_ERROR.stop();
         SOUND_ERROR.play();
       }
     });
     $body.append($buttonConfirm);
-  // lock
-  }else if (id === 1){
+    // lock
+  } else if (id === 1) {
     $(".lock").show();
     $button.click(function() {
       $('#close-button').remove();
@@ -849,9 +943,9 @@ function showCloserObj(id){
       closeObjShowing = false;
       closeObjId = -1;
     });
-    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function(){
+    var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
       let code = $("#lock-btn-0").text() + $("#lock-btn-1").text() + $("#lock-btn-2").text();
-      if (code === LOCK_COMBO){
+      if (code === LOCK_COMBO) {
         console.log("Unlocked");
         gameBackground.trapDoorOpened = true;
         $('#close-button').remove();
@@ -861,30 +955,30 @@ function showCloserObj(id){
         closeObjShowing = false;
         closeObjId = -1;
         SOUND_DOOR_OPEN.play();
-      }else{
+      } else {
         SOUND_COMBO_LOCKED.stop();
         SOUND_COMBO_LOCKED.play();
       }
     });
     $body.append($buttonConfirm);
-  // card
-  }else if (id === 2){
+    // card
+  } else if (id === 2) {
     $button.click(function() {
       $('#close-button').remove();
       closeObjId = -1;
       showTriggers();
       closeObjShowing = false;
     });
-  // newspaer
-  }else if (id === 3){
+    // newspaer
+  } else if (id === 3) {
     $button.click(function() {
       $('#close-button').remove();
       closeObjId = -1;
       showTriggers();
       closeObjShowing = false;
     });
-  // manual
-  }else if (id === 4){
+    // manual
+  } else if (id === 4) {
     $button.click(function() {
       $('#close-button').remove();
       closeObjId = -1;
@@ -898,84 +992,92 @@ function showCloserObj(id){
   closeObjShowing = true;
 }
 
-function showOverlay(){
-  if (closeObjShowing){
+function showOverlay() {
+  if (closeObjShowing) {
     push();
-    fill(0,200);
-    rect(width/2,height/2,width,height);
+    fill(0, 200);
+    rect(width / 2, height / 2, width, height);
     let closeObjImg = null;
-    if (closeObjId === 2){
+    if (closeObjId === 2) {
       closeObjImg = CLOSE_CARD;
-    }else if (closeObjId === 3){
+    } else if (closeObjId === 3) {
       closeObjImg = CLOSE_NEWSPAPER;
-    }else if (closeObjId === 4){
+    } else if (closeObjId === 4) {
       closeObjImg = CLOSE_MANUAL;
     }
-    if (closeObjImg != null){
-      image(closeObjImg,width/2,height/2,((height/1.5)/closeObjImg.height)*closeObjImg.width,height/1.5);
+    if (closeObjImg != null) {
+      image(closeObjImg, width / 2, height / 2, ((height / 1.5) / closeObjImg.height) * closeObjImg.width, height / 1.5);
     }
     pop();
   }
 }
 
-function addCode(num){
+function addCode(num) {
   let code = $(".keypad-code").text();
-  if (code.length >= 4){
+  if (code.length >= 4) {
     $(".keypad-code").text(num);
-  }else{
+  } else {
     code += num;
     $(".keypad-code").text(code);
   }
   SOUND_BEEP.play();
 }
 
-function changeCode(){
+function changeCode() {
   let num = $(this).text();
-  if (num === "9"){
+  if (num === "9") {
     $(this).text("0");
-  }else{
+  } else {
     num = int(num) + 1;
     $(this).text(num);
   }
   SOUND_COMBO_LOCK.play();
 }
 
-function addItem(item_id){
+function addItem(item_id) {
   let $item;
-  if (item_id === 0){
+  if (item_id === 0) {
     $item = $("<img class = 'item' id = 'item0' src = 'assets/images/Item_Screwdriver.png'>");
-    $item.click(function(){
+    $item.click(function() {
       usingItemId = 0;
       usingItem = true;
-      $(this).css({"background-color":"Coral"});
+      $(this).css({
+        "background-color": "Coral"
+      });
       SOUND_USE_ITEM.play();
     });
-  }else if (item_id === 1){
+  } else if (item_id === 1) {
     $item = $("<img class = 'item' id = 'item1' src = 'assets/images/Item_Fuse.png'>");
-    $item.click(function(){
+    $item.click(function() {
       usingItemId = 1;
       usingItem = true;
-      $(this).css({"background-color":"Coral"});
+      $(this).css({
+        "background-color": "Coral"
+      });
       SOUND_USE_ITEM.play();
     });
-  }else if (item_id === 2){
-    if (gameBackground.coffeeMachineUsed){
+  } else if (item_id === 2) {
+    if (gameBackground.coffeeMachineUsed) {
       $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug_Heated.png'>");
-    }else{
+    } else {
       $item = $("<img class = 'item' id = 'item2' src = 'assets/images/Item_Mug.png'>");
     }
-    $item.click(function(){
+    $item.click(function() {
       usingItemId = 2;
       usingItem = true;
-      $(this).css({"background-color":"Coral"});
+      $(this).css({
+        "background-color": "Coral"
+      });
       SOUND_USE_ITEM.play();
     });
-  }else if (item_id === 3){
+  } else if (item_id === 3) {
     $item = $("<img class = 'item' id = 'item3' src = 'assets/images/Item_Cord.png'>");
-    $item.click(function(){
+    $item.click(function() {
       usingItemId = 3;
       usingItem = true;
-      $(this).css({"background-color":"Coral"});
+      $(this).css({
+        "background-color": "Coral"
+      });
       SOUND_USE_ITEM.play();
     });
   }
@@ -984,47 +1086,63 @@ function addItem(item_id){
 }
 
 function useItem() {
-  if (usingItem){
+  if (usingItem) {
     let texture;
-    if (usingItemId === 0){
+    if (usingItemId === 0) {
       texture = ITEM_SCREWDRIVER;
       usingScrewDriver = true;
-    }else if (usingItemId === 1){
+    } else if (usingItemId === 1) {
       texture = ITEM_FUSE;
       usingFuse = true;
-    }else if (usingItemId === 2){
-      if (gameBackground.coffeeMachineUsed){
+    } else if (usingItemId === 2) {
+      if (gameBackground.coffeeMachineUsed) {
         texture = ITEM_MUG_HEATED;
-      }else{
+      } else {
         texture = ITEM_MUG;
       }
       usingMug = true;
       mugTaken = true;
-    }else if (usingItemId === 3){
+    } else if (usingItemId === 3) {
       texture = ITEM_CORD;
       usingCord = true;
     }
     usingItem = true;
-    image(texture,mouseX,mouseY,height/8,height/8);
+    image(texture, mouseX, mouseY, height / 8, height / 8);
   }
 }
 
-function dropItem(){
-  $("#item"+usingItemId).css({"background-color":"white"});
+function dropItem() {
+  $("#item" + usingItemId).css({
+    "background-color": "white"
+  });
   usingItemId = -1;
   usingItem = false;
-  setTimeout(function(){
+  setTimeout(function() {
     usingScrewDriver = false;
     usingFuse = false;
     usingMug = false;
     usingCord = false;
-  },250);
+  }, 250);
 }
 
-function removeItem(id){
+function removeItem(id) {
   dropItem();
   $(`#item${id}`).remove();
-  if (id === 2){
+  if (id === 2) {
     mugTaken = false;
+  }
+}
+
+function playMusic(){
+  if (playing){
+    if (currentPlaying === 0){
+      if (!BGM_LONE.isPlaying()){
+        BGM_LONE.play();
+      }
+    }else if (currentPlaying === 1){
+      if (!BGM_CONCLUSION.isPlaying()){
+        BGM_CONCLUSION.play();
+      }
+    }
   }
 }

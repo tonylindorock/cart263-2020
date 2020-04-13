@@ -63,15 +63,19 @@
   <div class = "container" id = "up">
     <div class = "obj-trigger" id = "light"></div>
   </div>
+  <div class = "container" id = "end">
+    <div class = "obj-trigger" id = "door-exit"></div>
+    <div class = "obj-trigger" id = "door-oliver"></div>
+  </div>
   <div class = "inventory">
   </div>
   <div class = "direction-indicator">
-    <div class = "text" id = "dir-0">EAST</div>
-    <div class = "text" id = "dir-1">NORTH</div>
-    <div class = "text" id = "dir-2">WEST</div>
-    <div class = "text" id = "dir-3">SOUTH</div>
-    <div class = "text" id = "dir-4">DOWN</div>
-    <div class = "text" id = "dir-5">UP</div>
+    <div class = "text" id = "dir-0" onclick="changeDirection('0')">EAST</div>
+    <div class = "text" id = "dir-1" onclick="changeDirection('1')">NORTH</div>
+    <div class = "text" id = "dir-2" onclick="changeDirection('2')">WEST</div>
+    <div class = "text" id = "dir-3" onclick="changeDirection('3')">SOUTH</div>
+    <div class = "text" id = "dir-4" onclick="changeDirection('4')">DOWN</div>
+    <div class = "text" id = "dir-5" onclick="changeDirection('5')">UP</div>
   </div>
 </body>
 
