@@ -25,24 +25,24 @@ let tutorialFadeAway = false;
 let doOnce = true; // do only once
 
 // current state of the program
-let state = "PLAY";
+let state = "START";
 // the direction the player is facing
 let currentDir = 0;
 
-// player's inventory
+// if using item(s)
 let usingScrewDriver = false;
 let usingMug = false;
 let mugTaken = false;
 let usingCord = false;
 let usingFuse = false;
-let coffeemachineRunning = false;
 
-let inventory = [];
-let usingItem = false;
-let usingItemId = -1;
+let usingItem = false; // if using an item
+let usingItemId = -1; // current item id
 
-let closeObjShowing = false;
-let closeObjId = -1;
+let coffeemachineRunning = false; // if coffee machine is running
+
+let closeObjShowing = false; // if examining a object closely
+let closeObjId = -1; // current close object id
 
 let $body; // store the html body
 let $objTrigger;
@@ -145,6 +145,7 @@ let SOUND_USE_ITEM;
 let SOUND_PLUG_IN;
 let SOUND_PLACE_MUG;
 let SOUND_COMBO_LOCK;
+let SOUND_COMBO_LOCKED;
 let SOUND_ERROR;
 let SOUND_DOOR_LOCKED;
 let SOUND_DOOR_OPEN;
@@ -208,6 +209,7 @@ function preload() {
   SOUND_PLUG_IN = loadSound("assets/sounds/Plugin.mp3");
   SOUND_PLACE_MUG = loadSound("assets/sounds/Mug_placed.mp3");
   SOUND_COMBO_LOCK = loadSound("assets/sounds/Combolock.mp3");
+  SOUND_COMBO_LOCKED = loadSound("assets/sounds/Combo_locked.mp3");
   SOUND_ERROR = loadSound("assets/sounds/Error.mp3");
   SOUND_DOOR_LOCKED = loadSound("assets/sounds/Door_locked.mp3");
   SOUND_DOOR_OPEN = loadSound("assets/sounds/Door_open.mp3");
@@ -268,12 +270,13 @@ function setup() {
 
 function setupSFX(){
   SOUND_DRAWER.setVolume(0.5);
-  SOUND_PANEL.setVolume(0.25);
+  SOUND_PANEL.setVolume(0.15);
   SOUND_MOVE.setVolume(0.25);
   SOUND_POSTER.setVolume(0.1);
   SOUND_BEEP.setVolume(0.1);
-  SOUND_ERROR.setVolume(0.1);
+  SOUND_ERROR.setVolume(0.05);
   SOUND_COMBO_LOCK.setVolume(0.25);
+  SOUND_COMBO_LOCKED.setVolume(0.15);
   SOUND_DOOR_LOCKED.setVolume(0.75);
   SOUND_DOOR_OPEN.setVolume(0.25);
   SOUND_SWITCH.setVolume(0.25);
@@ -282,7 +285,7 @@ function setupSFX(){
   SOUND_CM_POWERED.setVolume(0.1);
   SOUND_CM_WORKING.setVolume(0.25);
   SOUND_CM_SWITCH.setVolume(0.1);
-  SOUND_PLUG_IN.setVolume(0.25);
+  SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
 }
 
@@ -386,13 +389,6 @@ function setupLock(){
   $body.append($lock.hide());
 }
 
-function setupTip(){
-  var $tip = $("<div class = 'tip-box'></div>").click(function(){
-
-  }).hide();
-
-}
-
 // draw()
 //
 //
@@ -412,10 +408,6 @@ function draw() {
   } else if (state === "END") {
 
   }
-}
-
-function appendHint(){
-
 }
 
 // keyPressed()
@@ -859,7 +851,8 @@ function showCloserObj(id){
         closeObjId = -1;
         SOUND_DOOR_OPEN.play();
       }else{
-
+        SOUND_COMBO_LOCKED.stop();
+        SOUND_COMBO_LOCKED.play();
       }
     });
     $body.append($buttonConfirm);
