@@ -24,7 +24,7 @@ let tutorialFadeAway = false;
 
 let endFontAlpha = 0;
 let endFadeAway = false;
-let endFontHeight
+let endFontHeight;
 
 let doOnce = true; // do only once
 
@@ -71,9 +71,6 @@ let textBox; // store the obj
 // background manager
 let gameBackground; // store the obj
 
-let choiceMade = false;
-let endId = 0;
-
 const TEXT_TUTORIAL = "Hi," +
   "\n\nI know it has been many years since we last met," +
   "\nbut there's something I need to tell you." +
@@ -89,6 +86,13 @@ const TEXT_BEGIN = [
   "I don't... remember anything.\nI should probably get out of here.\n\n[use all Arrowkeys to see your surroundings]"
 ];
 let begin = true;
+
+const ENDINGS = [
+  "You exit the Cube.\n\nEverything is back to normal.\nYou carry on your life\nbut knowing Oliver is still\nnowhere to be found.",
+  "You enter the room, the unknown.\n\nOliver is out there somewhere.\nAnd you are determined to find him\nand save him from this interdimensional world."
+]
+let choiceMade = false;
+let endId = 0;
 
 const BG_COLOR = "#262626"; // the color of background
 
@@ -280,17 +284,16 @@ function setup() {
 function setupSFX() {
   SOUND_DRAWER.setVolume(0.5);
   SOUND_PANEL.setVolume(0.15);
-  SOUND_MOVE.setVolume(0.3);
-  SOUND_READ.setVolume(1.25);
+  SOUND_MOVE.setVolume(0.25);
   SOUND_POSTER.setVolume(0.1);
-  SOUND_BEEP.setVolume(0.1);
+  SOUND_BEEP.setVolume(0.05);
   SOUND_ERROR.setVolume(0.05);
   SOUND_COMBO_LOCK.setVolume(0.25);
   SOUND_COMBO_LOCKED.setVolume(0.15);
   SOUND_DOOR_LOCKED.setVolume(0.75);
-  SOUND_DOOR_OPEN.setVolume(0.25);
+  SOUND_DOOR_OPEN.setVolume(0.2);
   SOUND_SWITCH.setVolume(0.25);
-  SOUND_TAKE_ITEM.setVolume(0.5);
+  SOUND_TAKE_ITEM.setVolume(0.3);
   SOUND_USE_ITEM.setVolume(0.05);
   SOUND_CM_POWERED.setVolume(0.1);
   SOUND_CM_WORKING.setVolume(0.25);
@@ -449,7 +452,7 @@ function draw() {
     showOverlay();
 
   } else if (state === "END") {
-
+    displayEnd();
     if (showTextBox) {
       textBox.display();
     }
@@ -621,9 +624,6 @@ function displayTutorial() {
     gameBackground.fadeIn = true;
     showTriggers();
     $directionIndicator.show();
-    setTimeout(function(){
-      playing = true;
-    },2000);
   }
   pop();
 }
@@ -633,7 +633,19 @@ function displayEnd(){
     image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
   }else{
     push();
-    pop()
+    textSize(24);
+    textAlign(CENTER);
+    endFontAlpha = lerp(endFontAlpha, 255, 0.02);
+    endFontHeight = lerp(endFontHeight, height - height/6, 0.02);
+    fill(255, endFontAlpha);
+    text(ENDINGS[endId], width / 2, height / 2);
+    textSize(48);
+    fill(HIGHLIGHT);
+    text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight);
+    textSize(64);
+    fill(GREEN_BLUE);
+    text("QUESTIONABLE LOGIC", width / 2, height-endFontHeight);
+    pop();
   }
 }
 
@@ -649,7 +661,7 @@ function showTriggers() {
 }
 
 function hideTriggers() {
-  dirArray[gameBackground.dir].hide();
+  dirArray[currentDir].hide();
 }
 
 function objTriggered(event) {
@@ -702,13 +714,14 @@ function objTriggered(event) {
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
           state = "END";
+          endFontHeight = height + height/4;
           changeDirection(6);
 
           $inventory.hide();
           $directionIndicator.hide();
           currentPlaying = -1;
-          BGM_LONE.stop();
           setTimeout(function(){
+            playing = true;
             currentPlaying = 1;
           },2000);
 
