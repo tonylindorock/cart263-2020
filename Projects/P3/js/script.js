@@ -23,7 +23,6 @@ let tutorialFontAlpha = 0;
 let tutorialFadeAway = false;
 
 let endFontAlpha = 0;
-let endFadeAway = false;
 let endFontHeight;
 
 let doOnce = true; // do only once
@@ -172,7 +171,6 @@ let SOUND_CM_SWITCH;
 // **** Background music **** //
 let currentPlaying = 0;
 let playing = false;
-let BGM_LONE;
 let BGM_CONCLUSION;
 
 // preload()
@@ -240,7 +238,6 @@ function preload() {
   SOUND_CM_WORKING = loadSound("assets/sounds/Coffeemachine_working.mp3");
   SOUND_CM_SWITCH = loadSound("assets/sounds/Coffeemachine_switch.mp3");
 
-  BGM_LONE = loadSound("assets/sounds/Lone.mp3");
   BGM_CONCLUSION = loadSound("assets/sounds/Conclusion.mp3");
 }
 
@@ -300,7 +297,6 @@ function setupSFX() {
   SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
-  BGM_LONE.setVolume(0.1);
   BGM_CONCLUSION.setVolume(0.1);
 }
 
@@ -719,10 +715,8 @@ function objTriggered(event) {
 
           $inventory.hide();
           $directionIndicator.hide();
-          currentPlaying = -1;
           setTimeout(function(){
             playing = true;
-            currentPlaying = 1;
           },2000);
 
           textBox.insertText("Now I remeber!\nI was opening my apartment door...\nbut ended up in here");
@@ -1148,14 +1142,8 @@ function removeItem(id) {
 
 function playMusic(){
   if (playing){
-    if (currentPlaying === 0){
-      if (!BGM_LONE.isPlaying()){
-        BGM_LONE.play();
-      }
-    }else if (currentPlaying === 1){
-      if (!BGM_CONCLUSION.isPlaying()){
-        BGM_CONCLUSION.play();
-      }
+    if (!BGM_CONCLUSION.isPlaying()){
+      BGM_CONCLUSION.play();
+    }
     }
   }
-}
