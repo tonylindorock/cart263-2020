@@ -53,7 +53,11 @@ let $back;
 let $down;
 let $up;
 let dirArray;
+
 let $inventory;
+
+let $directionIndicator;
+let dirIndicatorArr = [];
 
 // text box
 let showTextBox = true;
@@ -223,15 +227,7 @@ function preload() {
 //
 //
 function setup() {
-  $body = $('body');
-  $front = $("#front");
-  $left = $("#left");
-  $right = $("#right");
-  $back = $("#back");
-  $down = $("#down");
-  $up = $("#up");
-  dirArray = [$front, $left, $back, $right, $down, $up];
-  $inventory = $(".inventory");
+  setupHTMLPointers();
   // style/theme
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
@@ -261,11 +257,6 @@ function setup() {
     "width": gameBackground.width.toString()+"px",
     "margin-left": "-"+containerLeftMargin.toString()+"px"
   });
-
-  if(state === "PLAY"){
-    gameBackground.fadeIn = true;
-    showTriggers();
-  }
 }
 
 function setupSFX(){
@@ -281,12 +272,29 @@ function setupSFX(){
   SOUND_DOOR_OPEN.setVolume(0.25);
   SOUND_SWITCH.setVolume(0.25);
   SOUND_TAKE_ITEM.setVolume(0.5);
-  SOUND_USE_ITEM.setVolume(0.1);
+  SOUND_USE_ITEM.setVolume(0.05);
   SOUND_CM_POWERED.setVolume(0.1);
   SOUND_CM_WORKING.setVolume(0.25);
   SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
+}
+
+function setupHTMLPointers(){
+  $body = $('body');
+  $front = $("#front");
+  $left = $("#left");
+  $right = $("#right");
+  $back = $("#back");
+  $down = $("#down");
+  $up = $("#up");
+  dirArray = [$front, $left, $back, $right, $down, $up];
+  $inventory = $(".inventory");
+  $directionIndicator = $(".direction-indicator");
+  for(let i =0;i<6;i++){
+    let id = "#dir-"+i;
+    dirIndicatorArr.push($(id));
+  }
 }
 
 // setupMainMenu()
@@ -554,6 +562,7 @@ function displayTutorial() {
     doOnce = true;
     gameBackground.fadeIn = true;
     showTriggers();
+    $directionIndicator.show();
   }
   pop();
 }
@@ -561,6 +570,8 @@ function displayTutorial() {
 function showTriggers() {
   dirArray[gameBackground.lastDir].hide();
   dirArray[gameBackground.dir].show();
+  dirIndicatorArr[gameBackground.lastDir].css({"color":"White"});
+  dirIndicatorArr[gameBackground.dir].css({"color":"Coral"});
 }
 
 function hideTriggers(){
