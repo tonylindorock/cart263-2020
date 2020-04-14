@@ -161,7 +161,7 @@ canvas {
 .obj-trigger {
   z-index: 1;
   background-color: black;
-  opacity: 0;
+  opacity: 0.5;
   position: absolute;
   text-align: center;
 }
@@ -205,14 +205,14 @@ canvas {
 
 #card {
   height: 4%;
-  width: 3.5%;
-  left: 29%;
+  width: 4.5%;
+  left: 28%;
   top: 66%;
 }
 
 #drawer-left {
   height: 4%;
-  width: 16%;
+  width: 17%;
   left: 2%;
   bottom: 24%;
 }
@@ -233,8 +233,8 @@ canvas {
 
 /* right objs */
 #paintings {
-  height: 28%;
-  width: 29%;
+  height: 14%;
+  width: 28%;
   left: 36%;
   top: 30%;
 }

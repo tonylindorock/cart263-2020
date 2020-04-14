@@ -7,8 +7,8 @@ Yichen Wang
 
 HIGHLIGHTS:
 + A "simple" point & click adventrue
-+ 6 scenes to explore and over 10 puzzles to solve
-+ Listen to the ambient and interact with the environment
++ 6 scenes to explore and over 5 puzzles to solve
++ Search for the answer and interact with the environment
 + Logic is questionable
 
 *********************************************************************/
@@ -293,7 +293,7 @@ function setupSFX() {
   SOUND_TAKE_ITEM.setVolume(0.3);
   SOUND_USE_ITEM.setVolume(0.05);
   SOUND_CM_POWERED.setVolume(0.1);
-  SOUND_CM_WORKING.setVolume(0.25);
+  SOUND_CM_WORKING.setVolume(0.1);
   SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
@@ -401,8 +401,12 @@ function setupObjTriggers() {
   $("#light").click({
     id: 5
   }, objTriggered);
-  $("#door-exit").click({id:6},objTriggered);
-  $("#door-oliver").click({id:6},objTriggered);
+  $("#door-exit").click({
+    id: 6
+  }, objTriggered);
+  $("#door-oliver").click({
+    id: 6
+  }, objTriggered);
 }
 
 function setupKeypad() {
@@ -452,8 +456,8 @@ function draw() {
     if (showTextBox) {
       textBox.display();
     }
+    playMusic();
   }
-  playMusic();
 }
 
 // keyPressed()
@@ -473,7 +477,7 @@ function keyPressed() {
           return;
         }
       }
-      if (state === "PLAY"){
+      if (state === "PLAY") {
         currentDir = gameBackground.dir;
         if (keyCode === UP_ARROW) {
           if (currentDir === 4) {
@@ -525,12 +529,12 @@ function keyPressed() {
   }
 }
 
-function changeDirection(id){
-  if (currentDir != int(id)){
+function changeDirection(id) {
+  if (currentDir != int(id)) {
     currentDir = int(id);
-    if (id != 6){
+    if (id != 6) {
       gameBackground.changeDirTo(currentDir);
-    }else{
+    } else {
       gameBackground.lastDir = 0;
     }
     showTriggers();
@@ -624,15 +628,15 @@ function displayTutorial() {
   pop();
 }
 
-function displayEnd(){
-  if (!choiceMade){
+function displayEnd() {
+  if (!choiceMade) {
     image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
-  }else{
+  } else {
     push();
     textSize(24);
     textAlign(CENTER);
     endFontAlpha = lerp(endFontAlpha, 255, 0.02);
-    endFontHeight = lerp(endFontHeight, height - height/6, 0.02);
+    endFontHeight = lerp(endFontHeight, height - height / 6, 0.02);
     fill(255, endFontAlpha);
     text(ENDINGS[endId], width / 2, height / 2);
     textSize(48);
@@ -640,7 +644,7 @@ function displayEnd(){
     text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight);
     textSize(64);
     fill(GREEN_BLUE);
-    text("QUESTIONABLE LOGIC", width / 2, height-endFontHeight);
+    text("QUESTIONABLE LOGIC", width / 2, height - endFontHeight);
     pop();
   }
 }
@@ -710,14 +714,14 @@ function objTriggered(event) {
       } else if ($(this).is("#door")) {
         if (gameBackground.doorOpened) {
           state = "END";
-          endFontHeight = height + height/4;
+          endFontHeight = height + height / 4;
           changeDirection(6);
 
           $inventory.hide();
           $directionIndicator.hide();
-          setTimeout(function(){
+          setTimeout(function() {
             playing = true;
-          },2000);
+          }, 2000);
 
           textBox.insertText("Now I remeber!\nI was opening my apartment door...\nbut ended up in here");
           textBox.buffer("Do I leave the Cube for good?\nOr find Oliver and bring him home?");
@@ -896,16 +900,29 @@ function objTriggered(event) {
       } else {
         textBox.insertText("A light on the ceiling\nIt looks like nothing special");
       }
-    }else if (event.data.id === 6) {
-      if ($(this).is("#door-exit")){
+    } else if (event.data.id === 6) {
+      if ($(this).is("#door-exit")) {
         choiceMade = true;
-      }else if ($(this).is("#door-oliver")){
+      } else if ($(this).is("#door-oliver")) {
         choiceMade = true;
         endId = 1;
       }
+      console.log("Game over");
+      SOUND_DOOR_OPEN.play();
       hideTriggers();
+    }
   }
 }
+
+function removeCloseObjView(){
+  $('#close-button').remove();
+  let $confirm = $('#confirm-button');
+  if ($confirm != null){
+    $('#confirm-button').remove();
+  }
+  showTriggers();
+  closeObjShowing = false;
+  closeObjId = -1;
 }
 
 function showCloserObj(id) {
@@ -914,24 +931,16 @@ function showCloserObj(id) {
   if (id === 0) {
     $(".keypad").show();
     $button.click(function() {
-      $('#close-button').remove();
-      $('#confirm-button').remove();
       $(".keypad").hide();
-      showTriggers();
-      closeObjShowing = false;
-      closeObjId = -1;
+      removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
       if ($(".keypad-code").text() === PASSCODE) {
         console.log("Unlocked");
         gameBackground.doorOpened = true;
         gameBackground.lightOff = false;
-        $('#close-button').remove();
-        $('#confirm-button').remove();
         $(".keypad").hide();
-        showTriggers();
-        closeObjShowing = false;
-        closeObjId = -1;
+        removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
         SOUND_ERROR.stop();
@@ -943,24 +952,16 @@ function showCloserObj(id) {
   } else if (id === 1) {
     $(".lock").show();
     $button.click(function() {
-      $('#close-button').remove();
-      $('#confirm-button').remove();
       $(".lock").hide();
-      showTriggers();
-      closeObjShowing = false;
-      closeObjId = -1;
+      removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
       let code = $("#lock-btn-0").text() + $("#lock-btn-1").text() + $("#lock-btn-2").text();
       if (code === LOCK_COMBO) {
         console.log("Unlocked");
         gameBackground.trapDoorOpened = true;
-        $('#close-button').remove();
-        $('#confirm-button').remove();
         $(".lock").hide();
-        showTriggers();
-        closeObjShowing = false;
-        closeObjId = -1;
+        removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
         SOUND_COMBO_LOCKED.stop();
@@ -969,28 +970,9 @@ function showCloserObj(id) {
     });
     $body.append($buttonConfirm);
     // card
-  } else if (id === 2) {
+  } else if (id === 2 || id === 3 || id === 4) {
     $button.click(function() {
-      $('#close-button').remove();
-      closeObjId = -1;
-      showTriggers();
-      closeObjShowing = false;
-    });
-    // newspaer
-  } else if (id === 3) {
-    $button.click(function() {
-      $('#close-button').remove();
-      closeObjId = -1;
-      showTriggers();
-      closeObjShowing = false;
-    });
-    // manual
-  } else if (id === 4) {
-    $button.click(function() {
-      $('#close-button').remove();
-      closeObjId = -1;
-      showTriggers();
-      closeObjShowing = false;
+      removeCloseObjView();
     });
   }
   $body.append($button);
@@ -1140,10 +1122,10 @@ function removeItem(id) {
   }
 }
 
-function playMusic(){
-  if (playing){
-    if (!BGM_CONCLUSION.isPlaying()){
+function playMusic() {
+  if (playing) {
+    if (!BGM_CONCLUSION.isPlaying()) {
       BGM_CONCLUSION.play();
     }
-    }
   }
+}
