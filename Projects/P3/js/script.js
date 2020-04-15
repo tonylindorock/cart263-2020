@@ -25,6 +25,11 @@ let tutorialFadeAway = false;
 let endFontAlpha = 0;
 let endFontHeight;
 
+let overlayAlpha = 0;
+let objHeight;
+let objInPosition = false;
+let objMoveAway = false;
+
 let doOnce = true; // do only once
 
 // current state of the program
@@ -289,7 +294,7 @@ function setupSFX() {
   SOUND_COMBO_LOCKED.setVolume(0.15);
   SOUND_DOOR_LOCKED.setVolume(0.75);
   SOUND_DOOR_OPEN.setVolume(0.2);
-  SOUND_SWITCH.setVolume(0.25);
+  SOUND_SWITCH.setVolume(0.2);
   SOUND_TAKE_ITEM.setVolume(0.3);
   SOUND_USE_ITEM.setVolume(0.05);
   SOUND_CM_POWERED.setVolume(0.1);
@@ -477,7 +482,7 @@ function keyPressed() {
           return;
         }
       }
-      if (state === "PLAY") {
+      if (state === "PLAY" && !closeObjShowing) {
         currentDir = gameBackground.dir;
         if (keyCode === UP_ARROW) {
           if (currentDir === 4) {
@@ -530,14 +535,16 @@ function keyPressed() {
 }
 
 function changeDirection(id) {
-  if (currentDir != int(id)) {
-    currentDir = int(id);
-    if (id != 6) {
-      gameBackground.changeDirTo(currentDir);
-    } else {
-      gameBackground.lastDir = 0;
+  if (!closeObjShowing){
+    if (currentDir != int(id)) {
+      currentDir = int(id);
+      if (id != 6) {
+        gameBackground.changeDirTo(currentDir);
+      } else {
+        gameBackground.lastDir = 0;
+      }
+      showTriggers();
     }
-    showTriggers();
   }
 }
 
@@ -914,24 +921,13 @@ function objTriggered(event) {
   }
 }
 
-function removeCloseObjView(){
-  $('#close-button').remove();
-  let $confirm = $('#confirm-button');
-  if ($confirm != null){
-    $('#confirm-button').remove();
-  }
-  showTriggers();
-  closeObjShowing = false;
-  closeObjId = -1;
-}
-
 function showCloserObj(id) {
   var $button = $("<div class='button' id = 'close-button'></div>").text("close").button();
   // keypad
   if (id === 0) {
-    $(".keypad").show();
+    $(".keypad").fadeIn();
     $button.click(function() {
-      $(".keypad").hide();
+      $(".keypad").fadeOut();
       removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
@@ -939,7 +935,7 @@ function showCloserObj(id) {
         console.log("Unlocked");
         gameBackground.doorOpened = true;
         gameBackground.lightOff = false;
-        $(".keypad").hide();
+        $(".keypad").fadeOut();
         removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
@@ -947,12 +943,12 @@ function showCloserObj(id) {
         SOUND_ERROR.play();
       }
     });
-    $body.append($buttonConfirm);
+    $body.append($buttonConfirm.hide().fadeIn());
     // lock
   } else if (id === 1) {
-    $(".lock").show();
+    $(".lock").fadeIn();
     $button.click(function() {
-      $(".lock").hide();
+      $(".lock").fadeOut();
       removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
@@ -960,7 +956,7 @@ function showCloserObj(id) {
       if (code === LOCK_COMBO) {
         console.log("Unlocked");
         gameBackground.trapDoorOpened = true;
-        $(".lock").hide();
+        $(".lock").fadeOut();
         removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
@@ -968,23 +964,49 @@ function showCloserObj(id) {
         SOUND_COMBO_LOCKED.play();
       }
     });
-    $body.append($buttonConfirm);
+    $body.append($buttonConfirm.hide().fadeIn());
     // card
   } else if (id === 2 || id === 3 || id === 4) {
     $button.click(function() {
       removeCloseObjView();
     });
   }
-  $body.append($button);
+  setupOverlay();
+  $body.append($button.hide().fadeIn());
   hideTriggers();
   closeObjId = id;
   closeObjShowing = true;
 }
 
+function removeCloseObjView(){
+  $('#close-button').fadeOut();
+  let $confirm = $('#confirm-button');
+  if ($confirm != null){
+    $confirm.fadeOut();
+  }
+  objMoveAway = true;
+  objInPosition = false;
+  setTimeout(function(){
+    $('#close-button').remove();
+    if ($confirm != null){
+      $confirm.remove();
+    }
+    showTriggers();
+    closeObjShowing = false;
+    closeObjId = -1;
+  },400);
+}
+
+function setupOverlay(){
+  objHeight = height + height/2;
+  objInPosition = false;
+  objMoveAway = false;
+}
+
 function showOverlay() {
   if (closeObjShowing) {
     push();
-    fill(0, 200);
+    fill(0, overlayAlpha);
     rect(width / 2, height / 2, width, height);
     let closeObjImg = null;
     if (closeObjId === 2) {
@@ -994,8 +1016,25 @@ function showOverlay() {
     } else if (closeObjId === 4) {
       closeObjImg = CLOSE_MANUAL;
     }
+    if (!objMoveAway){
+      if (!objInPosition){
+        overlayAlpha = lerp(overlayAlpha,200,0.1);
+        objHeight = lerp(objHeight,height / 2,0.1);
+        if (overlayAlpha >= 199){
+          objInPosition = true;
+        }
+      }
+    }else{
+      if (!objInPosition){
+        overlayAlpha = lerp(overlayAlpha,0,0.1);
+        objHeight = lerp(objHeight,height + height / 2,0.1);
+        if (overlayAlpha <= 1){
+          objInPosition = true;
+        }
+      }
+    }
     if (closeObjImg != null) {
-      image(closeObjImg, width / 2, height / 2, ((height / 1.5) / closeObjImg.height) * closeObjImg.width, height / 1.5);
+      image(closeObjImg, width / 2, objHeight, ((height / 1.5) / closeObjImg.height) * closeObjImg.width, height / 1.5);
     }
     pop();
   }
