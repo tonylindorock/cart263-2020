@@ -159,6 +159,8 @@ let ITEM_MUG_HEATED;
 let ITEM_FUSE;
 let ITEM_CORD;
 // **** Sound Effects **** //
+let SOUND_HIGH_PIANO_KEY;
+let SOUND_LOW_PIANO_KEY;
 let SOUND_BEEP;
 let SOUND_READ;
 let SOUND_SWITCH;
@@ -230,6 +232,8 @@ function preload() {
   CLOSE_CARD = loadImage("assets/images/Card.png");
   CLOSE_NEWSPAPER = loadImage("assets/images/Newspaper.png");
   // sounds
+  SOUND_HIGH_PIANO_KEY = loadSound("assets/sounds/High_piano_key.mp3");
+  SOUND_LOW_PIANO_KEY = loadSound("assets/sounds/Low_piano_key.mp3");
   SOUND_BEEP = loadSound("assets/sounds/Beep_short.mp3");
   SOUND_READ = loadSound("assets/sounds/Read.mp3");
   SOUND_SWITCH = loadSound("assets/sounds/Switch.mp3");
@@ -295,6 +299,8 @@ function setup() {
 //
 // set volumes for all the sounds
 function setupSFX() {
+  SOUND_LOW_PIANO_KEY.setVolume(0.3);
+  SOUND_HIGH_PIANO_KEY.setVolume(0.15);
   SOUND_DRAWER.setVolume(0.5);
   SOUND_PANEL.setVolume(0.15);
   SOUND_MOVE.setVolume(0.25);
@@ -313,7 +319,7 @@ function setupSFX() {
   SOUND_CM_SWITCH.setVolume(0.1);
   SOUND_PLUG_IN.setVolume(0.15);
   SOUND_PLACE_MUG.setVolume(0.1);
-  BGM_CONCLUSION.setVolume(0.1);
+  BGM_CONCLUSION.setVolume(0.15);
 }
 
 // setupHTMLPointers()
@@ -532,6 +538,7 @@ function displayMainMenu() {
     var $button = $("<div class='button' id = 'title-button'></div>").text("start").button().click(function() {
       titleFadeAway = true;
       $('#title-button').remove();
+      SOUND_LOW_PIANO_KEY.play();
     }).hide().fadeIn(500);
     $body.append($button);
     doOnce = false; // once it's done, don't create any more buttons
@@ -567,6 +574,7 @@ function displayTutorial() {
     var $button = $("<div class='button' id = 'tutorial-button'></div>").text("next").button().click(function() {
       tutorialFadeAway = true;
       $('#tutorial-button').remove();
+      SOUND_HIGH_PIANO_KEY.play();
     }).hide().fadeIn(500);
     $body.append($button);
     doOnce = false;
@@ -574,11 +582,13 @@ function displayTutorial() {
   // if the player clicks the next button and the opacity is less than 1
   // go to gameplay
   if (tutorialFadeAway && tutorialFontAlpha <= 1) {
-    state = "PLAY";
-    doOnce = true; // reset doOnce
-    gameBackground.fadeIn = true; // fade in the background
-    showTriggers(); // show the object trigger buttons
-    $directionIndicator.show(); // show the direction indicator
+    setTimeout(function(){
+      state = "PLAY";
+      doOnce = true; // reset doOnce
+      gameBackground.fadeIn = true; // fade in the background
+      showTriggers(); // show the object trigger buttons
+      $directionIndicator.show(); // show the direction indicator
+    },2000);
   }
   pop();
 }
@@ -779,8 +789,10 @@ function objTriggered(event) {
     if (event.data.id === 0) {
       // if clicking on keypad
       if ($(this).is("#keypad")) {
-        // show its control
-        showCloserObj(0);
+        if (!gameBackground.doorOpened){
+          // show its control
+          showCloserObj(0);
+        }
       // if clicking on switch
       } else if ($(this).is("#switch")) {
         // if the fuse is installed
@@ -1046,9 +1058,9 @@ function showCloserObj(id) {
   var $button = $("<div class='button' id = 'close-button'></div>").text("close").button();
   // keypad
   if (id === 0) {
-    $(".keypad").fadeIn();
+    $(".keypad").slideDown();
     $button.click(function() {
-      $(".keypad").fadeOut();
+      $(".keypad").slideUp();
       removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
@@ -1056,7 +1068,7 @@ function showCloserObj(id) {
         console.log("Unlocked");
         gameBackground.doorOpened = true;
         gameBackground.lightOff = false;
-        $(".keypad").fadeOut();
+        $(".keypad").slideUp();
         removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
@@ -1067,9 +1079,9 @@ function showCloserObj(id) {
     $body.append($buttonConfirm.hide().fadeIn());
     // lock
   } else if (id === 1) {
-    $(".lock").fadeIn();
+    $(".lock").slideDown();
     $button.click(function() {
-      $(".lock").fadeOut();
+      $(".lock").slideUp();
       removeCloseObjView();
     });
     var $buttonConfirm = $("<div class='button' id = 'confirm-button'></div>").text("confirm").button().click(function() {
@@ -1077,7 +1089,7 @@ function showCloserObj(id) {
       if (code === LOCK_COMBO) {
         console.log("Unlocked");
         gameBackground.trapDoorOpened = true;
-        $(".lock").fadeOut();
+        $(".lock").slideUp();
         removeCloseObjView();
         SOUND_DOOR_OPEN.play();
       } else {
