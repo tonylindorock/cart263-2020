@@ -27,55 +27,66 @@
 <!-- Content -->
 
 <body>
+  <!-- loading -->
   <div id="p5_loading" class="loadingclass">
     <div class="loader"></div>
   </div>
-  <div class = "container" id = "front">
-    <div class = "obj-trigger" id = "keypad"></div>
-    <div class = "obj-trigger" id = "switch"></div>
-    <div class = "obj-trigger" id = "panel"></div>
-    <div class = "obj-trigger" id = "door"></div>
+  <!-- front/east -->
+  <div class="container" id="front">
+    <div class="obj-trigger" id="keypad"></div>
+    <div class="obj-trigger" id="switch"></div>
+    <div class="obj-trigger" id="panel"></div>
+    <div class="obj-trigger" id="door"></div>
   </div>
-  <div class = "container" id = "left">
-    <div class = "obj-trigger" id = "plant"></div>
-    <div class = "obj-trigger" id = "card"></div>
-    <div class = "obj-trigger" id = "drawer-left"></div>
-    <div class = "obj-trigger" id = "drawer-right"></div>
-    <div class = "obj-trigger" id = "book"></div>
+  <!-- left/north -->
+  <div class="container" id="left">
+    <div class="obj-trigger" id="plant"></div>
+    <div class="obj-trigger" id="card"></div>
+    <div class="obj-trigger" id="drawer-left"></div>
+    <div class="obj-trigger" id="drawer-right"></div>
+    <div class="obj-trigger" id="book"></div>
   </div>
-  <div class = "container" id = "back">
-    <div class = "obj-trigger" id = "newspaper"></div>
-    <div class = "obj-trigger" id = "coffeemachine"></div>
-    <div class = "obj-trigger" id = "plug"></div>
-    <div class = "obj-trigger" id = "socket"></div>
-    <div class = "obj-trigger" id = "fuse"></div>
+  <!-- back/west -->
+  <div class="container" id="back">
+    <div class="obj-trigger" id="newspaper"></div>
+    <div class="obj-trigger" id="coffeemachine"></div>
+    <div class="obj-trigger" id="plug"></div>
+    <div class="obj-trigger" id="socket"></div>
+    <div class="obj-trigger" id="fuse"></div>
   </div>
-  <div class = "container" id = "right">
-    <div class = "obj-trigger" id = "paintings"></div>
-    <div class = "obj-trigger" id = "cabin-left"></div>
-    <div class = "obj-trigger" id = "cabin-right"></div>
-    <div class = "obj-trigger" id = "cabin-bottom"></div>
-    <div class = "obj-trigger" id = "manual"></div>
+  <!-- right/south -->
+  <div class="container" id="right">
+    <div class="obj-trigger" id="paintings"></div>
+    <div class="obj-trigger" id="cabin-left"></div>
+    <div class="obj-trigger" id="cabin-right"></div>
+    <div class="obj-trigger" id="cabin-bottom"></div>
+    <div class="obj-trigger" id="manual"></div>
   </div>
-  <div class = "container" id = "down">
-    <div class = "obj-trigger" id = "trapdoor"></div>
+  <!-- down -->
+  <div class="container" id="down">
+    <div class="obj-trigger" id="trapdoor"></div>
   </div>
-  <div class = "container" id = "up">
-    <div class = "obj-trigger" id = "light"></div>
+  <!-- up -->
+  <div class="container" id="up">
+    <div class="obj-trigger" id="light"></div>
   </div>
-  <div class = "container" id = "end">
-    <div class = "obj-trigger" id = "door-exit"></div>
-    <div class = "obj-trigger" id = "door-oliver"></div>
+  <!-- end -->
+  <div class="container" id="end">
+    <div class="obj-trigger" id="door-exit"></div>
+    <div class="obj-trigger" id="door-oliver"></div>
   </div>
-  <div class = "inventory">
+  <!-- inventory container -->
+  <div class="inventory">
   </div>
-  <div class = "direction-indicator">
-    <div class = "text" id = "dir-0" onclick="changeDirection('0')">EAST</div>
-    <div class = "text" id = "dir-1" onclick="changeDirection('1')">NORTH</div>
-    <div class = "text" id = "dir-2" onclick="changeDirection('2')">WEST</div>
-    <div class = "text" id = "dir-3" onclick="changeDirection('3')">SOUTH</div>
-    <div class = "text" id = "dir-4" onclick="changeDirection('4')">DOWN</div>
-    <div class = "text" id = "dir-5" onclick="changeDirection('5')">UP</div>
+  <!-- direction indicators container -->
+  <div class="direction-indicator">
+    <!-- direction indicator texts -->
+    <div class="text" id="dir-0" onclick="changeDirection('0')">EAST</div>
+    <div class="text" id="dir-1" onclick="changeDirection('1')">NORTH</div>
+    <div class="text" id="dir-2" onclick="changeDirection('2')">WEST</div>
+    <div class="text" id="dir-3" onclick="changeDirection('3')">SOUTH</div>
+    <div class="text" id="dir-4" onclick="changeDirection('4')">DOWN</div>
+    <div class="text" id="dir-5" onclick="changeDirection('5')">UP</div>
   </div>
 </body>
 

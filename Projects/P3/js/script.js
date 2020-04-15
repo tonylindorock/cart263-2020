@@ -14,28 +14,28 @@ HIGHLIGHTS:
 *********************************************************************/
 
 // the font attributes of title for the animation
-let mainMenuFontHeight;
-let mainMenuFontAlpha = 0;
-let titleFadeAway = false;
+let mainMenuFontHeight; // font height
+let mainMenuFontAlpha = 0; // font opacity
+let titleFadeAway = false; // if player starts the game
 
-// tutorial text animation attributes
+// letter text animation attributes
 let tutorialFontAlpha = 0;
 let tutorialFadeAway = false;
 
+// ending menu text animation attributes
 let endFontAlpha = 0;
 let endFontHeight;
 
-let overlayAlpha = 0;
-let objHeight;
-let objInPosition = false;
-let objMoveAway = false;
+// close object animation attributes
+let overlayAlpha = 0; // background opacity
+let objHeight; // image height
+let objInPosition = false; // if image is in right position
+let objMoveAway = false; // if the player closes the close object menu
 
 let doOnce = true; // do only once
 
-// current state of the program
-let state = "START";
-// the direction the player is facing
-let currentDir = 0;
+let state = "START"; // current state of the program
+let currentDir = 0; // the direction the player is facing
 
 // if using item(s)
 let usingScrewDriver = false;
@@ -52,8 +52,10 @@ let coffeemachineRunning = false; // if coffee machine is running
 let closeObjShowing = false; // if examining a object closely
 let closeObjId = -1; // current close object id
 
-let $body; // store the html body
-let $objTrigger;
+// store html elements
+let $body;
+let $objTrigger; // buttons to trigger action
+// objTrigger containers
 let $front;
 let $left;
 let $right;
@@ -61,12 +63,12 @@ let $back;
 let $down;
 let $up;
 let $end;
-let dirArray;
+let dirArray; // store all the objTrigger containers
 
 let $inventory;
 
-let $directionIndicator;
-let dirIndicatorArr = [];
+let $directionIndicator; // container for the direction texts
+let dirIndicatorArr = []; // store all the direction texts
 
 // text box
 let showTextBox = true;
@@ -75,7 +77,8 @@ let textBox; // store the obj
 // background manager
 let gameBackground; // store the obj
 
-const TEXT_TUTORIAL = "Hi," +
+// letter from Oliver
+const TEXT_LETTER = "Hi," +
   "\n\nI know it has been many years since we last met," +
   "\nbut there's something I need to tell you." +
   "\n\nThe Cube is real! I got in! And I escaped!" +
@@ -85,31 +88,33 @@ const TEXT_TUTORIAL = "Hi," +
   "\n\nBest wishes," +
   "\nOliver";
 
+// the first message
 const TEXT_BEGIN = [
   "What happened? Where am I? How did I get here?\n\n[press any key to continue]",
   "I don't... remember anything.\nI should probably get out of here.\n\n[use all Arrowkeys to see your surroundings]"
 ];
-let begin = true;
 
+// the message in the ending
 const ENDINGS = [
   "You exit the Cube.\n\nEverything is back to normal.\nYou carry on your life\nbut knowing Oliver is still\nnowhere to be found.",
   "You enter the room, the unknown.\n\nOliver is out there somewhere.\nAnd you are determined to find him\nand save him from this interdimensional world."
 ]
-let choiceMade = false;
-let endId = 0;
+let choiceMade = false; // if the player makes the final choice
+let endId = 0; // id for endings
 
 const BG_COLOR = "#262626"; // the color of background
 
-// colors
+// theme colors
 const HIGHLIGHT = "#FF7F50";
 const GREEN_BLUE = "#7FFFD4";
 
+// solutions
 const PASSCODE = "9264";
 const LOCK_COMBO = "301"
 
-// * GAME ASSESTS * //
+// ** GAME ASSESTS ** //
 let THEME_FONT; // store the font
-// **** Pictures **** //
+// **** Images **** //
 // backgrounds
 let BG_MM;
 let BG_FRONT;
@@ -120,7 +125,7 @@ let BG_DOWN;
 let BG_UP;
 let BG_END;
 let bgArray;
-// objs appear in the bgs
+// objs appear in the backgrounds
 let OBJ_BOOKLET;
 let OBJ_CABIN_BOTTOM_OUT;
 let OBJ_CABIN_LEFT_OUT;
@@ -139,11 +144,11 @@ let OBJ_FUSE_INSTALLED;
 let OBJ_HOLE;
 let OBJ_MUG_PLACED;
 let OBJ_TRAPDOOR_OPENED;
-// overlay for the bg
+// overlay for the backgrounds
 let OVERLAY_LIGHT_OFF;
 let OVERLAY_DARKEN;
 let OVERLAY_DARKEN_FRONT;
-// closer look at objs
+// closer look at objects
 let CLOSE_CARD;
 let CLOSE_NEWSPAPER;
 let CLOSE_MANUAL;
@@ -153,7 +158,7 @@ let ITEM_MUG;
 let ITEM_MUG_HEATED;
 let ITEM_FUSE;
 let ITEM_CORD;
-// **** Sounds **** //
+// **** Sound Effects **** //
 let SOUND_BEEP;
 let SOUND_READ;
 let SOUND_SWITCH;
@@ -173,15 +178,15 @@ let SOUND_DOOR_OPEN;
 let SOUND_CM_POWERED;
 let SOUND_CM_WORKING;
 let SOUND_CM_SWITCH;
-// **** Background music **** //
-let currentPlaying = 0;
-let playing = false;
+// **** Background Music **** //
+let playing = false; // if the music is playing
 let BGM_CONCLUSION;
 
 // preload()
 //
-//
+// load all the resource (images and sounds)
 function preload() {
+  // background images
   BG_FRONT = loadImage("assets/images/Dir_front.png");
   BG_LEFT = loadImage("assets/images/Dir_left.png");
   BG_RIGHT = loadImage("assets/images/Dir_right.png");
@@ -189,7 +194,9 @@ function preload() {
   BG_DOWN = loadImage("assets/images/Dir_down.png");
   BG_UP = loadImage("assets/images/Dir_up.png");
   BG_END = loadImage("assets/images/Dir_end.png");
+  // put them in the array
   bgArray = [BG_FRONT, BG_LEFT, BG_BACK, BG_RIGHT, BG_DOWN, BG_UP];
+  // other images
   OBJ_BOOKLET = loadImage("assets/images/Booklet.png");
   OBJ_CABIN_BOTTOM_OUT = loadImage("assets/images/Cabin_bottom_out.png");
   OBJ_CABIN_LEFT_OUT = loadImage("assets/images/Cabin_left_out.png");
@@ -208,21 +215,21 @@ function preload() {
   OBJ_HOLE = loadImage("assets/images/Hole.png");
   OBJ_MUG_PLACED = loadImage("assets/images/Mug_placed.png");
   OBJ_TRAPDOOR_OPENED = loadImage("assets/images/Trapdoor_opened.png");
-
+  // item textures
   ITEM_SCREWDRIVER = loadImage("assets/images/Item_Screwdriver.png");
   ITEM_MUG = loadImage("assets/images/Item_Mug.png");
   ITEM_MUG_HEATED = loadImage("assets/images/Item_Mug_Heated.png");
   ITEM_FUSE = loadImage("assets/images/Item_Fuse.png");
   ITEM_CORD = loadImage("assets/images/Item_Cord.png");
-
+  // overlay images
   OVERLAY_LIGHT_OFF = loadImage("assets/images/Light_off.png");
   OVERLAY_DARKEN = loadImage("assets/images/Darken.png");
   OVERLAY_DARKEN_FRONT = loadImage("assets/images/Darken_front.png");
-
+  // close object images
   CLOSE_MANUAL = loadImage("assets/images/Manual.png");
   CLOSE_CARD = loadImage("assets/images/Card.png");
   CLOSE_NEWSPAPER = loadImage("assets/images/Newspaper.png");
-
+  // sounds
   SOUND_BEEP = loadSound("assets/sounds/Beep_short.mp3");
   SOUND_READ = loadSound("assets/sounds/Read.mp3");
   SOUND_SWITCH = loadSound("assets/sounds/Switch.mp3");
@@ -242,16 +249,16 @@ function preload() {
   SOUND_CM_POWERED = loadSound("assets/sounds/Coffeemachine_poweredon.mp3");
   SOUND_CM_WORKING = loadSound("assets/sounds/Coffeemachine_working.mp3");
   SOUND_CM_SWITCH = loadSound("assets/sounds/Coffeemachine_switch.mp3");
-
+  // background music
   BGM_CONCLUSION = loadSound("assets/sounds/Conclusion.mp3");
 }
 
 
 // setup()
 //
-//
+// set up the game and determine some attributes
 function setup() {
-  setupHTMLPointers();
+  setupHTMLPointers(); // store all the pointers to the html elements
   // style/theme
   createCanvas(windowWidth, windowHeight);
   background(BG_COLOR);
@@ -262,7 +269,6 @@ function setup() {
   rectMode(CENTER);
   imageMode(CENTER);
   noStroke();
-
   // create objects
   gameBackground = new Background(BG_FRONT);
   textBox = new TextBox();
@@ -271,18 +277,23 @@ function setup() {
 
   setupMainMenu(); // set up main menu
   setupObjTriggers(); // set up triggers
-  setupKeypad();
-  setupLock();
+  setupKeypad(); // create the keypad in html
+  setupLock(); // create the lock in html
 
-  setupSFX();
+  setupSFX(); // set up sounds
 
+  // make sure the width of objTrigger containers is the same as the width of the background image
   let containerLeftMargin = (gameBackground.width) / 2;
   $(".container").css({
     "width": gameBackground.width.toString() + "px",
+    // center it
     "margin-left": "-" + containerLeftMargin.toString() + "px"
   });
 }
 
+// setupSFX()
+//
+// set volumes for all the sounds
 function setupSFX() {
   SOUND_DRAWER.setVolume(0.5);
   SOUND_PANEL.setVolume(0.15);
@@ -305,6 +316,9 @@ function setupSFX() {
   BGM_CONCLUSION.setVolume(0.1);
 }
 
+// setupHTMLPointers()
+//
+// store all the pointers of html elements
 function setupHTMLPointers() {
   $body = $('body');
   $front = $("#front");
@@ -314,9 +328,10 @@ function setupHTMLPointers() {
   $down = $("#down");
   $up = $("#up");
   $end = $("#end");
-  dirArray = [$front, $left, $back, $right, $down, $up, $end];
+  dirArray = [$front, $left, $back, $right, $down, $up, $end]; // store objTrigger container in the array
   $inventory = $(".inventory");
   $directionIndicator = $(".direction-indicator");
+  // store all the direction texts in the arry
   for (let i = 0; i < 6; i++) {
     let id = "#dir-" + i;
     dirIndicatorArr.push($(id));
@@ -325,21 +340,26 @@ function setupHTMLPointers() {
 
 // setupMainMenu()
 //
-//
+// set initial value to main menu amination attributes
 function setupMainMenu() {
   mainMenuFontHeight = height;
   mainMenuFontAlpha = 0;
 }
 
+// setupObjTriggers()
+//
+// set up objTrigger containers for the start of the game
 function setupObjTriggers() {
+  // hide all containers for the main menu
   $front.hide();
   $left.hide();
   $right.hide();
   $back.hide();
   $down.hide();
   $up.hide();
-  $(".obj-trigger").button();
-  // front triggers
+  $(".obj-trigger").button(); // every objTrigger is now a button
+  // set handler to all objTriggers
+  // front/east triggers
   $("#keypad").click({
     id: 0
   }, objTriggered);
@@ -352,7 +372,7 @@ function setupObjTriggers() {
   $("#door").click({
     id: 0
   }, objTriggered);
-  // left triggers
+  // left/north triggers
   $("#plant").click({
     id: 1
   }, objTriggered);
@@ -368,7 +388,7 @@ function setupObjTriggers() {
   $("#book").click({
     id: 1
   }, objTriggered);
-  // back triggers
+  // back/west triggers
   $("#newspaper").click({
     id: 2
   }, objTriggered);
@@ -384,7 +404,7 @@ function setupObjTriggers() {
   $("#fuse").click({
     id: 2
   }, objTriggered);
-  // right triggers
+  // right/south triggers
   $("#paintings").click({
     id: 3
   }, objTriggered);
@@ -400,12 +420,15 @@ function setupObjTriggers() {
   $("#manual").click({
     id: 3
   }, objTriggered);
+  // down trigger
   $("#trapdoor").click({
     id: 4
   }, objTriggered);
+  // up trigger
   $("#light").click({
     id: 5
   }, objTriggered);
+  // end triggers
   $("#door-exit").click({
     id: 6
   }, objTriggered);
@@ -414,10 +437,14 @@ function setupObjTriggers() {
   }, objTriggered);
 }
 
+// setupKeypad()
+//
+// create the keypad in html
 function setupKeypad() {
-  var $keypad = $("<div class = 'keypad'></div>");
-  var $keypadCode = $("<div class = 'keypad-code'>0000</div>");
+  var $keypad = $("<div class = 'keypad'></div>"); // container
+  var $keypadCode = $("<div class = 'keypad-code'>0000</div>"); // digit display
   $keypad.append($keypadCode);
+  // create all the buttons
   for (let i = 1; i < 11; i++) {
     if (i === 10) {
       var $keypadBtn = $(`<div class = "keypad-btn" onclick="addCode('0')">0</div>`);
@@ -426,42 +453,139 @@ function setupKeypad() {
     }
     $keypad.append($keypadBtn);
   }
-  $body.append($keypad.hide());
+  $body.append($keypad.hide()); // add it to the body and hide it
 }
 
+// setupLock()
+//
+// create the combination lock in html
 function setupLock() {
-  var $lock = $("<div class = 'lock'></div>");
+  var $lock = $("<div class = 'lock'></div>"); // create the container
+  // create 3 buttons and add them to the container
   for (let i = 0; i < 3; i++) {
     var $lockBtn = $(`<div class = 'lock-btn' id = 'lock-btn-${i}'>0</div>`);
-    $lockBtn.click(changeCode);
+    $lockBtn.click(changeCode); // connect function
     $lock.append($lockBtn);
   }
-  $body.append($lock.hide());
+  $body.append($lock.hide()); // add it to the body and hide it
 }
 
 // draw()
 //
-//
+// display menus and the background
+// play music
 function draw() {
   background(BG_COLOR);
+  // main menu
   if (state === "START") {
     displayMainMenu();
+  // tutorial/letter
   } else if (state === "TUTORIAL") {
     displayTutorial();
+  // playing
   } else if (state === "PLAY") {
     gameBackground.display();
+    // in-game message
     if (showTextBox) {
       textBox.display();
     }
-    useItem();
-    showOverlay();
-
+    useItem(); // display item when using
+    showOverlay(); // display close object when examining
+  // game over
   } else if (state === "END") {
     displayEnd();
     if (showTextBox) {
       textBox.display();
     }
     playMusic();
+  }
+}
+
+// displayMainMenu()
+//
+//
+function displayMainMenu() {
+  push();
+  textSize(28);
+  fill(255, mainMenuFontAlpha);
+  text("SPECIAL EPISODE: THE CUBE", width / 2, height - height / 8);
+  textSize(64);
+  if (!titleFadeAway) {
+    mainMenuFontAlpha = lerp(mainMenuFontAlpha, 255, 0.05);
+    mainMenuFontHeight = lerp(mainMenuFontHeight, height / 2 - height / 8, 0.05);
+  } else {
+    mainMenuFontAlpha = lerp(mainMenuFontAlpha, 0, 0.05);
+    mainMenuFontHeight = lerp(mainMenuFontHeight, height + height / 8, 0.03);
+  }
+  // fill the title
+  fill(127, 255, 212, mainMenuFontAlpha);
+  text("QUESTIONABLE\nLOGIC", width / 2, mainMenuFontHeight);
+
+  if (mainMenuFontAlpha >= 210 && doOnce) {
+    var $button = $("<div class='button' id = 'title-button'></div>").text("start").button().click(function() {
+      titleFadeAway = true;
+      $('#title-button').remove();
+    }).hide().fadeIn(500);
+    $body.append($button);
+    doOnce = false;
+  }
+  if (titleFadeAway && mainMenuFontAlpha <= 10) {
+    state = "TUTORIAL"; // to the next state
+    doOnce = true; // reset doOnce
+  }
+  pop();
+}
+
+// displayTutorial()
+//
+//
+function displayTutorial() {
+  push();
+  textSize(28);
+  textAlign(LEFT);
+  if (!tutorialFadeAway) {
+    tutorialFontAlpha = lerp(tutorialFontAlpha, 255, 0.05);
+  } else {
+    tutorialFontAlpha = lerp(tutorialFontAlpha, 0, 0.1);
+  }
+  fill(255, tutorialFontAlpha);
+  text(TEXT_LETTER, width / 12, height / 2);
+  if (doOnce) {
+    var $button = $("<div class='button' id = 'tutorial-button'></div>").text("next").button().click(function() {
+      tutorialFadeAway = true;
+      $('#tutorial-button').remove();
+    }).hide().fadeIn(500);
+    $body.append($button);
+    doOnce = false;
+  }
+  if (tutorialFadeAway && tutorialFontAlpha <= 1) {
+    state = "PLAY";
+    doOnce = true;
+    gameBackground.fadeIn = true;
+    showTriggers();
+    $directionIndicator.show();
+  }
+  pop();
+}
+
+function displayEnd() {
+  if (!choiceMade) {
+    image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
+  } else {
+    push();
+    textSize(24);
+    textAlign(CENTER);
+    endFontAlpha = lerp(endFontAlpha, 255, 0.02);
+    endFontHeight = lerp(endFontHeight, height - height / 6, 0.02);
+    fill(255, endFontAlpha);
+    text(ENDINGS[endId], width / 2, height / 2);
+    textSize(48);
+    fill(HIGHLIGHT);
+    text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight);
+    textSize(64);
+    fill(GREEN_BLUE);
+    text("QUESTIONABLE LOGIC", width / 2, height - endFontHeight);
+    pop();
   }
 }
 
@@ -534,20 +658,6 @@ function keyPressed() {
   }
 }
 
-function changeDirection(id) {
-  if (!closeObjShowing){
-    if (currentDir != int(id)) {
-      currentDir = int(id);
-      if (id != 6) {
-        gameBackground.changeDirTo(currentDir);
-      } else {
-        gameBackground.lastDir = 0;
-      }
-      showTriggers();
-    }
-  }
-}
-
 // mousePressed()
 //
 //
@@ -568,91 +678,17 @@ function mousePressed() {
   }
 }
 
-// displayMainMenu()
-//
-//
-function displayMainMenu() {
-  push();
-  textSize(28);
-  fill(255, mainMenuFontAlpha);
-  text("SPECIAL EPISODE: THE CUBE", width / 2, height - height / 8);
-  textSize(64);
-  if (!titleFadeAway) {
-    mainMenuFontAlpha = lerp(mainMenuFontAlpha, 255, 0.05);
-    mainMenuFontHeight = lerp(mainMenuFontHeight, height / 2 - height / 8, 0.05);
-  } else {
-    mainMenuFontAlpha = lerp(mainMenuFontAlpha, 0, 0.05);
-    mainMenuFontHeight = lerp(mainMenuFontHeight, height + height / 8, 0.03);
-  }
-  // fill the title
-  fill(127, 255, 212, mainMenuFontAlpha);
-  text("QUESTIONABLE\nLOGIC", width / 2, mainMenuFontHeight);
-
-  if (mainMenuFontAlpha >= 210 && doOnce) {
-    var $button = $("<div class='button' id = 'title-button'></div>").text("start").button().click(function() {
-      titleFadeAway = true;
-      $('#title-button').remove();
-    }).hide().fadeIn(500);
-    $body.append($button);
-    doOnce = false;
-  }
-  if (titleFadeAway && mainMenuFontAlpha <= 10) {
-    state = "TUTORIAL"; // to the next state
-    doOnce = true; // reset doOnce
-  }
-  pop();
-}
-
-// displayTutorial()
-//
-//
-function displayTutorial() {
-  push();
-  textSize(28);
-  textAlign(LEFT);
-  if (!tutorialFadeAway) {
-    tutorialFontAlpha = lerp(tutorialFontAlpha, 255, 0.05);
-  } else {
-    tutorialFontAlpha = lerp(tutorialFontAlpha, 0, 0.1);
-  }
-  fill(255, tutorialFontAlpha);
-  text(TEXT_TUTORIAL, width / 12, height / 2);
-  if (doOnce) {
-    var $button = $("<div class='button' id = 'tutorial-button'></div>").text("next").button().click(function() {
-      tutorialFadeAway = true;
-      $('#tutorial-button').remove();
-    }).hide().fadeIn(500);
-    $body.append($button);
-    doOnce = false;
-  }
-  if (tutorialFadeAway && tutorialFontAlpha <= 1) {
-    state = "PLAY";
-    doOnce = true;
-    gameBackground.fadeIn = true;
-    showTriggers();
-    $directionIndicator.show();
-  }
-  pop();
-}
-
-function displayEnd() {
-  if (!choiceMade) {
-    image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
-  } else {
-    push();
-    textSize(24);
-    textAlign(CENTER);
-    endFontAlpha = lerp(endFontAlpha, 255, 0.02);
-    endFontHeight = lerp(endFontHeight, height - height / 6, 0.02);
-    fill(255, endFontAlpha);
-    text(ENDINGS[endId], width / 2, height / 2);
-    textSize(48);
-    fill(HIGHLIGHT);
-    text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight);
-    textSize(64);
-    fill(GREEN_BLUE);
-    text("QUESTIONABLE LOGIC", width / 2, height - endFontHeight);
-    pop();
+function changeDirection(id) {
+  if (!closeObjShowing){
+    if (currentDir != int(id)) {
+      currentDir = int(id);
+      if (id != 6) {
+        gameBackground.changeDirTo(currentDir);
+      } else {
+        gameBackground.lastDir = 0;
+      }
+      showTriggers();
+    }
   }
 }
 

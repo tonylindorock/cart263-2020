@@ -154,7 +154,6 @@ canvas {
   position: absolute;
   left: 50%;
   margin-left: 0;
-
   display: none;
 }
 
@@ -320,14 +319,14 @@ canvas {
 }
 
 /* end objs */
-#door-exit{
+#door-exit {
   height: 62%;
   width: 23%;
   left: 17%;
   top: 28%;
 }
 
-#door-oliver{
+#door-oliver {
   height: 62%;
   width: 23%;
   right: 15%;
