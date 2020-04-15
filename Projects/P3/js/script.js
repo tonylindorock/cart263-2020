@@ -503,32 +503,41 @@ function draw() {
 
 // displayMainMenu()
 //
-//
+// display the main menu
 function displayMainMenu() {
   push();
   textSize(28);
-  fill(255, mainMenuFontAlpha);
+  fill(255, mainMenuFontAlpha); // changing opacity
   text("SPECIAL EPISODE: THE CUBE", width / 2, height - height / 8);
   textSize(64);
+  // if title is fading in
   if (!titleFadeAway) {
+    // opacity transition from 0 to 255
     mainMenuFontAlpha = lerp(mainMenuFontAlpha, 255, 0.05);
+    // height transition from bottom to the center
     mainMenuFontHeight = lerp(mainMenuFontHeight, height / 2 - height / 8, 0.05);
+  // if title is fading out
   } else {
+    // opacity transition from 255 to 0
     mainMenuFontAlpha = lerp(mainMenuFontAlpha, 0, 0.05);
+    // height transition from center to the bottom
     mainMenuFontHeight = lerp(mainMenuFontHeight, height + height / 8, 0.03);
   }
-  // fill the title
+  // fill the title with changing opacity
   fill(127, 255, 212, mainMenuFontAlpha);
   text("QUESTIONABLE\nLOGIC", width / 2, mainMenuFontHeight);
-
+  // if the opacity is >= 210 and do this only once
   if (mainMenuFontAlpha >= 210 && doOnce) {
+    // create a start button
     var $button = $("<div class='button' id = 'title-button'></div>").text("start").button().click(function() {
       titleFadeAway = true;
       $('#title-button').remove();
     }).hide().fadeIn(500);
     $body.append($button);
-    doOnce = false;
+    doOnce = false; // once it's done, don't create any more buttons
   }
+  // if player clicks the start button and the opacity is less than 10
+  // change to tutorial/letter
   if (titleFadeAway && mainMenuFontAlpha <= 10) {
     state = "TUTORIAL"; // to the next state
     doOnce = true; // reset doOnce
@@ -538,19 +547,23 @@ function displayMainMenu() {
 
 // displayTutorial()
 //
-//
+// show the content of the tutorial/letter of Oliver/introduction
 function displayTutorial() {
   push();
   textSize(28);
   textAlign(LEFT);
+  // if text is fading in
   if (!tutorialFadeAway) {
     tutorialFontAlpha = lerp(tutorialFontAlpha, 255, 0.05);
+  // if text is fading out
   } else {
     tutorialFontAlpha = lerp(tutorialFontAlpha, 0, 0.1);
   }
   fill(255, tutorialFontAlpha);
   text(TEXT_LETTER, width / 12, height / 2);
+  // do only once
   if (doOnce) {
+    // create a next button
     var $button = $("<div class='button' id = 'tutorial-button'></div>").text("next").button().click(function() {
       tutorialFadeAway = true;
       $('#tutorial-button').remove();
@@ -558,80 +571,108 @@ function displayTutorial() {
     $body.append($button);
     doOnce = false;
   }
+  // if the player clicks the next button and the opacity is less than 1
+  // go to gameplay
   if (tutorialFadeAway && tutorialFontAlpha <= 1) {
     state = "PLAY";
-    doOnce = true;
-    gameBackground.fadeIn = true;
-    showTriggers();
-    $directionIndicator.show();
+    doOnce = true; // reset doOnce
+    gameBackground.fadeIn = true; // fade in the background
+    showTriggers(); // show the object trigger buttons
+    $directionIndicator.show(); // show the direction indicator
   }
   pop();
 }
 
+// displayEnd()
+//
+// display the game over screen
 function displayEnd() {
+  // if players have not made a choice
+  // display the background
   if (!choiceMade) {
     image(BG_END, width / 2, height / 2, (height / BG_END.height) * BG_END.width, height);
+  // if a choice is made
   } else {
     push();
     textSize(24);
     textAlign(CENTER);
+    // opacity transition from 0 to 255
     endFontAlpha = lerp(endFontAlpha, 255, 0.02);
+    // height transition from outside of the screen to the inside
     endFontHeight = lerp(endFontHeight, height - height / 6, 0.02);
     fill(255, endFontAlpha);
     text(ENDINGS[endId], width / 2, height / 2);
     textSize(48);
     fill(HIGHLIGHT);
-    text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight);
+    text("THANK YOU\nFOR PLAYING", width / 2, endFontHeight); // will appear from the bottom
     textSize(64);
     fill(GREEN_BLUE);
-    text("QUESTIONABLE LOGIC", width / 2, height - endFontHeight);
+    text("QUESTIONABLE LOGIC", width / 2, height - endFontHeight); // will appear from the top
     pop();
   }
 }
 
 // keyPressed()
 //
-//
+// handle key input
 function keyPressed() {
+  // if players are in gameplay or game over screen
   if (state === "PLAY" || state === "END") {
+    // if the message is updating
     if (textBox.update) {
       // textBox.fullText();
+      // skip text animation for the developer :)
+      // could be a feature but sometimes player will miss the message entirely if the message is too short
     } else {
+      // if there's a second message
       if (textBox.bufferText != null) {
+        // show the second message
         textBox.insertBuffer();
         return;
+      // if no, hide the message when the animation is finished
       } else {
         if (textBox.showing) {
           textBox.hide();
           return;
         }
       }
+      // if in gameplay and not examining a close object
       if (state === "PLAY" && !closeObjShowing) {
-        currentDir = gameBackground.dir;
+        // pressing arrowkeys will change background
+        currentDir = gameBackground.dir; // store current facing direction
+        // UP
         if (keyCode === UP_ARROW) {
+          // if player is facing down, go to the last direction
           if (currentDir === 4) {
             currentDir = gameBackground.lastDir;
-            gameBackground.changeDirTo(gameBackground.lastDir);
+            gameBackground.changeDirTo(currentDir);
           } else {
+            // if player isn't facing up, go face up
             if (currentDir != 5) {
               currentDir = 5;
-              gameBackground.changeDirTo(5);
+              gameBackground.changeDirTo(currentDir);
             }
           }
-          showTriggers();
+          showTriggers(); // update object trigger areas
+        // DOWN
         } else if (keyCode === DOWN_ARROW) {
+          // if player is facing up, go to the last dir
           if (currentDir === 5) {
             currentDir = gameBackground.lastDir;
             gameBackground.changeDirTo(currentDir);
           } else {
+            // if not facing down, go face down
             if (currentDir != 4) {
               currentDir = 4;
               gameBackground.changeDirTo(currentDir);
             }
           }
           showTriggers();
+        // LEFT
         } else if (keyCode === LEFT_ARROW) {
+          // if player is facing up or down, don't change
           if (currentDir != 4 && currentDir != 5) {
+            // change direction from 0 to 3 and then back to 0
             if (currentDir < 3) {
               currentDir++;
               gameBackground.changeDirTo(currentDir);
@@ -641,8 +682,10 @@ function keyPressed() {
             }
           }
           showTriggers();
+        // RIGHT
         } else if (keyCode === RIGHT_ARROW) {
           if (currentDir != 4 && currentDir != 5) {
+            // change direction from 3 to 0 and then back to 3
             if (currentDir > 0) {
               currentDir--;
               gameBackground.changeDirTo(currentDir);
@@ -660,17 +703,20 @@ function keyPressed() {
 
 // mousePressed()
 //
-//
+// handle mouse presses
 function mousePressed() {
+  // if player is playing
   if (state === "PLAY" || state === "END") {
     if (textBox.update) {
       // textBox.fullText();
     } else {
+      //
       if (textBox.bufferText != null) {
         textBox.insertBuffer();
       } else {
         textBox.hide();
       }
+      // if player is holding an item, drop it when clicking
       if (usingItem) {
         dropItem();
       }
@@ -678,75 +724,110 @@ function mousePressed() {
   }
 }
 
+// changeDirection(id)
+//
+// change game background based on direction id
 function changeDirection(id) {
+  // if not examining a close object
   if (!closeObjShowing){
+    // if current direction is not equal to the changing direction
     if (currentDir != int(id)) {
+      // update direction and last direction
       currentDir = int(id);
       if (id != 6) {
         gameBackground.changeDirTo(currentDir);
       } else {
         gameBackground.lastDir = 0;
       }
-      showTriggers();
+      showTriggers(); // update object trigger areas
     }
   }
 }
 
+// showTriggers()
+//
+// handle the object triggers based on current facing direction
 function showTriggers() {
+  // hide triggers from the last direction
   dirArray[gameBackground.lastDir].hide();
+  // show current direction triggers
   dirArray[currentDir].show();
+  // update direction indicators
   dirIndicatorArr[gameBackground.lastDir].css({
     "color": "White"
   });
+  // highlight current direction
   dirIndicatorArr[gameBackground.dir].css({
     "color": "Coral"
   });
 }
 
+// hideTriggers()
+//
+// hide object triggers based on current facing direction
 function hideTriggers() {
   dirArray[currentDir].hide();
 }
 
+// objTriggered(event)
+//
+// handle the object trigger clicking event
 function objTriggered(event) {
   // if the textBox is not on the screen, handle the trigger
   if (!textBox.showing) {
-    // front
+    // front/east
     if (event.data.id === 0) {
+      // if clicking on keypad
       if ($(this).is("#keypad")) {
+        // show its control
         showCloserObj(0);
+      // if clicking on switch
       } else if ($(this).is("#switch")) {
+        // if the fuse is installed
         if (gameBackground.fuseInstalled) {
+          // turn off or on the light
           if (!gameBackground.lightOff) {
+            // display message
             textBox.insertText("I can turn off the light now");
             gameBackground.lightOff = true;
           } else {
             textBox.insertText("Light is back on");
             gameBackground.lightOff = false;
           }
+        // if the fuse is not installed
         } else {
           textBox.insertText("It doesn't do anything\nIs it broken?");
         }
         SOUND_SWITCH.play();
+      // if clicking on panel
       } else if ($(this).is("#panel")) {
+        // if the panel is opened
         if (gameBackground.panelOpened) {
+          // if the fuse is installed
           if (gameBackground.fuseInstalled) {
             textBox.insertText("I think I fixed something at least");
           } else {
+            // if player is holding the fuce
             if (usingFuse) {
               textBox.insertText("I suppose it fits");
-              gameBackground.fuseInstalled = true;
-              removeItem(1);
+              gameBackground.fuseInstalled = true; // install the fuse
+              removeItem(1); // remove fuse from the inventory
               SOUND_PLUG_IN.play();
+            // not holding the fuse
             } else {
               textBox.insertText("It looks like something is missing");
               textBox.buffer("Maybe I can find it somewhere");
             }
           }
+        // if the panel is not opened
         } else {
+          // if the player is holding the screwdriver
           if (usingScrewDriver) {
+            // open the panel
             gameBackground.panelOpened = true;
             textBox.insertText("I unscrewed all the screws and opened the panel!");
             SOUND_MOVE.play();
+          // if not holding the screwdriver
           } else {
             textBox.insertText("A panel held by 4 screws");
             textBox.buffer("I wonder if I can get it open with something");
@@ -754,27 +835,31 @@ function objTriggered(event) {
             SOUND_PANEL.play();
           }
         }
+      // if click on door
       } else if ($(this).is("#door")) {
+        // if the door is opened
         if (gameBackground.doorOpened) {
-          state = "END";
-          endFontHeight = height + height / 4;
-          changeDirection(6);
-
+          state = "END"; // go to game over screen
+          endFontHeight = height + height / 4; // initiate font height
+          changeDirection(6); // update game background
+          // hide inventory and direction indicator
           $inventory.hide();
           $directionIndicator.hide();
+          // after 2s, play the music
           setTimeout(function() {
             playing = true;
           }, 2000);
-
+          // display message
           textBox.insertText("Now I remeber!\nI was opening my apartment door...\nbut ended up in here");
           textBox.buffer("Do I leave the Cube for good?\nOr find Oliver and bring him home?");
+        // if door is locked
         } else {
           textBox.insertText("Door is locked");
           textBox.buffer("I need to enter some kinda of\npasscode or something?");
           SOUND_DOOR_LOCKED.play();
         }
       }
-      // left
+      // left/north
     } else if (event.data.id === 1) {
       if ($(this).is("#plant")) {
         if (!gameBackground.plantMoved) {
