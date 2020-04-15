@@ -1,7 +1,8 @@
 <h1>QUESTIONABLE LOGIC: THE CUBE</h1>
-<h2>-- Artist's Statement --</h2>
+<h3>-- Artist's Statement --</h3>
 <br>
-<q>Yichen Wang</q>
+Yichen Wang
+<br>
 <br>
 Before starting working on this game, I had two ideas. The first one would be “The Art of Being Artistic,” and the second one would be “The Art of Cooking.” They were fascinating concepts and possibly fun to keep working on, but I decided not to continue making neither of them and determined to finish this instead.
 <br>
