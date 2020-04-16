@@ -293,7 +293,7 @@ function setup() {
     // center it
     "margin-left": "-" + containerLeftMargin.toString() + "px"
   });
-
+  // make sure the inventory and direction indicator containers do not overlay the background
   let sideStripWidth = (width - gameBackground.width) / 2;
   $inventory.css({
     "width": sideStripWidth.toString() + "px"
