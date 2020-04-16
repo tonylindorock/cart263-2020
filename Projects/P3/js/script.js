@@ -293,6 +293,14 @@ function setup() {
     // center it
     "margin-left": "-" + containerLeftMargin.toString() + "px"
   });
+
+  let sideStripWidth = (width - gameBackground.width) / 2;
+  $inventory.css({
+    "width": sideStripWidth.toString() + "px"
+  });
+  $directionIndicator.css({
+    "width": sideStripWidth.toString() + "px"
+  });
 }
 
 // setupSFX()
