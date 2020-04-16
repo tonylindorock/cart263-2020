@@ -89,7 +89,7 @@ class Background {
       }
       // back/west
     } else if (this.dir === 2) {
-      // if the poster is teared
+      // if the poster is tore
       if (this.posterOpened) {
         this.displayImg(OBJ_HOLE);
         // if the fuse in the wall is not taken
